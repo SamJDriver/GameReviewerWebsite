@@ -18,14 +18,14 @@ namespace GameReview.Controllers
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserDto user)
         {
-            return Ok(xd);
+            return Ok();
         }
 
 
         [HttpGet]
         public IActionResult GetUsers()
         {
-            return Ok(xd);
+            return Ok();
         }
 
 

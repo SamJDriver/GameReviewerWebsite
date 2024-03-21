@@ -13,7 +13,7 @@ public class UserController {
 
     // READ
     @RequestMapping(value="/user", method=RequestMethod.GET)
-    public String getEmployees() {
+    public String getUser() {
         return "empRepository.findAll();";
     }
 

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameReview", "GameReview.csproj", "{B9347DCF-1AB8-4870-902E-13CFFD854B25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameReview", "GameReview\GameReview.csproj", "{B9347DCF-1AB8-4870-902E-13CFFD854B25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogic", "..\BusinessLogic\BusinessLogic.csproj", "{070C549B-8200-4062-8CB3-90BBEFE946A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogic", "BusinessLogic\BusinessLogic.csproj", "{070C549B-8200-4062-8CB3-90BBEFE946A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

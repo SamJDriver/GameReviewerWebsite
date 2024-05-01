@@ -15,6 +15,15 @@ namespace BusinessLogic.Infrastructure
             _genericRepository = genericRepository;
         }
 
+        public int CreateGame(GameDto game, out string? error)
+        {
+            var gameEntity = new GameRaw().Assign(game);
+            _genericRepository.InsertRecord(gameEntity);
+            error = null;
+            return gameEntity.Id;
+        }
+
+
         public IEnumerable<GameDto> GetGames()
         {
             var xd = _genericRepository.GetAll<TestGame>().ToList();

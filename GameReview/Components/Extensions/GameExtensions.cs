@@ -7,7 +7,7 @@ namespace Components.Extensions
     {
         public static GameRaw Assign(this GameRaw self, GameDto game)
         {
-            self.Id = game.Id;
+            self.Id = game.Id ?? 0;
             self.Name = game.Name;
             return self;
         }

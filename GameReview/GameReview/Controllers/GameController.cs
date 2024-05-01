@@ -1,6 +1,7 @@
 using BusinessLogic.Abstractions;
 using BusinessLogic.Infrastructure;
 using BusinessLogic.Models;
+using Components.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -19,9 +20,11 @@ namespace GameReview.Controllers
 
         //Probably admin only
         [HttpPost]
-        public IActionResult CreateGame([FromBody] UserDto user)
+        public IActionResult CreateGame([FromBody] GameDto game)
         {
-            return Ok();
+            string? error = default;
+            int newId = _gameService.CreateGame(game, out error);
+            return string.IsNullOrEmpty(error) ? Ok(newId) : BadRequest(error);
         }
 
 

@@ -1,3 +1,9 @@
+using BusinessLogic.Abstractions;
+using BusinessLogic.Infrastructure;
+using DataAccess.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Repositories;
+
 namespace GameReview
 {
     public class Program
@@ -9,6 +15,17 @@ namespace GameReview
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSwaggerGen();
+
+            var secretConnectionString = builder.Configuration["SecrectConnectionStrings:SecretDb"];
+            builder.Services.AddDbContext<NickDbContext>(
+                options => options
+                .UseLazyLoadingProxies()
+                .UseMySql(secretConnectionString, ServerVersion.AutoDetect(secretConnectionString)
+           ).EnableDetailedErrors());
+
+            builder.Services.AddScoped<IGameService, GameService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped(typeof(GenericRepository<>));
 
             var app = builder.Build();
 

@@ -1,7 +1,6 @@
+using BusinessLogic.Infrastructure;
 using BusinessLogic.Models;
-using GameReview.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 
 namespace GameReview.Controllers
@@ -13,6 +12,7 @@ namespace GameReview.Controllers
 
         public UserController()
         {
+            
         }
 
         [HttpPost]

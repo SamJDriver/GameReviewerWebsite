@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Components\Components.csproj" />
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
-    <ProjectReference Include="..\Repositories\Repositories.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
   </ItemGroup>
 
 </Project>

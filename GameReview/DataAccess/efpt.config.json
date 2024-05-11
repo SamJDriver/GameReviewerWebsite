@@ -15,11 +15,59 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "game_raw",
+         "Name": "developers",
          "ObjectType": 0
       },
       {
-         "Name": "test_game",
+         "Name": "games",
+         "ObjectType": 0
+      },
+      {
+         "Name": "games_developers_link",
+         "ObjectType": 0
+      },
+      {
+         "Name": "games_genres_lookup_link",
+         "ObjectType": 0
+      },
+      {
+         "Name": "games_platforms_link",
+         "ObjectType": 0
+      },
+      {
+         "Name": "games_publishers_link",
+         "ObjectType": 0
+      },
+      {
+         "Name": "genres_lookup",
+         "ObjectType": 0
+      },
+      {
+         "Name": "platforms",
+         "ObjectType": 0
+      },
+      {
+         "Name": "play_record_comments",
+         "ObjectType": 0
+      },
+      {
+         "Name": "play_records",
+         "ObjectType": 0
+      },
+      {
+         "Name": "publishers",
+         "ObjectType": 0
+      },
+      {
+         "Name": "user_relationship",
+         "ObjectType": 0
+      },
+      {
+         "Name": "user_relationship_type_lookup",
+         "ObjectType": 0
+      },
+      {
+         "Name": "users",
          "ObjectType": 0
       }
    ],
@@ -33,7 +81,7 @@
    "UseFluentApiOnly": false,
    "UseHandleBars": false,
    "UseHierarchyId": false,
-   "UseInflector": true,
+   "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": true,
    "UseNoDefaultConstructor": false,

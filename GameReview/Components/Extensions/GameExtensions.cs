@@ -1,21 +1,42 @@
 ﻿using Components.Models;
 using DataAccess.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Components.Extensions
 {
     public static class GameExtensions
     {
-        public static GameRaw Assign(this GameRaw self, GameDto game)
+        public static Games Assign(this Games self, GameDto game)
         {
             self.Id = game.Id ?? 0;
-            self.Name = game.Name;
+            self.Title = game.Title;
+            self.ReleaseDate = game.ReleaseDate;
+            self.ImageFilePath = game.ImageFilePath;
+            self.Description = game.Description;
+            self.CreatedBy = game.CreatedBy;
+            self.CreatedDate = game.CreatedDate;
+            self.ModifiedBy = game.ModifiedBy;
+            self.ModifiedDate = game.ModifiedDate;
+            self.ObsoleteFlag = game.ObsoleteFlag;
+            self.ObsoleteDate = game.ObsoleteDate;
             return self;
         }
 
-        public static GameDto Assign(this GameDto self, GameRaw game)
+        public static GameDto Assign(this GameDto self, Games game)
         {
             self.Id = game.Id;
-            self.Name = game.Name;
+            self.Title = game.Title;
+            self.ReleaseDate = game.ReleaseDate;
+            self.ImageFilePath = game.ImageFilePath;
+            self.Description = game.Description;
+            self.CreatedBy = game.CreatedBy;
+            self.CreatedDate = game.CreatedDate;
+            self.ModifiedBy = game.ModifiedBy;
+            self.ModifiedDate = game.ModifiedDate;
+            self.ObsoleteFlag = game.ObsoleteFlag;
+            self.ObsoleteDate = game.ObsoleteDate;
             return self;
         }
     }

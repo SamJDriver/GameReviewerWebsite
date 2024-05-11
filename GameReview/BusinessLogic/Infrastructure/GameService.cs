@@ -17,7 +17,8 @@ namespace BusinessLogic.Infrastructure
 
         public int CreateGame(GameDto game, out string? error)
         {
-            var gameEntity = new GameRaw().Assign(game);
+            var gameEntity = new Games().Assign(game);
+            //TODO add validation checks for game?
             _genericRepository.InsertRecord(gameEntity);
             error = null;
             return gameEntity.Id;
@@ -26,10 +27,7 @@ namespace BusinessLogic.Infrastructure
 
         public IEnumerable<GameDto> GetGames()
         {
-            var xd = _genericRepository.GetAll<TestGame>().ToList();
-
-            var games = _genericRepository.GetAll<GameRaw>().Select(g => new GameDto().Assign(g)).ToList();
-            return games;
+            return _genericRepository.GetAll<Games>().Select(g => new GameDto().Assign(g)).ToList(); ;
         }
     }
 }

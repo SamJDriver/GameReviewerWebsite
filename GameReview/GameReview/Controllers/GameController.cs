@@ -12,10 +12,12 @@ namespace GameReview.Controllers
     public class GameController : Controller
     {
         private IGameService _gameService;
+        private IIgdbApiService _igdbApiService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService, IIgdbApiService igdbApiService)
         {
             _gameService = gameService;
+            _igdbApiService = igdbApiService;
         }
 
         //Probably admin only
@@ -35,6 +37,12 @@ namespace GameReview.Controllers
             return Ok(games);
         }
 
+        [HttpGet("/igdb")]
+        public async Task<IActionResult> GetAccessToken()
+        {
+            var accessToken = await _igdbApiService.QueryApi();
+            return Ok();
+        }
 
     }
 }

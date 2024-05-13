@@ -23,6 +23,8 @@ namespace GameReview
                 .UseMySql(secretConnectionString, ServerVersion.AutoDetect(secretConnectionString)
            ).EnableDetailedErrors());
 
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IIgdbApiService, IgdbApiService>();
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));

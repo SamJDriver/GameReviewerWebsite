@@ -32,8 +32,8 @@ namespace DataAccess.Models
         [Column("salt")]
         [StringLength(8)]
         public string Salt { get; set; } = null!;
-        [Column("is_admin")]
-        public bool IsAdmin { get; set; }
+        [Column("admin_flag")]
+        public bool AdminFlag { get; set; }
         [Column("email")]
         [StringLength(100)]
         public string Email { get; set; } = null!;

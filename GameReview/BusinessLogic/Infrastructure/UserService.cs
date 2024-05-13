@@ -1,5 +1,9 @@
 ﻿using BusinessLogic.Abstractions;
+using BusinessLogic.Models;
 using DataAccess;
+using DataAccess.Contexts;
+using DataAccess.Models;
+using Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +14,17 @@ namespace BusinessLogic.Infrastructure
 {
     public class UserService : IUserService
     {
-        public UserService()
+        GenericRepository<NickDbContext> _genericRepository;
+        public UserService(GenericRepository<NickDbContext> genericRepository)
         {
-            
+            _genericRepository = genericRepository;
         }
+
+
+        //public void CreateUser(UserDto user)
+        //{
+        //    Users userEntity = new Users().Assign();
+        //    _genericRepository.InsertRecord
+        //}
     }
 }

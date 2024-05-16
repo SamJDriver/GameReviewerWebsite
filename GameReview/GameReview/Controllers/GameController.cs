@@ -1,6 +1,4 @@
 using BusinessLogic.Abstractions;
-using BusinessLogic.Infrastructure;
-using BusinessLogic.Models;
 using Components.Models;
 using Microsoft.AspNetCore.Mvc;
 

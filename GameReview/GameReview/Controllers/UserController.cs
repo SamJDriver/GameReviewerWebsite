@@ -26,7 +26,7 @@ namespace GameReview.Controllers
             { 
                 Username = userModel.Username,
                 Email = userModel.Email,
-                PasswordHash = userModel.Password
+                Password = userModel.Password
             };
 
             _userService.CreateUser(userDto, error);

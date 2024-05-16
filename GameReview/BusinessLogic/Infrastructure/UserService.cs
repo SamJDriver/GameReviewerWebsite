@@ -34,7 +34,7 @@ namespace BusinessLogic.Infrastructure
             }
 
             byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes
-            user.PasswordHash = saltPassword(user.PasswordHash, salt);
+            user.Password = saltPassword(user.Password, salt);
             user.Salt = Convert.ToBase64String(salt); ;
 
             Users userEntity = new Users().Assign(user);

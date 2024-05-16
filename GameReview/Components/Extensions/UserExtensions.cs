@@ -9,7 +9,7 @@ namespace Components.Extensions
         {
             self.Id = user.Id ?? 0;
             self.Username = user.Username;
-            self.PasswordHash = user.PasswordHash;
+            self.PasswordHash = user.Password;
             self.Salt = user.Salt;
             self.Email = user.Email;
             self.ImageFilePath = user.ImageFilePath;
@@ -26,7 +26,7 @@ namespace Components.Extensions
         {
             self.Id = user.Id;
             self.Username = user.Username;
-            self.PasswordHash = user.PasswordHash;
+            self.Password = user.PasswordHash;
             self.Salt = user.Salt;
             self.Email = user.Email;
             self.ImageFilePath = user.ImageFilePath;

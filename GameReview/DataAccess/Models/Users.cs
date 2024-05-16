@@ -43,8 +43,8 @@ namespace DataAccess.Models
         [Column("created_by")]
         [StringLength(25)]
         public string CreatedBy { get; set; } = null!;
-        [Column("created_date")]
-        public DateOnly CreatedDate { get; set; }
+        [Column("created_date", TypeName = "datetime")]
+        public DateTime CreatedDate { get; set; }
         [Column("modified_by")]
         [StringLength(25)]
         public string? ModifiedBy { get; set; }

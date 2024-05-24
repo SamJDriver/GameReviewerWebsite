@@ -1,4 +1,5 @@
 using GameReview.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -12,6 +13,27 @@ namespace GameReview.Controllers
         {
             _logger = logger;
         }
+
+
+        [Route("error-development")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult HandleErrorDevelopment([FromServices] IWebHostEnvironment hostEnvironment){
+            if (!hostEnvironment.IsDevelopment())
+            {
+                return NotFound();
+            }
+
+            //Gets the last exception
+            var exceptionHandlerFeature = 
+                HttpContext.Features.Get<IExceptionHandlerFeature>();
+
+                return Problem(detail: exceptionHandlerFeature.Error.StackTrace,
+                    title: exceptionHandlerFeature.Error.Message);
+        }
+
+        [Route("/error")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult HandleError() => Problem();
 
         public IActionResult Index()
         {

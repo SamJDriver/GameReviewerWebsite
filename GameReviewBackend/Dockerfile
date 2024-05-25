@@ -49,6 +49,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 EXPOSE 3306
+EXPOSE 80
 
 # Switch to a non-privileged user (defined in the base image) that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/

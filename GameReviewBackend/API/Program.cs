@@ -16,7 +16,7 @@ namespace GameReview
             builder.Services.AddControllersWithViews();
             builder.Services.AddSwaggerGen();
 
-            var secretConnectionString = builder.Configuration["SecrectConnectionStrings:MariaDb"];
+            var secretConnectionString = "Server=172.17.0.2; Port=3306; Database=mydatabase; Uid=user; Pwd=password";
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options
                 .UseLazyLoadingProxies()

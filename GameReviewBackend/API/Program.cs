@@ -16,11 +16,19 @@ namespace GameReview
             builder.Services.AddControllersWithViews();
             builder.Services.AddSwaggerGen();
 
-            var secretConnectionString = "Server=172.17.0.2; Port=3306; Database=mydatabase; Uid=user; Pwd=password";
+            //If working locally, default environment variables to localhost values
+            var serverName = Environment.GetEnvironmentVariable("MYSQL_SERVICE_NAME") ?? "127.0.0.1";
+            var port = Environment.GetEnvironmentVariable("MYSQL_PORT") ?? "3306";
+            var databaseName = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? "mydatabase";
+            var username = Environment.GetEnvironmentVariable("MYSQL_USER") ?? "user";
+            var password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD") ?? "password";
+
+
+            var connectionString = $"Server={serverName}; Port={port}; Database={databaseName}; Uid={username}; Pwd={password}";
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options
                 .UseLazyLoadingProxies()
-                .UseMySql(secretConnectionString, ServerVersion.AutoDetect(secretConnectionString)
+                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)
            ).EnableDetailedErrors());
 
             builder.Services.AddHttpClient();

@@ -9,8 +9,6 @@
 # https://github.com/docker/awesome-compose
 services: 
   game-api-server:
-    network_mode: bridge
-    container_name: 'game-api-server'
     env_file:
       - web-variables.env
     build:
@@ -18,17 +16,12 @@ services:
       target: final
     ports:
       - 80:8080
+    networks:
+      - game-review-network
     depends_on:
       db:
         condition: service_healthy
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
   db: #docker exec -it mariadb mariadb -u user -p
-    network_mode: bridge
-    # extra_hosts:
-    #   - "host.docker.internal:host-gateway"
-    container_name: 'mariadb'
     image: mariadb:latest
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -39,6 +32,8 @@ services:
       - mariadbvolume:/var/lib/mysql
     expose:
       - 3306
+    networks:
+      - game-review-network
     ports:
       - "3306:3306"
     healthcheck:
@@ -49,9 +44,12 @@ services:
       timeout: 5s
       retries: 3
 
-
 volumes:
   mariadbvolume:
+
+networks:
+  game-review-network:
+  
 # secrets:
 #   db-password:
 #     file: db/password.txt

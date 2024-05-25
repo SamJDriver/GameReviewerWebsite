@@ -9,8 +9,8 @@ namespace BusinessLogic.Infrastructure
 {
     public class GameService : IGameService
     {
-        GenericRepository<NickDbContext> _genericRepository;
-        public GameService(GenericRepository<NickDbContext> genericRepository)
+        GenericRepository<DockerDbContext> _genericRepository;
+        public GameService(GenericRepository<DockerDbContext> genericRepository)
         {
             _genericRepository = genericRepository;
         }

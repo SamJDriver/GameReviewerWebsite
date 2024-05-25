@@ -6,44 +6,47 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models
+namespace DataAccess.Models;
+
+[Table("developers")]
+[Index("Id", Name = "id", IsUnique = true)]
+public partial class Developers
 {
-    [Table("developers")]
-    [Index("Id", Name = "id", IsUnique = true)]
-    public partial class Developers
-    {
-        public Developers()
-        {
-            GamesDevelopersLink = new HashSet<GamesDevelopersLink>();
-        }
+    [Key]
+    [Column("id", TypeName = "int(11)")]
+    public int Id { get; set; }
 
-        [Key]
-        [Column("id", TypeName = "int(11)")]
-        public int Id { get; set; }
-        [Column("name")]
-        [StringLength(255)]
-        public string Name { get; set; } = null!;
-        [Column("founded_date")]
-        public DateOnly FoundedDate { get; set; }
-        [Column("image_file_path")]
-        [StringLength(255)]
-        public string? ImageFilePath { get; set; }
-        [Column("created_by")]
-        [StringLength(25)]
-        public string CreatedBy { get; set; } = null!;
-        [Column("created_date", TypeName = "datetime")]
-        public DateTime CreatedDate { get; set; }
-        [Column("modified_by")]
-        [StringLength(25)]
-        public string? ModifiedBy { get; set; }
-        [Column("modified_date", TypeName = "datetime")]
-        public DateTime? ModifiedDate { get; set; }
-        [Column("obsolete_flag")]
-        public bool ObsoleteFlag { get; set; }
-        [Column("obsolete_date", TypeName = "datetime")]
-        public DateTime? ObsoleteDate { get; set; }
+    [Column("name")]
+    [StringLength(255)]
+    public string Name { get; set; } = null!;
 
-        [InverseProperty("Developer")]
-        public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; }
-    }
+    [Column("founded_date")]
+    public DateOnly FoundedDate { get; set; }
+
+    [Column("image_file_path")]
+    [StringLength(255)]
+    public string? ImageFilePath { get; set; }
+
+    [Column("created_by")]
+    [StringLength(25)]
+    public string CreatedBy { get; set; } = null!;
+
+    [Column("created_date", TypeName = "datetime")]
+    public DateTime CreatedDate { get; set; }
+
+    [Column("modified_by")]
+    [StringLength(25)]
+    public string? ModifiedBy { get; set; }
+
+    [Column("modified_date", TypeName = "datetime")]
+    public DateTime? ModifiedDate { get; set; }
+
+    [Column("obsolete_flag")]
+    public bool ObsoleteFlag { get; set; }
+
+    [Column("obsolete_date", TypeName = "datetime")]
+    public DateTime? ObsoleteDate { get; set; }
+
+    [InverseProperty("Developer")]
+    public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; } = new List<GamesDevelopersLink>();
 }

@@ -6,45 +6,48 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models
+namespace DataAccess.Models;
+
+[Table("user_relationship_type_lookup")]
+[Index("Id", Name = "id", IsUnique = true)]
+public partial class UserRelationshipTypeLookup
 {
-    [Table("user_relationship_type_lookup")]
-    [Index("Id", Name = "id", IsUnique = true)]
-    public partial class UserRelationshipTypeLookup
-    {
-        public UserRelationshipTypeLookup()
-        {
-            UserRelationship = new HashSet<UserRelationship>();
-        }
+    [Key]
+    [Column("id", TypeName = "int(11)")]
+    public int Id { get; set; }
 
-        [Key]
-        [Column("id", TypeName = "int(11)")]
-        public int Id { get; set; }
-        [Column("name")]
-        [StringLength(50)]
-        public string Name { get; set; } = null!;
-        [Column("code")]
-        [StringLength(8)]
-        public string Code { get; set; } = null!;
-        [Column("description")]
-        [StringLength(255)]
-        public string Description { get; set; } = null!;
-        [Column("created_by")]
-        [StringLength(25)]
-        public string CreatedBy { get; set; } = null!;
-        [Column("created_date", TypeName = "datetime")]
-        public DateTime CreatedDate { get; set; }
-        [Column("modified_by")]
-        [StringLength(25)]
-        public string? ModifiedBy { get; set; }
-        [Column("modified_date", TypeName = "datetime")]
-        public DateTime? ModifiedDate { get; set; }
-        [Column("obsolete_flag")]
-        public bool ObsoleteFlag { get; set; }
-        [Column("obsolete_date", TypeName = "datetime")]
-        public DateTime? ObsoleteDate { get; set; }
+    [Column("name")]
+    [StringLength(50)]
+    public string Name { get; set; } = null!;
 
-        [InverseProperty("RelationshipTypeLookup")]
-        public virtual ICollection<UserRelationship> UserRelationship { get; set; }
-    }
+    [Column("code")]
+    [StringLength(8)]
+    public string Code { get; set; } = null!;
+
+    [Column("description")]
+    [StringLength(255)]
+    public string Description { get; set; } = null!;
+
+    [Column("created_by")]
+    [StringLength(25)]
+    public string CreatedBy { get; set; } = null!;
+
+    [Column("created_date", TypeName = "datetime")]
+    public DateTime CreatedDate { get; set; }
+
+    [Column("modified_by")]
+    [StringLength(25)]
+    public string? ModifiedBy { get; set; }
+
+    [Column("modified_date", TypeName = "datetime")]
+    public DateTime? ModifiedDate { get; set; }
+
+    [Column("obsolete_flag")]
+    public bool ObsoleteFlag { get; set; }
+
+    [Column("obsolete_date", TypeName = "datetime")]
+    public DateTime? ObsoleteDate { get; set; }
+
+    [InverseProperty("RelationshipTypeLookup")]
+    public virtual ICollection<UserRelationship> UserRelationship { get; set; } = new List<UserRelationship>();
 }

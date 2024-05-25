@@ -16,8 +16,8 @@ namespace GameReview
             builder.Services.AddControllersWithViews();
             builder.Services.AddSwaggerGen();
 
-            var secretConnectionString = builder.Configuration["SecrectConnectionStrings:SecretDb"];
-            builder.Services.AddDbContext<NickDbContext>(
+            var secretConnectionString = builder.Configuration["SecrectConnectionStrings:MariaDb"];
+            builder.Services.AddDbContext<DockerDbContext>(
                 options => options
                 .UseLazyLoadingProxies()
                 .UseMySql(secretConnectionString, ServerVersion.AutoDetect(secretConnectionString)

@@ -11,8 +11,8 @@ namespace BusinessLogic.Infrastructure
 {
     public class UserService : IUserService
     {
-        GenericRepository<NickDbContext> _genericRepository;
-        public UserService(GenericRepository<NickDbContext> genericRepository)
+        GenericRepository<DockerDbContext> _genericRepository;
+        public UserService(GenericRepository<DockerDbContext> genericRepository)
         {
             _genericRepository = genericRepository;
         }

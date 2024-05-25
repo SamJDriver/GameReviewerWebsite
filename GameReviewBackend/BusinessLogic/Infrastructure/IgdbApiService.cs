@@ -14,11 +14,11 @@ namespace BusinessLogic.Infrastructure
 {
     public class IgdbApiService : IIgdbApiService
     {
-        GenericRepository<NickDbContext> _genericRepository;
+        GenericRepository<DockerDbContext> _genericRepository;
         private string CLIENT_ID = "0w2j0mktoxkvehox8hl42p15tladu0";
         private string CLIENT_SECRET = "gpptkmravp51lkhl5d22msu8i2rs2f";
 
-        public IgdbApiService(GenericRepository<NickDbContext> genericRepository)
+        public IgdbApiService(GenericRepository<DockerDbContext> genericRepository)
         {
             _genericRepository = genericRepository;
         }

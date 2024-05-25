@@ -1,6 +1,6 @@
 ﻿{
-   "CodeGenerationMode": 2,
-   "ContextClassName": "NickDbContext",
+   "CodeGenerationMode": 4,
+   "ContextClassName": "DockerDbContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,

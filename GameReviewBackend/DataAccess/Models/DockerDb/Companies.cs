@@ -6,26 +6,32 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.DockerDb;
 
-[Table("games_platforms_link")]
-[Index("GameId", Name = "game_id")]
+[Table("companies")]
 [Index("Id", Name = "id", IsUnique = true)]
-[Index("PlatformId", Name = "platform_id")]
-public partial class GamesPlatformsLink
+public partial class Companies
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("game_id", TypeName = "int(11)")]
-    public int GameId { get; set; }
+    [Column("name")]
+    [StringLength(255)]
+    public string Name { get; set; } = null!;
 
-    [Column("platform_id", TypeName = "int(11)")]
-    public int PlatformId { get; set; }
+    [Column("founded_date")]
+    public DateOnly FoundedDate { get; set; }
 
-    [Column("release_date")]
-    public DateOnly? ReleaseDate { get; set; }
+    [Column("image_file_path")]
+    [StringLength(255)]
+    public string? ImageFilePath { get; set; }
+
+    [Column("developer_flag")]
+    public bool DeveloperFlag { get; set; }
+
+    [Column("publisher_flag")]
+    public bool PublisherFlag { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -47,11 +53,9 @@ public partial class GamesPlatformsLink
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [ForeignKey("GameId")]
-    [InverseProperty("GamesPlatformsLink")]
-    public virtual Games Game { get; set; } = null!;
+    [InverseProperty("Companies")]
+    public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; } = new List<GamesDevelopersLink>();
 
-    [ForeignKey("PlatformId")]
-    [InverseProperty("GamesPlatformsLink")]
-    public virtual Platforms Platform { get; set; } = null!;
+    [InverseProperty("Companies")]
+    public virtual ICollection<GamesPublishersLink> GamesPublishersLink { get; set; } = new List<GamesPublishersLink>();
 }

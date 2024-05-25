@@ -6,27 +6,23 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.NickDb;
 
-[Table("user_relationship")]
-[Index("FriendId", Name = "friend_id")]
+[Table("games_genres_lookup_link")]
+[Index("GameId", Name = "game_id")]
+[Index("GenreLookupId", Name = "genre_lookup_id")]
 [Index("Id", Name = "id", IsUnique = true)]
-[Index("RelationshipTypeLookupId", Name = "relationship_type_lookup_id")]
-[Index("UserId", Name = "user_id")]
-public partial class UserRelationship
+public partial class GamesGenresLookupLink
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("user_id", TypeName = "int(11)")]
-    public int UserId { get; set; }
+    [Column("game_id", TypeName = "int(11)")]
+    public int GameId { get; set; }
 
-    [Column("friend_id", TypeName = "int(11)")]
-    public int FriendId { get; set; }
-
-    [Column("relationship_type_lookup_id", TypeName = "int(11)")]
-    public int RelationshipTypeLookupId { get; set; }
+    [Column("genre_lookup_id", TypeName = "int(11)")]
+    public int GenreLookupId { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -48,15 +44,11 @@ public partial class UserRelationship
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [ForeignKey("FriendId")]
-    [InverseProperty("UserRelationshipFriend")]
-    public virtual Users Friend { get; set; } = null!;
+    [ForeignKey("GameId")]
+    [InverseProperty("GamesGenresLookupLink")]
+    public virtual Games Game { get; set; } = null!;
 
-    [ForeignKey("RelationshipTypeLookupId")]
-    [InverseProperty("UserRelationship")]
-    public virtual UserRelationshipTypeLookup RelationshipTypeLookup { get; set; } = null!;
-
-    [ForeignKey("UserId")]
-    [InverseProperty("UserRelationshipUser")]
-    public virtual Users User { get; set; } = null!;
+    [ForeignKey("GenreLookupId")]
+    [InverseProperty("GamesGenresLookupLink")]
+    public virtual GenresLookup GenreLookup { get; set; } = null!;
 }

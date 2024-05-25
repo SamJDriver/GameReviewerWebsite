@@ -1,8 +1,8 @@
 ﻿using BusinessLogic.Abstractions;
 using Components.Extensions;
 using Components.Models;
-using DataAccess.Contexts;
-using DataAccess.Models;
+using DataAccess.Contexts.DockerDb;
+using DataAccess.Models.DockerDb;
 using Repositories;
 
 namespace BusinessLogic.Infrastructure

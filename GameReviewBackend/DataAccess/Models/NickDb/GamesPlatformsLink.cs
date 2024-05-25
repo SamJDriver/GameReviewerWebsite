@@ -6,32 +6,26 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.NickDb;
 
-[Table("play_record_comments")]
+[Table("games_platforms_link")]
+[Index("GameId", Name = "game_id")]
 [Index("Id", Name = "id", IsUnique = true)]
-[Index("PlayRecordId", Name = "play_record_id")]
-[Index("UserId", Name = "user_id")]
-public partial class PlayRecordComments
+[Index("PlatformId", Name = "platform_id")]
+public partial class GamesPlatformsLink
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("user_id", TypeName = "int(11)")]
-    public int UserId { get; set; }
+    [Column("game_id", TypeName = "int(11)")]
+    public int GameId { get; set; }
 
-    [Column("play_record_id", TypeName = "int(11)")]
-    public int PlayRecordId { get; set; }
+    [Column("platform_id", TypeName = "int(11)")]
+    public int PlatformId { get; set; }
 
-    [Column("comment_text", TypeName = "mediumtext")]
-    public string CommentText { get; set; } = null!;
-
-    [Column("upvote_count", TypeName = "int(11)")]
-    public int UpvoteCount { get; set; }
-
-    [Column("downvote_count", TypeName = "int(11)")]
-    public int DownvoteCount { get; set; }
+    [Column("release_date")]
+    public DateOnly? ReleaseDate { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -53,11 +47,11 @@ public partial class PlayRecordComments
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [ForeignKey("PlayRecordId")]
-    [InverseProperty("PlayRecordComments")]
-    public virtual PlayRecords PlayRecord { get; set; } = null!;
+    [ForeignKey("GameId")]
+    [InverseProperty("GamesPlatformsLink")]
+    public virtual Games Game { get; set; } = null!;
 
-    [ForeignKey("UserId")]
-    [InverseProperty("PlayRecordComments")]
-    public virtual Users User { get; set; } = null!;
+    [ForeignKey("PlatformId")]
+    [InverseProperty("GamesPlatformsLink")]
+    public virtual Platforms Platform { get; set; } = null!;
 }

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.DockerDb;
 
 [Table("games_genres_lookup_link")]
 [Index("GameId", Name = "game_id")]

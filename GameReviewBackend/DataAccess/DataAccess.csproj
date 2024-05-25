@@ -13,4 +13,11 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contexts\DockerDb\" />
+    <Folder Include="Contexts\NickDb\" />
+    <Folder Include="Models\DockerDb\" />
+    <Folder Include="Models\NickDb\" />
+  </ItemGroup>
+
 </Project>

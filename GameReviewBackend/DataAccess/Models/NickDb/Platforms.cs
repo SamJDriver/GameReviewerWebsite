@@ -6,27 +6,26 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.NickDb;
 
-[Table("user_relationship_type_lookup")]
+[Table("platforms")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class UserRelationshipTypeLookup
+public partial class Platforms
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
     [Column("name")]
-    [StringLength(50)]
+    [StringLength(255)]
     public string Name { get; set; } = null!;
 
-    [Column("code")]
-    [StringLength(8)]
-    public string Code { get; set; } = null!;
+    [Column("release_date")]
+    public DateOnly ReleaseDate { get; set; }
 
-    [Column("description")]
+    [Column("image_file_path")]
     [StringLength(255)]
-    public string Description { get; set; } = null!;
+    public string ImageFilePath { get; set; } = null!;
 
     [Column("created_by")]
     [StringLength(25)]
@@ -48,6 +47,6 @@ public partial class UserRelationshipTypeLookup
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [InverseProperty("RelationshipTypeLookup")]
-    public virtual ICollection<UserRelationship> UserRelationship { get; set; } = new List<UserRelationship>();
+    [InverseProperty("Platform")]
+    public virtual ICollection<GamesPlatformsLink> GamesPlatformsLink { get; set; } = new List<GamesPlatformsLink>();
 }

@@ -6,26 +6,23 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.NickDb;
 
-[Table("publishers")]
+[Table("games_developers_link")]
+[Index("DeveloperId", Name = "developer_id")]
+[Index("GameId", Name = "game_id")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class Publishers
+public partial class GamesDevelopersLink
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("name")]
-    [StringLength(255)]
-    public string Name { get; set; } = null!;
+    [Column("game_id", TypeName = "int(11)")]
+    public int GameId { get; set; }
 
-    [Column("founded_date")]
-    public DateOnly FoundedDate { get; set; }
-
-    [Column("image_file_path")]
-    [StringLength(300)]
-    public string? ImageFilePath { get; set; }
+    [Column("developer_id", TypeName = "int(11)")]
+    public int DeveloperId { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -38,8 +35,8 @@ public partial class Publishers
     [StringLength(25)]
     public string? ModifiedBy { get; set; }
 
-    [Column("modified_date")]
-    public DateOnly? ModifiedDate { get; set; }
+    [Column("modified_date", TypeName = "datetime")]
+    public DateTime? ModifiedDate { get; set; }
 
     [Column("obsolete_flag")]
     public bool ObsoleteFlag { get; set; }
@@ -47,6 +44,11 @@ public partial class Publishers
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [InverseProperty("Publisher")]
-    public virtual ICollection<GamesPublishersLink> GamesPublishersLink { get; set; } = new List<GamesPublishersLink>();
+    [ForeignKey("DeveloperId")]
+    [InverseProperty("GamesDevelopersLink")]
+    public virtual Developers Developer { get; set; } = null!;
+
+    [ForeignKey("GameId")]
+    [InverseProperty("GamesDevelopersLink")]
+    public virtual Games Game { get; set; } = null!;
 }

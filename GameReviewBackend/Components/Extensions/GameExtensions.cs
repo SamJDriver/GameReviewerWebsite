@@ -3,6 +3,7 @@ using DataAccess.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using DataAccess.Models.DockerDb;
 
 namespace Components.Extensions
 {

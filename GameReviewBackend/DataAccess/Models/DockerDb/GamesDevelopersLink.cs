@@ -6,26 +6,23 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.DockerDb;
 
-[Table("genres_lookup")]
+[Table("games_developers_link")]
+[Index("CompaniesId", Name = "companies_id")]
+[Index("GameId", Name = "game_id")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class GenresLookup
+public partial class GamesDevelopersLink
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("name")]
-    [StringLength(50)]
-    public string? Name { get; set; }
+    [Column("game_id", TypeName = "int(11)")]
+    public int GameId { get; set; }
 
-    [Column("code")]
-    [StringLength(8)]
-    public string? Code { get; set; }
-
-    [Column("description", TypeName = "mediumtext")]
-    public string? Description { get; set; }
+    [Column("companies_id", TypeName = "int(11)")]
+    public int CompaniesId { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -47,6 +44,11 @@ public partial class GenresLookup
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [InverseProperty("GenreLookup")]
-    public virtual ICollection<GamesGenresLookupLink> GamesGenresLookupLink { get; set; } = new List<GamesGenresLookupLink>();
+    [ForeignKey("CompaniesId")]
+    [InverseProperty("GamesDevelopersLink")]
+    public virtual Companies Companies { get; set; } = null!;
+
+    [ForeignKey("GameId")]
+    [InverseProperty("GamesDevelopersLink")]
+    public virtual Games Game { get; set; } = null!;
 }

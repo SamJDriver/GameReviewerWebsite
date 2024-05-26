@@ -50,17 +50,14 @@ public partial class Games
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [InverseProperty("Game")]
-    public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; } = new List<GamesDevelopersLink>();
+    [InverseProperty("Games")]
+    public virtual ICollection<GamesCompaniesLink> GamesCompaniesLink { get; set; } = new List<GamesCompaniesLink>();
 
     [InverseProperty("Game")]
     public virtual ICollection<GamesGenresLookupLink> GamesGenresLookupLink { get; set; } = new List<GamesGenresLookupLink>();
 
     [InverseProperty("Game")]
     public virtual ICollection<GamesPlatformsLink> GamesPlatformsLink { get; set; } = new List<GamesPlatformsLink>();
-
-    [InverseProperty("Game")]
-    public virtual ICollection<GamesPublishersLink> GamesPublishersLink { get; set; } = new List<GamesPublishersLink>();
 
     [InverseProperty("Game")]
     public virtual ICollection<PlayRecords> PlayRecords { get; set; } = new List<PlayRecords>();

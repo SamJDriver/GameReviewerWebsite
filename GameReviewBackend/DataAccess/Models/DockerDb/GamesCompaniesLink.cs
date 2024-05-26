@@ -8,21 +8,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Models.DockerDb;
 
-[Table("games_developers_link")]
+[Table("games_companies_link")]
 [Index("CompaniesId", Name = "companies_id")]
-[Index("GameId", Name = "game_id")]
+[Index("GamesId", Name = "games_id")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class GamesDevelopersLink
+public partial class GamesCompaniesLink
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("game_id", TypeName = "int(11)")]
-    public int GameId { get; set; }
+    [Column("games_id", TypeName = "int(11)")]
+    public int GamesId { get; set; }
 
     [Column("companies_id", TypeName = "int(11)")]
     public int CompaniesId { get; set; }
+
+    [Column("developer_flag")]
+    public bool DeveloperFlag { get; set; }
+
+    [Column("publisher_flag")]
+    public bool PublisherFlag { get; set; }
+
+    [Column("porting_flag")]
+    public bool PortingFlag { get; set; }
+
+    [Column("supporting_flag")]
+    public bool SupportingFlag { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -45,10 +57,10 @@ public partial class GamesDevelopersLink
     public DateTime? ObsoleteDate { get; set; }
 
     [ForeignKey("CompaniesId")]
-    [InverseProperty("GamesDevelopersLink")]
+    [InverseProperty("GamesCompaniesLink")]
     public virtual Companies Companies { get; set; } = null!;
 
-    [ForeignKey("GameId")]
-    [InverseProperty("GamesDevelopersLink")]
-    public virtual Games Game { get; set; } = null!;
+    [ForeignKey("GamesId")]
+    [InverseProperty("GamesCompaniesLink")]
+    public virtual Games Games { get; set; } = null!;
 }

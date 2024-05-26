@@ -38,7 +38,7 @@ namespace GameReview.Controllers
         [HttpGet("/igdb")]
         public async Task<IActionResult> GetAccessToken()
         {
-            var accessToken = await _igdbApiService.QueryApi();
+            await _igdbApiService.QueryApi();
             return Ok();
         }
 

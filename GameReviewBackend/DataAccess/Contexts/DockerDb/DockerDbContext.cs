@@ -18,13 +18,11 @@ public partial class DockerDbContext : DbContext
 
     public virtual DbSet<Games> Games { get; set; }
 
-    public virtual DbSet<GamesDevelopersLink> GamesDevelopersLink { get; set; }
+    public virtual DbSet<GamesCompaniesLink> GamesCompaniesLink { get; set; }
 
     public virtual DbSet<GamesGenresLookupLink> GamesGenresLookupLink { get; set; }
 
     public virtual DbSet<GamesPlatformsLink> GamesPlatformsLink { get; set; }
-
-    public virtual DbSet<GamesPublishersLink> GamesPublishersLink { get; set; }
 
     public virtual DbSet<GenresLookup> GenresLookup { get; set; }
 
@@ -56,17 +54,17 @@ public partial class DockerDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
         });
 
-        modelBuilder.Entity<GamesDevelopersLink>(entity =>
+        modelBuilder.Entity<GamesCompaniesLink>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.HasOne(d => d.Companies).WithMany(p => p.GamesDevelopersLink)
+            entity.HasOne(d => d.Companies).WithMany(p => p.GamesCompaniesLink)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("games_developers_link_ibfk_2");
+                .HasConstraintName("games_companies_link_ibfk_2");
 
-            entity.HasOne(d => d.Game).WithMany(p => p.GamesDevelopersLink)
+            entity.HasOne(d => d.Games).WithMany(p => p.GamesCompaniesLink)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("games_developers_link_ibfk_1");
+                .HasConstraintName("games_companies_link_ibfk_1");
         });
 
         modelBuilder.Entity<GamesGenresLookupLink>(entity =>
@@ -93,19 +91,6 @@ public partial class DockerDbContext : DbContext
             entity.HasOne(d => d.Platform).WithMany(p => p.GamesPlatformsLink)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("games_platforms_link_ibfk_2");
-        });
-
-        modelBuilder.Entity<GamesPublishersLink>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.HasOne(d => d.Companies).WithMany(p => p.GamesPublishersLink)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("games_publishers_link_ibfk_2");
-
-            entity.HasOne(d => d.Game).WithMany(p => p.GamesPublishersLink)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("games_publishers_link_ibfk_1");
         });
 
         modelBuilder.Entity<GenresLookup>(entity =>

@@ -54,8 +54,5 @@ public partial class Companies
     public DateTime? ObsoleteDate { get; set; }
 
     [InverseProperty("Companies")]
-    public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; } = new List<GamesDevelopersLink>();
-
-    [InverseProperty("Companies")]
-    public virtual ICollection<GamesPublishersLink> GamesPublishersLink { get; set; } = new List<GamesPublishersLink>();
+    public virtual ICollection<GamesCompaniesLink> GamesCompaniesLink { get; set; } = new List<GamesCompaniesLink>();
 }

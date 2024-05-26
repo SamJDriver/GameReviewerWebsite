@@ -4,7 +4,7 @@ namespace BusinessLogic.Abstractions
 {
     public interface IIgdbApiService
     {
-        public Task<string> QueryApi();
+        public Task QueryApi();
 
     }
 }

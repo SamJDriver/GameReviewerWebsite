@@ -6,23 +6,32 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.DockerDb;
 
-[Table("games_developers_link")]
-[Index("DeveloperId", Name = "developer_id")]
-[Index("GameId", Name = "game_id")]
+[Table("play_record_comments")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class GamesDevelopersLink
+[Index("PlayRecordId", Name = "play_record_id")]
+[Index("UserId", Name = "user_id")]
+public partial class PlayRecordComments
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("game_id", TypeName = "int(11)")]
-    public int GameId { get; set; }
+    [Column("user_id", TypeName = "int(11)")]
+    public int UserId { get; set; }
 
-    [Column("developer_id", TypeName = "int(11)")]
-    public int DeveloperId { get; set; }
+    [Column("play_record_id", TypeName = "int(11)")]
+    public int PlayRecordId { get; set; }
+
+    [Column("comment_text", TypeName = "mediumtext")]
+    public string CommentText { get; set; } = null!;
+
+    [Column("upvote_count", TypeName = "int(11)")]
+    public int UpvoteCount { get; set; }
+
+    [Column("downvote_count", TypeName = "int(11)")]
+    public int DownvoteCount { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -44,11 +53,11 @@ public partial class GamesDevelopersLink
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [ForeignKey("DeveloperId")]
-    [InverseProperty("GamesDevelopersLink")]
-    public virtual Developers Developer { get; set; } = null!;
+    [ForeignKey("PlayRecordId")]
+    [InverseProperty("PlayRecordComments")]
+    public virtual PlayRecords PlayRecord { get; set; } = null!;
 
-    [ForeignKey("GameId")]
-    [InverseProperty("GamesDevelopersLink")]
-    public virtual Games Game { get; set; } = null!;
+    [ForeignKey("UserId")]
+    [InverseProperty("PlayRecordComments")]
+    public virtual Users User { get; set; } = null!;
 }

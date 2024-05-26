@@ -6,26 +6,28 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.DockerDb;
 
-[Table("user_relationship_type_lookup")]
+[Table("games")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class UserRelationshipTypeLookup
+public partial class Games
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("name")]
-    [StringLength(50)]
-    public string Name { get; set; } = null!;
-
-    [Column("code")]
-    [StringLength(8)]
-    public string Code { get; set; } = null!;
-
-    [Column("description")]
+    [Column("title")]
     [StringLength(255)]
+    public string Title { get; set; } = null!;
+
+    [Column("release_date")]
+    public DateOnly ReleaseDate { get; set; }
+
+    [Column("image_file_path")]
+    [StringLength(255)]
+    public string ImageFilePath { get; set; } = null!;
+
+    [Column("description", TypeName = "mediumtext")]
     public string Description { get; set; } = null!;
 
     [Column("created_by")]
@@ -48,6 +50,15 @@ public partial class UserRelationshipTypeLookup
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [InverseProperty("RelationshipTypeLookup")]
-    public virtual ICollection<UserRelationship> UserRelationship { get; set; } = new List<UserRelationship>();
+    [InverseProperty("Games")]
+    public virtual ICollection<GamesCompaniesLink> GamesCompaniesLink { get; set; } = new List<GamesCompaniesLink>();
+
+    [InverseProperty("Game")]
+    public virtual ICollection<GamesGenresLookupLink> GamesGenresLookupLink { get; set; } = new List<GamesGenresLookupLink>();
+
+    [InverseProperty("Game")]
+    public virtual ICollection<GamesPlatformsLink> GamesPlatformsLink { get; set; } = new List<GamesPlatformsLink>();
+
+    [InverseProperty("Game")]
+    public virtual ICollection<PlayRecords> PlayRecords { get; set; } = new List<PlayRecords>();
 }

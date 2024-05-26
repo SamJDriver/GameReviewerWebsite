@@ -6,23 +6,26 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.NickDb;
 
-[Table("games_publishers_link")]
-[Index("GameId", Name = "game_id")]
+[Table("platforms")]
 [Index("Id", Name = "id", IsUnique = true)]
-[Index("PublisherId", Name = "publisher_id")]
-public partial class GamesPublishersLink
+public partial class Platforms
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("game_id", TypeName = "int(11)")]
-    public int GameId { get; set; }
+    [Column("name")]
+    [StringLength(255)]
+    public string Name { get; set; } = null!;
 
-    [Column("publisher_id", TypeName = "int(11)")]
-    public int PublisherId { get; set; }
+    [Column("release_date")]
+    public DateOnly ReleaseDate { get; set; }
+
+    [Column("image_file_path")]
+    [StringLength(255)]
+    public string ImageFilePath { get; set; } = null!;
 
     [Column("created_by")]
     [StringLength(25)]
@@ -44,11 +47,6 @@ public partial class GamesPublishersLink
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [ForeignKey("GameId")]
-    [InverseProperty("GamesPublishersLink")]
-    public virtual Games Game { get; set; } = null!;
-
-    [ForeignKey("PublisherId")]
-    [InverseProperty("GamesPublishersLink")]
-    public virtual Publishers Publisher { get; set; } = null!;
+    [InverseProperty("Platform")]
+    public virtual ICollection<GamesPlatformsLink> GamesPlatformsLink { get; set; } = new List<GamesPlatformsLink>();
 }

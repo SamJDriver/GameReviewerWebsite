@@ -6,26 +6,26 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.NickDb;
 
-[Table("games_platforms_link")]
-[Index("GameId", Name = "game_id")]
+[Table("genres_lookup")]
 [Index("Id", Name = "id", IsUnique = true)]
-[Index("PlatformId", Name = "platform_id")]
-public partial class GamesPlatformsLink
+public partial class GenresLookup
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("game_id", TypeName = "int(11)")]
-    public int GameId { get; set; }
+    [Column("name")]
+    [StringLength(50)]
+    public string? Name { get; set; }
 
-    [Column("platform_id", TypeName = "int(11)")]
-    public int PlatformId { get; set; }
+    [Column("code")]
+    [StringLength(8)]
+    public string? Code { get; set; }
 
-    [Column("release_date")]
-    public DateOnly? ReleaseDate { get; set; }
+    [Column("description", TypeName = "mediumtext")]
+    public string? Description { get; set; }
 
     [Column("created_by")]
     [StringLength(25)]
@@ -47,11 +47,6 @@ public partial class GamesPlatformsLink
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [ForeignKey("GameId")]
-    [InverseProperty("GamesPlatformsLink")]
-    public virtual Games Game { get; set; } = null!;
-
-    [ForeignKey("PlatformId")]
-    [InverseProperty("GamesPlatformsLink")]
-    public virtual Platforms Platform { get; set; } = null!;
+    [InverseProperty("GenreLookup")]
+    public virtual ICollection<GamesGenresLookupLink> GamesGenresLookupLink { get; set; } = new List<GamesGenresLookupLink>();
 }

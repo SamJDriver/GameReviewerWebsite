@@ -6,26 +6,27 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.DockerDb;
 
-[Table("platforms")]
+[Table("user_relationship_type_lookup")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class Platforms
+public partial class UserRelationshipTypeLookup
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
     [Column("name")]
-    [StringLength(255)]
+    [StringLength(50)]
     public string Name { get; set; } = null!;
 
-    [Column("release_date")]
-    public DateOnly ReleaseDate { get; set; }
+    [Column("code")]
+    [StringLength(8)]
+    public string Code { get; set; } = null!;
 
-    [Column("image_file_path")]
+    [Column("description")]
     [StringLength(255)]
-    public string ImageFilePath { get; set; } = null!;
+    public string Description { get; set; } = null!;
 
     [Column("created_by")]
     [StringLength(25)]
@@ -47,6 +48,6 @@ public partial class Platforms
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [InverseProperty("Platform")]
-    public virtual ICollection<GamesPlatformsLink> GamesPlatformsLink { get; set; } = new List<GamesPlatformsLink>();
+    [InverseProperty("RelationshipTypeLookup")]
+    public virtual ICollection<UserRelationship> UserRelationship { get; set; } = new List<UserRelationship>();
 }

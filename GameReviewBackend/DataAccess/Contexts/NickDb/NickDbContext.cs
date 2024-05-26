@@ -2,14 +2,14 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using DataAccess.Models;
+using DataAccess.Models.NickDb;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Contexts;
+namespace DataAccess.Contexts.NickDb;
 
-public partial class DockerDbContext : DbContext
+public partial class NickDbContext : DbContext
 {
-    public DockerDbContext(DbContextOptions<DockerDbContext> options)
+    public NickDbContext(DbContextOptions<NickDbContext> options)
         : base(options)
     {
     }

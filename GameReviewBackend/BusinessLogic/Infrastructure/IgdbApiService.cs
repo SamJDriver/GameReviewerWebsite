@@ -1,17 +1,18 @@
 ﻿using BusinessLogic.Abstractions;
 using Components;
-using DataAccess.Contexts;
-using DataAccess.Models;
+using DataAccess.Contexts.DockerDb;
+using DataAccess.Models.DockerDb;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Repositories;
-using System.Net.Http;
-using System.Net.Http.Json;
+using System.Data.Common;
+using System.Diagnostics;
 using System.Text;
-using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace BusinessLogic.Infrastructure
 {
+    //https://api-docs.igdb.com/?java#game-video
     public class IgdbApiService : IIgdbApiService
     {
         GenericRepository<DockerDbContext> _genericRepository;
@@ -35,15 +36,368 @@ namespace BusinessLogic.Infrastructure
             }
         }
 
-        public async Task<string> QueryApi()
+        public async Task QueryApi()
         {
 
-            var gamesJson = await GetGenericApiCall(Constants.IgdbApi.GameQueryUri, Constants.IgdbApi.GameBodyParams);
-            var genresJson = await GetGenericApiCall(Constants.IgdbApi.GenreQueryUri, Constants.IgdbApi.GenreBodyParams);
-
-            return "";
+            await insertGenres();
+            await insertCompanies();
+            await insertGames();
+            await insertPlatforms();
+            await insertGamePlatformLinks();
+            await insertGameCompaniesLinks();
         }
 
+        private async Task insertGenres()
+        {
+            var genresJson = await GetGenericApiCall(Constants.IgdbApi.GenreQueryUri, Constants.IgdbApi.GenreBodyParams);
+
+            List<GenresLookup> genres = new List<GenresLookup>();    
+            var now = DateTime.Now;
+
+            foreach (var genre in (JArray)JsonConvert.DeserializeObject(genresJson)) 
+            {
+               string name = genre["name"].ToString();
+               string code = new string(ReplaceWhitespace(name, "").Take(8).ToArray()).ToUpper();
+               GenresLookup genresLookup = new GenresLookup()
+               {
+                   Id = genre["id"].ToObject<int>(),
+                   Name = name,
+                   Code = code,
+                   Description = genre["slug"].ToString(),
+                   ObsoleteFlag = false,
+                   ObsoleteDate = null,
+                   ModifiedBy = null,
+                   ModifiedDate = null,
+                   CreatedBy = "SamJDriver",
+                   CreatedDate = now,
+               };
+               genres.Add(genresLookup);
+            }
+
+            _genericRepository.InsertRecordList(genres);
+        }
+        private async Task insertCompanies()
+        {
+            var offset = 0;
+            var limit = 500;
+            int companyCountOnPage = 0;
+            var totalList = new List<JToken>();
+
+            do
+            {
+                string paginatedCompanyBodyParams = string.Concat(Constants.IgdbApi.CompaniesBodyParams, $"limit {limit};", $"offset {offset};");
+                var companyJson = await GetGenericApiCall(Constants.IgdbApi.CompaniesQueryUri, paginatedCompanyBodyParams);
+                var companyJArray = JsonConvert.DeserializeObject(companyJson) != null ? ((JArray)JsonConvert.DeserializeObject(companyJson)) : null;
+                companyCountOnPage = companyJArray.Count();
+
+                totalList.AddRange(companyJArray);
+
+                offset += limit;
+            }
+            while (companyCountOnPage == limit);
+
+            var mySet = totalList.OrderBy(o => o["id"].ToObject<int>()).Where(o => !o["name"].ToString().Contains("(Archive)"));
+            var count = mySet.Count();
+
+                        List<Companies> companies = new List<Companies>();
+            var now = DateTime.Now;
+
+            foreach (var companyJsonElement in mySet)
+            {
+                Companies companyEntity = new Companies()
+                {
+                    Id = companyJsonElement["id"].ToObject<int>(),
+                    Name = companyJsonElement["name"].ToString(),
+                    FoundedDate = UnixTimeStampToDateTime(companyJsonElement["start_date"]?.ToObject<long>()),
+                    ImageFilePath = "PLACEHOLDER",
+                    DeveloperFlag = companyJsonElement["developed"] != null,
+                    PublisherFlag = companyJsonElement["published"] != null,
+                    ObsoleteFlag = false,
+                    ObsoleteDate = null,
+                    ModifiedBy = null,
+                    ModifiedDate = null,
+                    CreatedBy = "SamJDriver",
+                    CreatedDate = now,
+                };
+                companies.Add(companyEntity);
+            }
+            _genericRepository.InsertRecordList(companies);
+        }
+        private async Task insertGames()
+        {
+            var offset = 0;
+            var limit = 500;
+            int gameCountOnPage = 0;
+            var totalList = new List<JToken>();
+
+            do
+            {
+                string paginatedGameBodyParams = string.Concat(Constants.IgdbApi.GameBodyParams, $"limit {limit};", $"offset {offset};");
+                var gamesJson = await GetGenericApiCall(Constants.IgdbApi.GameQueryUri, paginatedGameBodyParams);
+                var gameJArray = JsonConvert.DeserializeObject(gamesJson) != null ? ((JArray)JsonConvert.DeserializeObject(gamesJson)) : null;
+                gameCountOnPage = gameJArray.Count();
+
+                totalList.AddRange(gameJArray);
+                offset += limit;
+            }
+            while (gameCountOnPage == limit);
+
+            // var mySet = totalList.Where(o => !o["name"].ToString().Contains("(Archive)"));
+            var count = totalList.Count();
+
+            List<Games> games = new List<Games>();
+            var now = DateTime.Now;
+
+            foreach (var gameJToken in totalList)
+            {
+               var genreIds = gameJToken["genres"] != null ? ((JArray)gameJToken["genres"]).ToObject<int[]>() : null;
+
+               Games gameEntity = new Games()
+               {
+                   Id = gameJToken["id"]?.ToObject<int>() ?? 0,
+                   Title = gameJToken["name"].ToString() ?? "",
+                   ReleaseDate = UnixTimeStampToDateTime(gameJToken["first_release_date"]?.ToObject<long>()), //get enum value here
+                   ImageFilePath = "PLACEHOLDER",
+                   Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
+                   CreatedBy = "SamJDriver",
+                   CreatedDate = now,
+                   ModifiedBy = null,
+                   ModifiedDate = null,
+                   ObsoleteFlag = false,
+                   ObsoleteDate = null
+               };
+
+               List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
+               //If the game has associated genres, add the links to the game
+               if (genreIds != null)
+               {
+                foreach (var genreId in genreIds)
+                   {
+                       GamesGenresLookupLink linkEntity = new GamesGenresLookupLink()
+                       {
+                           GameId = gameEntity.Id,
+                           GenreLookupId = genreId,
+                           CreatedBy = "SamJDriver",
+                           CreatedDate = now,
+                           ModifiedBy = null,
+                           ModifiedDate = null,
+                           ObsoleteFlag = false,
+                           ObsoleteDate = null,
+                       };
+                       genreLinks.Add(linkEntity);
+                   }
+                   gameEntity.GamesGenresLookupLink = genreLinks;
+               }
+               games.Add(gameEntity);
+            }
+
+            try
+            {
+            _genericRepository.InsertRecordList(games);
+            }
+            catch(Exception ex)
+            {
+                Debug.Write(ex);
+                
+            }
+        }
+        private async Task insertPlatforms()
+        {
+            var platformsJson = await GetGenericApiCall(Constants.IgdbApi.PlatformQueryUri, Constants.IgdbApi.PlatformBodyParams);
+
+            List<Platforms> platforms = new List<Platforms>();    
+            var now = DateTime.Now;
+
+            foreach (var platform in (JArray)JsonConvert.DeserializeObject(platformsJson)) 
+            {
+               Platforms platformEntity = new Platforms()
+               {
+                    Id = platform["id"].ToObject<int>(),
+                    Name = platform["name"].ToString(),
+                    ReleaseDate = default,
+                    ImageFilePath = "PLACEHOLDER",
+                    CreatedBy = "SamJDriver",
+                    CreatedDate = now,
+                    ModifiedBy = null,
+                    ModifiedDate = null,
+                    ObsoleteFlag = false,
+                    ObsoleteDate = null
+               };
+               platforms.Add(platformEntity);
+            }
+            try
+            {
+                _genericRepository.InsertRecordList(platforms);
+            }
+            catch(Exception ex)
+            {
+                Debug.Write(ex);
+            }
+        }
+        private async Task insertGamePlatformLinks()
+        {
+            var offset = 0;
+            var limit = 500;
+            int gameCountOnPage = 0;
+            var totalList = new List<JToken>();
+
+            do
+            {
+                string paginatedGameBodyParams = string.Concat(Constants.IgdbApi.GameBodyParams, $"limit {limit};", $"offset {offset};");
+                var gamesJson = await GetGenericApiCall(Constants.IgdbApi.GameQueryUri, paginatedGameBodyParams);
+                var gameJArray = JsonConvert.DeserializeObject(gamesJson) != null ? ((JArray)JsonConvert.DeserializeObject(gamesJson)) : null;
+                gameCountOnPage = gameJArray.Count();
+
+                totalList.AddRange(gameJArray);
+                offset += limit;
+            }
+            while (gameCountOnPage == limit);
+
+            // var mySet = totalList.Where(o => !o["name"].ToString().Contains("(Archive)"));
+            var count = totalList.Count();
+
+            var now = DateTime.Now;
+            List<GamesPlatformsLink> gamesPlatformsLinks = new List<GamesPlatformsLink>();
+            var platformIdInDbList = _genericRepository.GetAll<Platforms>().Select(p => p.Id).ToList();
+            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+
+            foreach (var gameJToken in totalList)
+            {
+                var platformIds = gameJToken["platforms"] != null ? ((JArray)gameJToken["platforms"]).ToObject<int[]>() : null;
+                var gameId = gameJToken["id"].ToObject<int>();
+
+                //If the game has associated genres, add the links to the game
+                if (platformIds != null)
+                {
+                    foreach (var platformId in platformIds)
+                    {
+                        if (gameIdInDbList.Contains(gameId) && platformIdInDbList.Contains(platformId))
+                        {
+                            GamesPlatformsLink linkEntity = new GamesPlatformsLink()
+                            {
+                                GameId = gameId,
+                                PlatformId = platformId,
+                                ReleaseDate = null,
+                                CreatedBy = "SamJDriver",
+                                CreatedDate = now,
+                                ModifiedBy = null,
+                                ModifiedDate = null,
+                                ObsoleteFlag = false,
+                                ObsoleteDate = null
+                            };
+                            gamesPlatformsLinks.Add(linkEntity);
+                        }
+
+                    }
+                }
+            }
+
+            try
+            {
+                _genericRepository.InsertRecordList(gamesPlatformsLinks);
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex);
+
+            }
+        }
+        private async Task insertGameCompaniesLinks()
+        {
+            var offset = 0;
+            var limit = 500;
+            int countOnPage = 0;
+            var totalList = new List<JToken>();
+
+            do
+            {
+                string paginatedBodyParams = string.Concat(Constants.IgdbApi.InvolvedCompaniesQueryBodyParams, $"limit {limit};", $"offset {offset};");
+                var json = await GetGenericApiCall(Constants.IgdbApi.InvolvedCompanyQueryUri, paginatedBodyParams);
+                var deserializedJson = JsonConvert.DeserializeObject(json);
+                var jArray = deserializedJson != null ? ((JArray)deserializedJson) : null;
+                countOnPage = jArray.Count();
+
+                totalList.AddRange(jArray);
+                offset += limit;
+            }
+            while (countOnPage == limit);
+
+            // var mySet = totalList.Where(o => !o["name"].ToString().Contains("(Archive)"));
+            var count = totalList.Count();
+
+            var now = DateTime.Now;
+            List<GamesCompaniesLink> gamesCompaniesLinks = new List<GamesCompaniesLink>();
+
+            var companiesIdInDbList = _genericRepository.GetAll<Companies>().Select(c => c.Id).ToList();
+            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+
+            foreach (var jToken in totalList)
+            {
+                var companyId = jToken["company"].ToObject<int>();
+                var gameId = jToken["game"].ToObject<int>();
+                var developerFlag = jToken["developer"].ToObject<bool>();
+                var publisherFlag = jToken["publisher"].ToObject<bool>();
+                var portingFlag = jToken["porting"].ToObject<bool>();
+                var supportingFlag = jToken["supporting"].ToObject<bool>();
+
+                //If the game has associated genres, add the links to the game
+
+                if (gameIdInDbList.Contains(gameId) && companiesIdInDbList.Contains(companyId))
+                {
+                    GamesCompaniesLink linkEntity = new GamesCompaniesLink()
+                    {
+                        GamesId = gameId,
+                        CompaniesId = companyId,
+                        DeveloperFlag = developerFlag,
+                        PublisherFlag = publisherFlag,
+                        PortingFlag = portingFlag,
+                        SupportingFlag = supportingFlag,
+                        CreatedBy = "SamJDriver",
+                        CreatedDate = now,
+                        ModifiedBy = null,
+                        ModifiedDate = null,
+                        ObsoleteFlag = false,
+                        ObsoleteDate = null
+                    };
+                    gamesCompaniesLinks.Add(linkEntity);
+                }
+            }
+            try
+            {
+                _genericRepository.InsertRecordList(gamesCompaniesLinks);
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex);
+
+            }
+        }
+
+        public static DateOnly UnixTimeStampToDateTime(long? unixTimeStamp)
+        {
+            if (unixTimeStamp == null){
+                return new DateOnly();
+            }
+
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            if (unixTimeStamp.Value < -62135596800)
+            {
+                unixTimeStamp = -62135596800;
+            }
+            else if (unixTimeStamp.Value > 253402300799)
+            {
+                unixTimeStamp = 253402300799;
+            }
+
+            dateTime = DateTimeOffset.FromUnixTimeSeconds(unixTimeStamp.Value).UtcDateTime;
+            return DateOnly.FromDateTime(dateTime);
+        }
+
+        private static readonly Regex sWhitespace = new Regex(@"\s+");
+        public static string ReplaceWhitespace(string input, string replacement)
+        {
+            return sWhitespace.Replace(input, replacement);
+        }
         private async Task<string> GetGenericApiCall(string uri, string bodyParams)
         {
             var accessToken = await GetAccessToken();

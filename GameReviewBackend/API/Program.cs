@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using BusinessLogic.Abstractions;
 using BusinessLogic.Infrastructure;
-using DataAccess.Contexts;
+using DataAccess.Contexts.DockerDb;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 
@@ -29,12 +29,6 @@ namespace GameReview
                 password = File.ReadAllText(@$"{password_file_path}");
             }
             
-            
-            
-
-            
-
-
             var connectionString = $"Server={serverName}; Port={port}; Database={databaseName}; Uid={username}; Pwd={password}";
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options

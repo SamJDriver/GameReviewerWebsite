@@ -1,12 +1,12 @@
 ﻿{
    "CodeGenerationMode": 4,
    "ContextClassName": "DockerDbContext",
-   "ContextNamespace": null,
+   "ContextNamespace": "",
    "FilterSchemas": false,
    "IncludeConnectionString": false,
-   "ModelNamespace": null,
-   "OutputContextPath": "Contexts",
-   "OutputPath": "Models",
+   "ModelNamespace": "Models.DockerDb",
+   "OutputContextPath": "Contexts\/DockerDb",
+   "OutputPath": "Models\/DockerDb",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "DataAccess",
    "Schemas": null,
@@ -15,7 +15,7 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "developers",
+         "Name": "companies",
          "ObjectType": 0
       },
       {
@@ -23,7 +23,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "games_developers_link",
+         "Name": "games_companies_link",
          "ObjectType": 0
       },
       {
@@ -32,10 +32,6 @@
       },
       {
          "Name": "games_platforms_link",
-         "ObjectType": 0
-      },
-      {
-         "Name": "games_publishers_link",
          "ObjectType": 0
       },
       {
@@ -52,10 +48,6 @@
       },
       {
          "Name": "play_records",
-         "ObjectType": 0
-      },
-      {
-         "Name": "publishers",
          "ObjectType": 0
       },
       {

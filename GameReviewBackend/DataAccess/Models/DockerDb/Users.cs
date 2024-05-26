@@ -6,22 +6,34 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Models;
+namespace DataAccess.Models.DockerDb;
 
-[Table("developers")]
+[Table("users")]
 [Index("Id", Name = "id", IsUnique = true)]
-public partial class Developers
+public partial class Users
 {
     [Key]
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("name")]
-    [StringLength(255)]
-    public string Name { get; set; } = null!;
+    [Column("username")]
+    [StringLength(25)]
+    public string Username { get; set; } = null!;
 
-    [Column("founded_date")]
-    public DateOnly FoundedDate { get; set; }
+    [Column("password_hash")]
+    [StringLength(64)]
+    public string PasswordHash { get; set; } = null!;
+
+    [Column("salt")]
+    [StringLength(50)]
+    public string? Salt { get; set; }
+
+    [Column("admin_flag")]
+    public bool AdminFlag { get; set; }
+
+    [Column("email")]
+    [StringLength(100)]
+    public string Email { get; set; } = null!;
 
     [Column("image_file_path")]
     [StringLength(255)]
@@ -47,6 +59,15 @@ public partial class Developers
     [Column("obsolete_date", TypeName = "datetime")]
     public DateTime? ObsoleteDate { get; set; }
 
-    [InverseProperty("Developer")]
-    public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; } = new List<GamesDevelopersLink>();
+    [InverseProperty("User")]
+    public virtual ICollection<PlayRecordComments> PlayRecordComments { get; set; } = new List<PlayRecordComments>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<PlayRecords> PlayRecords { get; set; } = new List<PlayRecords>();
+
+    [InverseProperty("Friend")]
+    public virtual ICollection<UserRelationship> UserRelationshipFriend { get; set; } = new List<UserRelationship>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<UserRelationship> UserRelationshipUser { get; set; } = new List<UserRelationship>();
 }

@@ -29,10 +29,10 @@ namespace GameReview.Controllers
 
 
         [HttpGet]
-        public IActionResult GetGames()
+        public async Task<IActionResult> GetAllGames(int pageIndex, int pageSize)
         {
-            var games = _gameService.GetGames();
-            return Ok(games);
+            var pagedGames = await _gameService.GetAllGames(pageIndex, pageSize);
+            return Ok(pagedGames);
         }
 
         [HttpGet("/igdb")]

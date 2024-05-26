@@ -1,8 +1,10 @@
 ﻿using BusinessLogic.Abstractions;
+using Components;
 using Components.Extensions;
 using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
+using Microsoft.EntityFrameworkCore;
 using Repositories;
 
 namespace BusinessLogic.Infrastructure
@@ -25,9 +27,25 @@ namespace BusinessLogic.Infrastructure
         }
 
 
-        public IEnumerable<GameDto> GetGames()
+        public async Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize)
         {
-            return _genericRepository.GetAll<Games>().Take(10).Select(g => new GameDto().Assign(g)).ToList(); ;
+            var query = _genericRepository.GetAll<Games>();
+
+            var data = 
+                    await query
+                    .OrderBy(g => g.Title)
+                    .Skip(pageIndex*pageIndex)
+                    .Take(pageSize)
+                    .Select(g => new GameDto().Assign(g))
+                    .ToListAsync();
+
+            return new PagedResult<GameDto>()
+            {
+                Data = data,
+                TotalRowCount = query.Count(),
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+            };
         }
     }
 }

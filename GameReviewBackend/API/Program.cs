@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using BusinessLogic.Abstractions;
 using BusinessLogic.Infrastructure;
 using DataAccess.Contexts;
@@ -21,7 +22,17 @@ namespace GameReview
             var port = Environment.GetEnvironmentVariable("MYSQL_PORT") ?? "3306";
             var databaseName = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? "mydatabase";
             var username = Environment.GetEnvironmentVariable("MYSQL_USER") ?? "user";
-            var password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD") ?? "password";
+            var password_file_path = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
+            var password = "password";
+            if (password_file_path != null) 
+            {
+                password = File.ReadAllText(@$"{password_file_path}");
+            }
+            
+            
+            
+
+            
 
 
             var connectionString = $"Server={serverName}; Port={port}; Database={databaseName}; Uid={username}; Pwd={password}";

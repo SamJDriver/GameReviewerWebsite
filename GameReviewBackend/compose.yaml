@@ -9,8 +9,6 @@
 # https://github.com/docker/awesome-compose
 services: 
   game-api-server:
-    env_file:
-      - web-variables.env
     build:
       context: .
       target: final
@@ -21,6 +19,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      MYSQL_SERVICE_NAME: db
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: /run/secrets/db_password
+      MYSQL_PORT: 3306
+    secrets:
+       - db_password
   db: #docker exec -it mariadb mariadb -u user -p
     image: mariadb:latest
     environment:

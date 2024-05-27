@@ -11,7 +11,7 @@ namespace BusinessLogic.Infrastructure
 {
     public class GameService : IGameService
     {
-        GenericRepository<DockerDbContext> _genericRepository;
+        private readonly GenericRepository<DockerDbContext> _genericRepository;
         public GameService(GenericRepository<DockerDbContext> genericRepository)
         {
             _genericRepository = genericRepository;
@@ -25,8 +25,6 @@ namespace BusinessLogic.Infrastructure
             error = null;
             return gameEntity.Id;
         }
-
-
         public async Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize)
         {
             var query = _genericRepository.GetAll<Games>();
@@ -47,5 +45,44 @@ namespace BusinessLogic.Infrastructure
                 PageSize = pageSize,
             };
         }
+        public async Task<GameDto> GetGameById(int gameId)
+        {
+            var game = await Task.Run( () => new GameDto().Assign(_genericRepository.GetById<Games>(gameId)));
+            return game;
+        }
+        public void CreateUpdateGamePlayRecord(PlayRecordDto playRecord)
+        {
+            var existingUser = _genericRepository.GetById<Users>(playRecord.UserId);
+            if (existingUser == default)
+            {
+                return;
+            }
+
+            var existingGame = _genericRepository.GetById<Games>(playRecord.GameId);
+            if (existingGame == default)
+            {
+                return;
+            }
+
+            var existingPlayRecord = _genericRepository.GetSingleNoTrack<PlayRecords>(p => p.UserId == playRecord.UserId && p.GameId == playRecord.GameId);
+            if (existingPlayRecord != default) //Existing Record
+            {
+                existingPlayRecord.CompletedFlag = playRecord.CompletedFlag;
+                existingPlayRecord.HoursPlayed = playRecord.HoursPlayed;
+                existingPlayRecord.PlayDescription = playRecord.PlayDescription;
+                existingPlayRecord.Rating = playRecord.Rating;
+                existingPlayRecord.ModifiedBy = existingUser.Username;
+                existingPlayRecord.ModifiedDate = DateTime.Now;
+                _genericRepository.UpdateRecord(existingPlayRecord);
+            }
+            else //New Record
+            {
+                var newPlayRecordEntity = new PlayRecords().Assign(playRecord);
+                newPlayRecordEntity.CreatedBy = existingUser.Username;
+                newPlayRecordEntity.CreatedDate = DateTime.Now;
+                _genericRepository.InsertRecord(newPlayRecordEntity);
+            }
+        }
+
     }
 }

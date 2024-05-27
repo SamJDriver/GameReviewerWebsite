@@ -1,3 +1,4 @@
+using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -35,12 +36,28 @@ namespace GameReview.Controllers
             return Ok(pagedGames);
         }
 
-        [HttpGet("/igdb")]
-        public async Task<IActionResult> GetAccessToken()
+        [HttpGet("{gameId}")]
+        public async Task<IActionResult> GetGameById(int gameId)
         {
-            await _igdbApiService.QueryApi();
-            return Ok();
+            var game = _gameService.GetGameById(gameId);
+            return Ok(game);
         }
 
+        [HttpPut]
+        public ActionResult CreatePlayRecord(CreatePlayRecordJson playRecord)
+        {
+            var dto = new PlayRecordDto()
+            {
+                UserId = playRecord.UserId,
+                GameId = playRecord.GameId,
+                CompletedFlag = playRecord.CompletedFlag,
+                HoursPlayed = playRecord.HoursPlayed,
+                Rating = playRecord.Rating,
+                PlayDescription = playRecord.PlayDescription
+            };
+
+            _gameService.CreateUpdateGamePlayRecord(dto);
+            return Ok();
+        }
     }
 }

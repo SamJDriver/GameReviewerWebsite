@@ -6,5 +6,6 @@ namespace BusinessLogic.Abstractions
     {
         public Task QueryApi();
 
+        public Task<string> GetOneGame();
     }
 }

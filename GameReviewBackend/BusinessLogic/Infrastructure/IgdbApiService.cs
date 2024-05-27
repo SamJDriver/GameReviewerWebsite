@@ -2,6 +2,7 @@
 using Components;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
+using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Repositories;
@@ -24,6 +25,26 @@ namespace BusinessLogic.Infrastructure
             _genericRepository = genericRepository;
         }
 
+        public async Task QueryApi()
+        {
+
+            await insertGenres();
+            await insertCompanies();
+            await insertGames();
+            await insertPlatforms();
+            await insertGamePlatformLinks();
+            await insertGameCompaniesLinks();
+        }
+
+        public async Task<string> GetOneGame()
+        {
+            var limit = 1;
+            string bodyParams = string.Concat(Constants.IgdbApi.GameBodyParams, $"limit {limit};");
+
+            string gameJson = await GetGenericApiCall(Constants.IgdbApi.GameQueryUri, bodyParams);
+            return gameJson;
+        }
+
         private async Task<string> GetAccessToken()
         {
 
@@ -34,17 +55,6 @@ namespace BusinessLogic.Infrastructure
                 var accessToken = await result.Content.ReadAsStringAsync();
                 return accessToken;
             }
-        }
-
-        public async Task QueryApi()
-        {
-
-            await insertGenres();
-            await insertCompanies();
-            await insertGames();
-            await insertPlatforms();
-            await insertGamePlatformLinks();
-            await insertGameCompaniesLinks();
         }
 
         private async Task insertGenres()

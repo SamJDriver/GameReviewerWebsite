@@ -37,27 +37,10 @@ namespace GameReview.Controllers
         }
 
         [HttpGet("{gameId}")]
-        public async Task<IActionResult> GetGameById(int gameId)
+        public IActionResult GetGameById(int gameId)
         {
             var game = _gameService.GetGameById(gameId);
             return Ok(game);
-        }
-
-        [HttpPut]
-        public ActionResult CreatePlayRecord(CreatePlayRecordJson playRecord)
-        {
-            var dto = new PlayRecordDto()
-            {
-                UserId = playRecord.UserId,
-                GameId = playRecord.GameId,
-                CompletedFlag = playRecord.CompletedFlag,
-                HoursPlayed = playRecord.HoursPlayed,
-                Rating = playRecord.Rating,
-                PlayDescription = playRecord.PlayDescription
-            };
-
-            _gameService.CreateUpdateGamePlayRecord(dto);
-            return Ok();
         }
     }
 }

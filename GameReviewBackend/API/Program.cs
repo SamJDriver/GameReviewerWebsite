@@ -40,6 +40,7 @@ namespace GameReview
 
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IIgdbApiService, IgdbApiService>();
+            builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));

@@ -56,7 +56,6 @@ namespace BusinessLogic.Infrastructure
                 return accessToken;
             }
         }
-
         private async Task insertGenres()
         {
             var genresJson = await GetGenericApiCall(Constants.IgdbApi.GenreQueryUri, Constants.IgdbApi.GenreBodyParams);

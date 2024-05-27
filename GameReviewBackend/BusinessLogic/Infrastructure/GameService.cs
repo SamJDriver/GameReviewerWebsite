@@ -45,12 +45,37 @@ namespace BusinessLogic.Infrastructure
                 PageSize = pageSize,
             };
         }
-        public async Task<GameDto> GetGameById(int gameId)
+        public GameDto GetGameById(int gameId)
         {
-            var game = await Task.Run( () => new GameDto().Assign(_genericRepository.GetById<Games>(gameId)));
+            var game = new GameDto().Assign(_genericRepository.GetById<Games>(gameId));
             return game;
         }
-        public void CreateUpdateGamePlayRecord(PlayRecordDto playRecord)
+        public void CreatePlayRecord(PlayRecordDto playRecord)
+        {
+            var existingUser = _genericRepository.GetById<Users>(playRecord.UserId);
+            if (existingUser == default)
+            {
+                return;
+            }
+
+            var existingGame = _genericRepository.GetById<Games>(playRecord.GameId);
+            if (existingGame == default)
+            {
+                return;
+            }
+
+            if (playRecord.Rating < 0 || playRecord.Rating > 100)
+            {
+                return;
+            }
+
+            var newPlayRecordEntity = new PlayRecords().Assign(playRecord);
+            newPlayRecordEntity.CreatedBy = existingUser.Username;
+            newPlayRecordEntity.CreatedDate = DateTime.Now;
+            _genericRepository.InsertRecord(newPlayRecordEntity);  
+        }
+
+        public void UpdatePlayRecord(PlayRecordDto playRecord)
         {
             var existingUser = _genericRepository.GetById<Users>(playRecord.UserId);
             if (existingUser == default)
@@ -65,24 +90,23 @@ namespace BusinessLogic.Infrastructure
             }
 
             var existingPlayRecord = _genericRepository.GetSingleNoTrack<PlayRecords>(p => p.UserId == playRecord.UserId && p.GameId == playRecord.GameId);
-            if (existingPlayRecord != default) //Existing Record
+            if (existingPlayRecord == default) //Existing Record
             {
-                existingPlayRecord.CompletedFlag = playRecord.CompletedFlag;
-                existingPlayRecord.HoursPlayed = playRecord.HoursPlayed;
-                existingPlayRecord.PlayDescription = playRecord.PlayDescription;
-                existingPlayRecord.Rating = playRecord.Rating;
-                existingPlayRecord.ModifiedBy = existingUser.Username;
-                existingPlayRecord.ModifiedDate = DateTime.Now;
-                _genericRepository.UpdateRecord(existingPlayRecord);
+                return;
             }
-            else //New Record
-            {
-                var newPlayRecordEntity = new PlayRecords().Assign(playRecord);
-                newPlayRecordEntity.CreatedBy = existingUser.Username;
-                newPlayRecordEntity.CreatedDate = DateTime.Now;
-                _genericRepository.InsertRecord(newPlayRecordEntity);
-            }
-        }
 
+            if (playRecord.Rating < 0 || playRecord.Rating > 100)
+            {
+                return;
+            }
+
+            existingPlayRecord.CompletedFlag = playRecord.CompletedFlag;
+            existingPlayRecord.HoursPlayed = playRecord.HoursPlayed;
+            existingPlayRecord.PlayDescription = playRecord.PlayDescription;
+            existingPlayRecord.Rating = playRecord.Rating;
+            existingPlayRecord.ModifiedBy = existingUser.Username;
+            existingPlayRecord.ModifiedDate = DateTime.Now;
+            _genericRepository.UpdateRecord(existingPlayRecord);
+        }
     }
 }

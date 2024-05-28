@@ -1,6 +1,4 @@
-﻿using Components.Models;
-
-namespace BusinessLogic.Abstractions
+﻿namespace BusinessLogic.Abstractions
 {
     public interface IIgdbApiService
     {

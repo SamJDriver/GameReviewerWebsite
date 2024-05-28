@@ -47,8 +47,14 @@ namespace BusinessLogic.Infrastructure
         }
         public GameDto GetGameById(int gameId)
         {
-            var game = new GameDto().Assign(_genericRepository.GetById<Games>(gameId));
-            return game;
+            var game = _genericRepository.GetById<Games>(gameId);
+            if (game == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var gameDto = new GameDto().Assign(game);
+            return gameDto;
         }
         public void CreatePlayRecord(PlayRecordDto playRecord)
         {

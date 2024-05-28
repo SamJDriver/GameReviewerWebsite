@@ -1,11 +1,9 @@
 using BusinessLogic.Abstractions;
 using BusinessLogic.Infrastructure;
-using Components.Models;
 using DataAccess.Contexts.DockerDb;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
-using Microsoft.Extensions.DependencyInjection;
+using API.Middlewares;
 
 namespace GameReview
 {
@@ -44,6 +42,7 @@ namespace GameReview
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
+            builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
             // builder.Services.AddIdentity<UserDto, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 // .AddEntityFrameworkStores<DockerDbContext>();
@@ -77,6 +76,8 @@ namespace GameReview
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.MapControllerRoute(
                 name: "default",

@@ -1,5 +1,4 @@
 ﻿using Components.Models;
-using DataAccess.Models;
 using DataAccess.Models.DockerDb;
 
 namespace Components.Extensions

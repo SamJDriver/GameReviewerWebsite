@@ -41,6 +41,7 @@ namespace GameReview
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 

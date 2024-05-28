@@ -119,12 +119,12 @@ namespace BusinessLogic.Infrastructure
                     ImageFilePath = "PLACEHOLDER",
                     DeveloperFlag = companyJsonElement["developed"] != null,
                     PublisherFlag = companyJsonElement["published"] != null,
-                    ObsoleteFlag = false,
-                    ObsoleteDate = null,
-                    ModifiedBy = null,
-                    ModifiedDate = null,
-                    CreatedBy = "SamJDriver",
-                    CreatedDate = now,
+                    // ObsoleteFlag = false,
+                    // ObsoleteDate = null,
+                    // ModifiedBy = null,
+                    // ModifiedDate = null,
+                    // CreatedBy = "SamJDriver",
+                    // CreatedDate = now,
                 };
                 companies.Add(companyEntity);
             }

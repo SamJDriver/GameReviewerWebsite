@@ -1,4 +1,4 @@
-namespace Components
+namespace Components.Utilities
 {
     public class PagedResult<T>
     {

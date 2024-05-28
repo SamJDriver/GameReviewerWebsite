@@ -7,7 +7,6 @@ namespace Components.Extensions
     {
         public static Games Assign(this Games self, GameDto game)
         {
-            self.Id = game.Id ?? 0;
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
             self.ImageFilePath = game.ImageFilePath;

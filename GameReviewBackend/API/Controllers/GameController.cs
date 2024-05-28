@@ -1,3 +1,4 @@
+using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,19 @@ namespace GameReview.Controllers
 
         //Probably admin only
         [HttpPost]
-        public IActionResult CreateGame([FromBody] GameDto game)
+        public IActionResult CreateGame([FromBody] CreateGameJson gameJson)
         {
-            string? error = default;
-            int newId = _gameService.CreateGame(game, out error);
-            return string.IsNullOrEmpty(error) ? Ok(newId) : BadRequest(error);
+            //TODO implement file blob
+            GameDto gameDto = new GameDto()
+            {
+                Title = gameJson.Title,
+                ReleaseDate = gameJson.ReleaseDate,
+                ImageFilePath = "PLACEHOLDER",
+                Description = gameJson.Description
+            };
+
+            int newId = _gameService.CreateGame(gameDto);
+            return Ok(newId);
         }
 
 

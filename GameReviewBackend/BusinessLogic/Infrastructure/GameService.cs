@@ -1,11 +1,12 @@
 ﻿using BusinessLogic.Abstractions;
-using Components;
+using Components.Utilities;
 using Components.Extensions;
 using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
+using Components.Exceptions;
 
 namespace BusinessLogic.Infrastructure
 {
@@ -17,12 +18,19 @@ namespace BusinessLogic.Infrastructure
             _genericRepository = genericRepository;
         }
 
-        public int CreateGame(GameDto game, out string? error)
+        public int CreateGame(GameDto game)
         {
+            if (!game.ReleaseDate.ValidateDateOnly())
+            {
+                throw new DgcException($"Invalid game release date. Ensure release date is between 1/1/1955 and {DateTime.Now}", DgcExceptionType.ArgumentOutOfRange);
+            }
+
             var gameEntity = new Games().Assign(game);
+            gameEntity.CreatedBy = "System";
+            gameEntity.CreatedDate = DateTime.Now;
+
             //TODO add validation checks for game?
             _genericRepository.InsertRecord(gameEntity);
-            error = null;
             return gameEntity.Id;
         }
         public async Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize)

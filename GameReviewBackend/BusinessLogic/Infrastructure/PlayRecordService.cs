@@ -70,8 +70,8 @@ namespace BusinessLogic.Infrastructure
             existingPlayRecord.Assign(playRecord);
             existingPlayRecord.GameId = existingGame.Id;
             existingPlayRecord.UserId = existingUser.Id;
-            existingPlayRecord.ModifiedBy = existingUser.Username;
-            existingPlayRecord.ModifiedDate = DateTime.Now;
+            existingPlayRecord.CreatedBy = existingUser.Username;
+            existingPlayRecord.CreatedDate = DateTime.Now;
 
             //TODO overrite savechanges for this
             _genericRepository.UpdateRecord(existingPlayRecord);

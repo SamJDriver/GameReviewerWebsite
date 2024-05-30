@@ -71,10 +71,6 @@ namespace BusinessLogic.Infrastructure
                    Name = name,
                    Code = code,
                    Description = genre["slug"].ToString(),
-                   ObsoleteFlag = false,
-                   ObsoleteDate = null,
-                   ModifiedBy = null,
-                   ModifiedDate = null,
                    CreatedBy = "SamJDriver",
                    CreatedDate = now,
                };
@@ -168,10 +164,6 @@ namespace BusinessLogic.Infrastructure
                    Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
                    CreatedBy = "SamJDriver",
                    CreatedDate = now,
-                   ModifiedBy = null,
-                   ModifiedDate = null,
-                   ObsoleteFlag = false,
-                   ObsoleteDate = null
                };
 
                List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
@@ -186,10 +178,6 @@ namespace BusinessLogic.Infrastructure
                            GenreLookupId = genreId,
                            CreatedBy = "SamJDriver",
                            CreatedDate = now,
-                           ModifiedBy = null,
-                           ModifiedDate = null,
-                           ObsoleteFlag = false,
-                           ObsoleteDate = null,
                        };
                        genreLinks.Add(linkEntity);
                    }
@@ -225,10 +213,6 @@ namespace BusinessLogic.Infrastructure
                     ImageFilePath = "PLACEHOLDER",
                     CreatedBy = "SamJDriver",
                     CreatedDate = now,
-                    ModifiedBy = null,
-                    ModifiedDate = null,
-                    ObsoleteFlag = false,
-                    ObsoleteDate = null
                };
                platforms.Add(platformEntity);
             }
@@ -286,11 +270,7 @@ namespace BusinessLogic.Infrastructure
                                 PlatformId = platformId,
                                 ReleaseDate = null,
                                 CreatedBy = "SamJDriver",
-                                CreatedDate = now,
-                                ModifiedBy = null,
-                                ModifiedDate = null,
-                                ObsoleteFlag = false,
-                                ObsoleteDate = null
+                                CreatedDate = now
                             };
                             gamesPlatformsLinks.Add(linkEntity);
                         }
@@ -360,11 +340,7 @@ namespace BusinessLogic.Infrastructure
                         PortingFlag = portingFlag,
                         SupportingFlag = supportingFlag,
                         CreatedBy = "SamJDriver",
-                        CreatedDate = now,
-                        ModifiedBy = null,
-                        ModifiedDate = null,
-                        ObsoleteFlag = false,
-                        ObsoleteDate = null
+                        CreatedDate = now
                     };
                     gamesCompaniesLinks.Add(linkEntity);
                 }

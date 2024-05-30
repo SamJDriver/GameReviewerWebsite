@@ -21,14 +21,5 @@ namespace Components.Models
         [StringLength(25)]
         public string CreatedBy { get; set; } = null!;
         public DateTime CreatedDate { get; set; }
-
-        [StringLength(25)]
-        public string? ModifiedBy { get; set; }
-
-        public DateTime? ModifiedDate { get; set; }
-
-        public bool ObsoleteFlag { get; set; }
-
-        public DateTime? ObsoleteDate { get; set; }
     }
 }

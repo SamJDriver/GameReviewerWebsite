@@ -27,7 +27,7 @@ public partial class Games
     [StringLength(255)]
     public string ImageFilePath { get; set; } = null!;
 
-    [Column("description", TypeName = "mediumtext")]
+    [Column("description", TypeName = "text")]
     public string Description { get; set; } = null!;
 
     [Column("created_by")]
@@ -36,19 +36,6 @@ public partial class Games
 
     [Column("created_date", TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
-
-    [Column("modified_by")]
-    [StringLength(25)]
-    public string? ModifiedBy { get; set; }
-
-    [Column("modified_date", TypeName = "datetime")]
-    public DateTime? ModifiedDate { get; set; }
-
-    [Column("obsolete_flag")]
-    public bool ObsoleteFlag { get; set; }
-
-    [Column("obsolete_date", TypeName = "datetime")]
-    public DateTime? ObsoleteDate { get; set; }
 
     [InverseProperty("Games")]
     public virtual ICollection<GamesCompaniesLink> GamesCompaniesLink { get; set; } = new List<GamesCompaniesLink>();

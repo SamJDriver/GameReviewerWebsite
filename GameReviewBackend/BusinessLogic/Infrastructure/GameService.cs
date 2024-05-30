@@ -118,8 +118,8 @@ namespace BusinessLogic.Infrastructure
             existingPlayRecord.HoursPlayed = playRecord.HoursPlayed;
             existingPlayRecord.PlayDescription = playRecord.PlayDescription;
             existingPlayRecord.Rating = playRecord.Rating;
-            existingPlayRecord.ModifiedBy = existingUser.Username;
-            existingPlayRecord.ModifiedDate = DateTime.Now;
+            existingPlayRecord.CreatedBy = "SamJDriver";
+            existingPlayRecord.CreatedDate = DateTime.Now;
             _genericRepository.UpdateRecord(existingPlayRecord);
         }
     }

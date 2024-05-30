@@ -33,31 +33,12 @@ public partial class Companies
     [Column("publisher_flag")]
     public bool PublisherFlag { get; set; }
 
-    // [Column("created_by")]
-    // [StringLength(25)]
-    // public string CreatedBy { get; set; } = null!;
-
-    // [Column("created_date", TypeName = "datetime")]
-    // public DateTime CreatedDate { get; set; }
-
-    [Column("modified_by")]
+    [Column("created_by")]
     [StringLength(25)]
-    public string? ModifiedBy { get; set; }
+    public string CreatedBy { get; set; } = null!;
 
-    [Column("row_start", TypeName = "datetime")]
-    public DateTime RowStart { get; set; }
-
-    [Column("row_end", TypeName = "datetime")]
-    public DateTime RowEnd { get; set; }
-
-    // [Column("modified_date", TypeName = "datetime")]
-    // public DateTime? ModifiedDate { get; set; }
-
-    // [Column("obsolete_flag")]
-    // public bool ObsoleteFlag { get; set; }
-
-    // [Column("obsolete_date", TypeName = "datetime")]
-    // public DateTime? ObsoleteDate { get; set; }
+    [Column("created_date", TypeName = "datetime")]
+    public DateTime CreatedDate { get; set; }
 
     [InverseProperty("Companies")]
     public virtual ICollection<GamesCompaniesLink> GamesCompaniesLink { get; set; } = new List<GamesCompaniesLink>();

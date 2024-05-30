@@ -15,10 +15,6 @@ namespace Components.Extensions
             self.ImageFilePath = user.ImageFilePath;
             self.CreatedBy = user.CreatedBy ?? user.Email;
             self.CreatedDate = user.CreatedDate ?? DateTime.UtcNow;
-            self.ModifiedBy = user.ModifiedBy;
-            self.ModifiedDate = user.ModifiedDate;
-            self.ObsoleteFlag = user.ObsoleteFlag ?? false;
-            self.ObsoleteDate = user.ObsoleteDate;
             return self;
         }
 
@@ -32,10 +28,6 @@ namespace Components.Extensions
             self.ImageFilePath = user.ImageFilePath;
             self.CreatedBy = user.CreatedBy ?? user.Email;
             self.CreatedDate = user.CreatedDate;
-            self.ModifiedBy = user.ModifiedBy;
-            self.ModifiedDate = user.ModifiedDate;
-            self.ObsoleteFlag = user.ObsoleteFlag;
-            self.ObsoleteDate = user.ObsoleteDate;
             return self;
         }
     }

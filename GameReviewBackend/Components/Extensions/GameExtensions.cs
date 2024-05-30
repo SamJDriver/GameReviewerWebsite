@@ -13,10 +13,6 @@ namespace Components.Extensions
             self.Description = game.Description;
             self.CreatedBy = game.CreatedBy;
             self.CreatedDate = game.CreatedDate;
-            self.ModifiedBy = game.ModifiedBy;
-            self.ModifiedDate = game.ModifiedDate;
-            self.ObsoleteFlag = game.ObsoleteFlag;
-            self.ObsoleteDate = game.ObsoleteDate;
             return self;
         }
 
@@ -29,10 +25,6 @@ namespace Components.Extensions
             self.Description = game.Description;
             self.CreatedBy = game.CreatedBy;
             self.CreatedDate = game.CreatedDate;
-            self.ModifiedBy = game.ModifiedBy;
-            self.ModifiedDate = game.ModifiedDate;
-            self.ObsoleteFlag = game.ObsoleteFlag;
-            self.ObsoleteDate = game.ObsoleteDate;
             return self;
         }
 
@@ -44,10 +36,8 @@ namespace Components.Extensions
             self.HoursPlayed = playRecord.HoursPlayed;
             self.Rating = playRecord.Rating;
             self.PlayDescription = playRecord.PlayDescription;
-            self.ModifiedBy = playRecord.ModifiedBy;
-            self.ModifiedDate = playRecord.ModifiedDate;
-            self.ObsoleteFlag = playRecord.ObsoleteFlag;
-            self.ObsoleteDate = playRecord.ObsoleteDate;
+            self.CreatedBy = playRecord.CreatedBy;
+            self.CreatedDate = playRecord.CreatedDate;
             return self;
         }
 
@@ -62,10 +52,6 @@ namespace Components.Extensions
             self.PlayDescription = playRecord.PlayDescription;
             self.CreatedBy = playRecord.CreatedBy;
             self.CreatedDate = playRecord.CreatedDate;
-            self.ModifiedBy = playRecord.ModifiedBy;
-            self.ModifiedDate = playRecord.ModifiedDate;
-            self.ObsoleteFlag = playRecord.ObsoleteFlag;
-            self.ObsoleteDate = playRecord.ObsoleteDate;
             return self;
         }
     }

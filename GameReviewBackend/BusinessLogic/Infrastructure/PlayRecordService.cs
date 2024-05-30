@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Abstractions;
+using Components.Exceptions;
 using Components.Extensions;
 using Components.Models;
 using DataAccess.Contexts.DockerDb;
@@ -19,18 +20,18 @@ namespace BusinessLogic.Infrastructure
             var existingUser = _genericRepository.GetById<Users>(playRecord.UserId);
             if (existingUser == default)
             {
-                return;
+                throw new DgcException("Can't create play record. User not found.", DgcExceptionType.ResourceNotFound);
             }
 
             var existingGame = _genericRepository.GetById<Games>(playRecord.GameId);
             if (existingGame == default)
             {
-                return;
+                throw new DgcException("Can't create play record. Game not found.", DgcExceptionType.ResourceNotFound);
             }
 
             if (playRecord.Rating < 0 || playRecord.Rating > 100)
             {
-                return;
+                throw new DgcException("Can't create play record. Rating out of range.", DgcExceptionType.ArgumentOutOfRange);
             }
 
             var newPlayRecordEntity = new PlayRecords().Assign(playRecord);
@@ -45,7 +46,7 @@ namespace BusinessLogic.Infrastructure
             var existingPlayRecord = _genericRepository.GetSingleTracked<PlayRecords>(p =>p.Id == playRecord.Id);
             if (existingPlayRecord == default)
             {
-                return;
+                throw new DgcException("Can't update Play Record. Play Record not found.", DgcExceptionType.ResourceNotFound);
             }
 
             //TODO validate that the user in the record is the logged in user.
@@ -53,18 +54,18 @@ namespace BusinessLogic.Infrastructure
             var existingUser = _genericRepository.GetById<Users>(existingPlayRecord.UserId);
             if (existingUser == default)
             {
-                return;
+                throw new DgcException("Can't update Play Record. User not found.", DgcExceptionType.ResourceNotFound);
             }
 
             var existingGame = _genericRepository.GetById<Games>(existingPlayRecord.GameId);
             if (existingGame == default)
             {
-                return;
+                throw new DgcException("Can't update Play Record. Game not found.", DgcExceptionType.ResourceNotFound);
             }
 
             if (playRecord.Rating < 0 || playRecord.Rating > 100)
             {
-                return;
+                throw new DgcException("Can't update play record. Rating out of range.", DgcExceptionType.ArgumentOutOfRange);
             }
 
             existingPlayRecord.Assign(playRecord);

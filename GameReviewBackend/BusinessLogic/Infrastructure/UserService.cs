@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Abstractions;
+using Components.Exceptions;
 using Components.Extensions;
 using Components.Models;
 using DataAccess.Contexts.DockerDb;
@@ -17,20 +18,18 @@ namespace BusinessLogic.Infrastructure
             _genericRepository = genericRepository;
         }
 
-        public int CreateUser(UserDto user, string? error)
+        public int CreateUser(UserDto user)
         {
             var existingEmailUser = _genericRepository.GetSingleNoTrack<Users>(u => u.Email == user.Email);
             if ( existingEmailUser != default)
             {
-                error = "Email already exists. Please try a different email or log in with your existing email";
-                return -1;
+                throw new DgcException("Error creating user. An account with that email already exists.", DgcExceptionType.InvalidOperation);
             }
 
             var existingUsernameUser = _genericRepository.GetSingleNoTrack<Users>(u => u.Username == user.Username);
             if (existingUsernameUser != default)
             {
-                error = "Username already exists. Please try a different username";
-                return -1;
+                throw new DgcException("Error creating user. An account with that username already exists.", DgcExceptionType.InvalidOperation);
             }
 
             byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes
@@ -39,7 +38,6 @@ namespace BusinessLogic.Infrastructure
 
             Users userEntity = new Users().Assign(user);
             _genericRepository.InsertRecord(userEntity);
-            error = default;
             return userEntity.Id;
         }
 

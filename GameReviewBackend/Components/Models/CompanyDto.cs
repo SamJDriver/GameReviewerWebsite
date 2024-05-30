@@ -20,9 +20,7 @@ namespace Components.Models
         public bool PublisherFlag { get; set; }
         
         [StringLength(25)]
-        public string? ModifiedBy { get; set; }
-
-        public DateTime RowStart { get; set; }
-        public DateTime RowEnd { get; set; }
+        public string CreatedBy { get; set; } = default!;
+        public DateTime CreatedDate { get; set; } = default;
     }
 }

@@ -13,8 +13,6 @@ namespace Components.Extensions
             self.Salt = user.Salt;
             self.Email = user.Email;
             self.ImageFilePath = user.ImageFilePath;
-            self.CreatedBy = user.CreatedBy ?? user.Email;
-            self.CreatedDate = user.CreatedDate ?? DateTime.UtcNow;
             return self;
         }
 
@@ -26,7 +24,7 @@ namespace Components.Extensions
             self.Salt = user.Salt;
             self.Email = user.Email;
             self.ImageFilePath = user.ImageFilePath;
-            self.CreatedBy = user.CreatedBy ?? user.Email;
+            self.CreatedBy = user.CreatedBy;
             self.CreatedDate = user.CreatedDate;
             return self;
         }

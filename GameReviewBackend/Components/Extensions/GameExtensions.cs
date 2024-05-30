@@ -36,8 +36,6 @@ namespace Components.Extensions
             self.HoursPlayed = playRecord.HoursPlayed;
             self.Rating = playRecord.Rating;
             self.PlayDescription = playRecord.PlayDescription;
-            self.CreatedBy = playRecord.CreatedBy;
-            self.CreatedDate = playRecord.CreatedDate;
             return self;
         }
 

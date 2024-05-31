@@ -69,7 +69,7 @@ namespace API.Middlewares
                     Status = (int)HttpStatusCode.InternalServerError,
                     Type = "Server error",
                     Title = "Server error",
-                    Detail = "An internal server error has occured"
+                    Detail = "An internal server error has occurred"
                 };
 
                 string json = JsonSerializer.Serialize(problemDetails);

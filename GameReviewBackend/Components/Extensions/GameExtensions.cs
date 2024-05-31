@@ -38,6 +38,13 @@ namespace Components.Extensions
             self.PlayDescription = playRecord.PlayDescription;
             return self;
         }
+        public static PlayRecordComments Assign(this PlayRecordComments self, PlayRecordCommentDto playRecordComment)
+        {
+            self.UserId = playRecordComment.UserId;
+            self.PlayRecordId = playRecordComment.PlayRecordId;
+            self.CommentText = playRecordComment.CommentText;
+            return self;
+        }
 
         public static PlayRecordDto Assign(this PlayRecordDto self, PlayRecords playRecord)
         {

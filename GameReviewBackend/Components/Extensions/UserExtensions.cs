@@ -1,5 +1,4 @@
 ﻿using Components.Models;
-using DataAccess.Models;
 using DataAccess.Models.DockerDb;
 
 namespace Components.Extensions
@@ -14,12 +13,6 @@ namespace Components.Extensions
             self.Salt = user.Salt;
             self.Email = user.Email;
             self.ImageFilePath = user.ImageFilePath;
-            self.CreatedBy = user.CreatedBy ?? user.Email;
-            self.CreatedDate = user.CreatedDate ?? DateTime.UtcNow;
-            self.ModifiedBy = user.ModifiedBy;
-            self.ModifiedDate = user.ModifiedDate;
-            self.ObsoleteFlag = user.ObsoleteFlag ?? false;
-            self.ObsoleteDate = user.ObsoleteDate;
             return self;
         }
 
@@ -31,12 +24,8 @@ namespace Components.Extensions
             self.Salt = user.Salt;
             self.Email = user.Email;
             self.ImageFilePath = user.ImageFilePath;
-            self.CreatedBy = user.CreatedBy ?? user.Email;
+            self.CreatedBy = user.CreatedBy;
             self.CreatedDate = user.CreatedDate;
-            self.ModifiedBy = user.ModifiedBy;
-            self.ModifiedDate = user.ModifiedDate;
-            self.ObsoleteFlag = user.ObsoleteFlag;
-            self.ObsoleteDate = user.ObsoleteDate;
             return self;
         }
     }

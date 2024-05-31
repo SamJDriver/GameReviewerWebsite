@@ -1,10 +1,12 @@
-﻿using Components.Models;
+﻿using Components.Utilities;
+using Components.Models;
 
 namespace BusinessLogic.Abstractions
 {
     public interface IGameService
     {
-        public int CreateGame(GameDto game, out string? error);
-        public IEnumerable<GameDto> GetGames();
+        public int CreateGame(GameDto game);
+        public Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize);
+        public GameDto GetGameById(int gameId);
     }
 }

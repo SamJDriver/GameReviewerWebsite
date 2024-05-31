@@ -20,8 +20,6 @@ namespace GameReview.Controllers
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserJson userModel)
         {
-            string? error = default;
-
             UserDto userDto = new UserDto() 
             { 
                 Username = userModel.Username,
@@ -29,8 +27,8 @@ namespace GameReview.Controllers
                 Password = userModel.Password
             };
 
-            _userService.CreateUser(userDto, error);
-            return string.IsNullOrEmpty(error) ? Ok() : BadRequest(error);
+            var newId = _userService.CreateUser(userDto);
+            return Ok(newId) ;
         }
 
 

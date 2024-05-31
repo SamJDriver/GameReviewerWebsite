@@ -1,8 +1,4 @@
 ﻿using Components.Models;
-using DataAccess.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using DataAccess.Models.DockerDb;
 
 namespace Components.Extensions
@@ -11,17 +7,12 @@ namespace Components.Extensions
     {
         public static Games Assign(this Games self, GameDto game)
         {
-            self.Id = game.Id ?? 0;
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
             self.ImageFilePath = game.ImageFilePath;
             self.Description = game.Description;
             self.CreatedBy = game.CreatedBy;
             self.CreatedDate = game.CreatedDate;
-            self.ModifiedBy = game.ModifiedBy;
-            self.ModifiedDate = game.ModifiedDate;
-            self.ObsoleteFlag = game.ObsoleteFlag;
-            self.ObsoleteDate = game.ObsoleteDate;
             return self;
         }
 
@@ -34,10 +25,31 @@ namespace Components.Extensions
             self.Description = game.Description;
             self.CreatedBy = game.CreatedBy;
             self.CreatedDate = game.CreatedDate;
-            self.ModifiedBy = game.ModifiedBy;
-            self.ModifiedDate = game.ModifiedDate;
-            self.ObsoleteFlag = game.ObsoleteFlag;
-            self.ObsoleteDate = game.ObsoleteDate;
+            return self;
+        }
+
+        public static PlayRecords Assign(this PlayRecords self, PlayRecordDto playRecord)
+        {
+            self.UserId = playRecord.UserId;
+            self.GameId = playRecord.GameId;
+            self.CompletedFlag = playRecord.CompletedFlag;
+            self.HoursPlayed = playRecord.HoursPlayed;
+            self.Rating = playRecord.Rating;
+            self.PlayDescription = playRecord.PlayDescription;
+            return self;
+        }
+
+        public static PlayRecordDto Assign(this PlayRecordDto self, PlayRecords playRecord)
+        {
+            self.Id = playRecord.Id;
+            self.UserId = playRecord.UserId;
+            self.GameId = playRecord.GameId;
+            self.CompletedFlag = playRecord.CompletedFlag;
+            self.HoursPlayed = playRecord.HoursPlayed;
+            self.Rating = playRecord.Rating;
+            self.PlayDescription = playRecord.PlayDescription;
+            self.CreatedBy = playRecord.CreatedBy;
+            self.CreatedDate = playRecord.CreatedDate;
             return self;
         }
     }

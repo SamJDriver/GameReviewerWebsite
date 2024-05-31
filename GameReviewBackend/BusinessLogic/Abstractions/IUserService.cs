@@ -4,6 +4,6 @@ namespace BusinessLogic.Abstractions
 {
     public interface IUserService
     {
-        public int CreateUser(UserDto user, string? error);
+        public int CreateUser(UserDto user);
     }
 }

@@ -1,3 +1,4 @@
+using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,27 +21,34 @@ namespace GameReview.Controllers
 
         //Probably admin only
         [HttpPost]
-        public IActionResult CreateGame([FromBody] GameDto game)
+        public IActionResult CreateGame([FromBody] CreateGameJson gameJson)
         {
-            string? error = default;
-            int newId = _gameService.CreateGame(game, out error);
-            return string.IsNullOrEmpty(error) ? Ok(newId) : BadRequest(error);
+            //TODO implement file blob
+            GameDto gameDto = new GameDto()
+            {
+                Title = gameJson.Title,
+                ReleaseDate = gameJson.ReleaseDate,
+                ImageFilePath = "PLACEHOLDER",
+                Description = gameJson.Description
+            };
+
+            int newId = _gameService.CreateGame(gameDto);
+            return Ok(newId);
         }
 
 
         [HttpGet]
-        public IActionResult GetGames()
+        public async Task<IActionResult> GetAllGames(int pageIndex, int pageSize)
         {
-            var games = _gameService.GetGames();
-            return Ok(games);
+            var pagedGames = await _gameService.GetAllGames(pageIndex, pageSize);
+            return Ok(pagedGames);
         }
 
-        [HttpGet("/igdb")]
-        public async Task<IActionResult> GetAccessToken()
+        [HttpGet("{gameId}")]
+        public IActionResult GetGameById(int gameId)
         {
-            await _igdbApiService.QueryApi();
-            return Ok();
+            var game = _gameService.GetGameById(gameId);
+            return Ok(game);
         }
-
     }
 }

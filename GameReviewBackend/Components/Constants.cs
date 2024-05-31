@@ -2,6 +2,10 @@
 {
     public static class Constants
     {
+
+        public static int minimumReleaseYear = 1955;
+
+
         public static class IgdbApi
         {
             public static string GameQueryUri = "https://api.igdb.com/v4/games";

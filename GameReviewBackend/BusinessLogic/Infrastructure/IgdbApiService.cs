@@ -5,7 +5,6 @@ using DataAccess.Models.DockerDb;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Repositories;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,18 +23,6 @@ namespace BusinessLogic.Infrastructure
             _genericRepository = genericRepository;
         }
 
-        private async Task<string> GetAccessToken()
-        {
-
-            var uri = $"https://id.twitch.tv/oauth2/token?client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}&grant_type=client_credentials";
-            using (var httpClient = new HttpClient())
-            {
-                var result = await httpClient.PostAsync(uri, null);
-                var accessToken = await result.Content.ReadAsStringAsync();
-                return accessToken;
-            }
-        }
-
         public async Task QueryApi()
         {
 
@@ -47,6 +34,26 @@ namespace BusinessLogic.Infrastructure
             await insertGameCompaniesLinks();
         }
 
+        public async Task<string> GetOneGame()
+        {
+            var limit = 1;
+            string bodyParams = string.Concat(Constants.IgdbApi.GameBodyParams, $"limit {limit};");
+
+            string gameJson = await GetGenericApiCall(Constants.IgdbApi.GameQueryUri, bodyParams);
+            return gameJson;
+        }
+
+        private async Task<string> GetAccessToken()
+        {
+
+            var uri = $"https://id.twitch.tv/oauth2/token?client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}&grant_type=client_credentials";
+            using (var httpClient = new HttpClient())
+            {
+                var result = await httpClient.PostAsync(uri, null);
+                var accessToken = await result.Content.ReadAsStringAsync();
+                return accessToken;
+            }
+        }
         private async Task insertGenres()
         {
             var genresJson = await GetGenericApiCall(Constants.IgdbApi.GenreQueryUri, Constants.IgdbApi.GenreBodyParams);
@@ -64,10 +71,6 @@ namespace BusinessLogic.Infrastructure
                    Name = name,
                    Code = code,
                    Description = genre["slug"].ToString(),
-                   ObsoleteFlag = false,
-                   ObsoleteDate = null,
-                   ModifiedBy = null,
-                   ModifiedDate = null,
                    CreatedBy = "SamJDriver",
                    CreatedDate = now,
                };
@@ -112,12 +115,12 @@ namespace BusinessLogic.Infrastructure
                     ImageFilePath = "PLACEHOLDER",
                     DeveloperFlag = companyJsonElement["developed"] != null,
                     PublisherFlag = companyJsonElement["published"] != null,
-                    ObsoleteFlag = false,
-                    ObsoleteDate = null,
-                    ModifiedBy = null,
-                    ModifiedDate = null,
-                    CreatedBy = "SamJDriver",
-                    CreatedDate = now,
+                    // ObsoleteFlag = false,
+                    // ObsoleteDate = null,
+                    // ModifiedBy = null,
+                    // ModifiedDate = null,
+                    // CreatedBy = "SamJDriver",
+                    // CreatedDate = now,
                 };
                 companies.Add(companyEntity);
             }
@@ -161,10 +164,6 @@ namespace BusinessLogic.Infrastructure
                    Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
                    CreatedBy = "SamJDriver",
                    CreatedDate = now,
-                   ModifiedBy = null,
-                   ModifiedDate = null,
-                   ObsoleteFlag = false,
-                   ObsoleteDate = null
                };
 
                List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
@@ -179,10 +178,6 @@ namespace BusinessLogic.Infrastructure
                            GenreLookupId = genreId,
                            CreatedBy = "SamJDriver",
                            CreatedDate = now,
-                           ModifiedBy = null,
-                           ModifiedDate = null,
-                           ObsoleteFlag = false,
-                           ObsoleteDate = null,
                        };
                        genreLinks.Add(linkEntity);
                    }
@@ -218,10 +213,6 @@ namespace BusinessLogic.Infrastructure
                     ImageFilePath = "PLACEHOLDER",
                     CreatedBy = "SamJDriver",
                     CreatedDate = now,
-                    ModifiedBy = null,
-                    ModifiedDate = null,
-                    ObsoleteFlag = false,
-                    ObsoleteDate = null
                };
                platforms.Add(platformEntity);
             }
@@ -279,11 +270,7 @@ namespace BusinessLogic.Infrastructure
                                 PlatformId = platformId,
                                 ReleaseDate = null,
                                 CreatedBy = "SamJDriver",
-                                CreatedDate = now,
-                                ModifiedBy = null,
-                                ModifiedDate = null,
-                                ObsoleteFlag = false,
-                                ObsoleteDate = null
+                                CreatedDate = now
                             };
                             gamesPlatformsLinks.Add(linkEntity);
                         }
@@ -353,11 +340,7 @@ namespace BusinessLogic.Infrastructure
                         PortingFlag = portingFlag,
                         SupportingFlag = supportingFlag,
                         CreatedBy = "SamJDriver",
-                        CreatedDate = now,
-                        ModifiedBy = null,
-                        ModifiedDate = null,
-                        ObsoleteFlag = false,
-                        ObsoleteDate = null
+                        CreatedDate = now
                     };
                     gamesCompaniesLinks.Add(linkEntity);
                 }

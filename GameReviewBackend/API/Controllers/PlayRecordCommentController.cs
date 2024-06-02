@@ -22,7 +22,6 @@ namespace GameReview.Controllers
         {
             var dto = new PlayRecordCommentDto()
             {
-                UserId = playRecordComment.UserId,
                 PlayRecordId = playRecordComment.PlayRecordId,
                 CommentText = playRecordComment.CommentText,
             };

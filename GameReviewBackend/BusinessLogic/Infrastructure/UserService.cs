@@ -37,6 +37,7 @@ namespace BusinessLogic.Infrastructure
             user.Salt = Convert.ToBase64String(salt); ;
 
             Users userEntity = new Users().Assign(user);
+            DockerDbContext.SetUsername(user.Username);
             _genericRepository.InsertRecord(userEntity);
             return userEntity.Id;
         }

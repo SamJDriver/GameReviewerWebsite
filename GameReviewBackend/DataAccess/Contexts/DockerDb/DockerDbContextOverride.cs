@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +5,13 @@ namespace DataAccess.Contexts.DockerDb
 {
     public partial class DockerDbContext : DbContext
     {
+
+        private static string _username { get; set; } = "System";
+
+        public static void SetUsername(string username)
+        {
+            _username = username;
+        }
         public override int SaveChanges()
         {
             ChangeTracker.DetectChanges();
@@ -23,7 +26,7 @@ namespace DataAccess.Contexts.DockerDb
                 if (entity is ITrackable)
                 {
                     var track = entity as ITrackable;
-                    track.CreatedBy = "System";
+                    track.CreatedBy = _username;
                     track.CreatedDate = DateTime.Now;
                 }
             }

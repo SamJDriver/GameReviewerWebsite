@@ -35,6 +35,7 @@ namespace BusinessLogic.Infrastructure
             }
 
             var newPlayRecordEntity = new PlayRecords().Assign(playRecord);
+            DockerDbContext.SetUsername(existingUser.Username);
             _genericRepository.InsertRecord(newPlayRecordEntity);  
         }
 

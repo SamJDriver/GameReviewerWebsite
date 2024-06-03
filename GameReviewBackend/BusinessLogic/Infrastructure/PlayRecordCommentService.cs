@@ -32,8 +32,6 @@ namespace BusinessLogic.Infrastructure
             
 
             var newplayRecordCommentEntity = new PlayRecordComments().Assign(playRecordComment);
-            newplayRecordCommentEntity.CreatedBy = existingUser.Username;
-            newplayRecordCommentEntity.CreatedDate = DateTime.Now;
             _genericRepository.InsertRecord(newplayRecordCommentEntity);  
         }
 

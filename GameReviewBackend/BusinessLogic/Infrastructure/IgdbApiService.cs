@@ -70,9 +70,7 @@ namespace BusinessLogic.Infrastructure
                    Id = genre["id"].ToObject<int>(),
                    Name = name,
                    Code = code,
-                   Description = genre["slug"].ToString(),
-                   CreatedBy = "SamJDriver",
-                   CreatedDate = now,
+                   Description = genre["slug"].ToString()
                };
                genres.Add(genresLookup);
             }
@@ -118,9 +116,7 @@ namespace BusinessLogic.Infrastructure
                     // ObsoleteFlag = false,
                     // ObsoleteDate = null,
                     // ModifiedBy = null,
-                    // ModifiedDate = null,
-                    // CreatedBy = "SamJDriver",
-                    // CreatedDate = now,
+                    // ModifiedDate = null
                 };
                 companies.Add(companyEntity);
             }
@@ -162,8 +158,6 @@ namespace BusinessLogic.Infrastructure
                    ReleaseDate = UnixTimeStampToDateTime(gameJToken["first_release_date"]?.ToObject<long>()), //get enum value here
                    ImageFilePath = "PLACEHOLDER",
                    Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
-                   CreatedBy = "SamJDriver",
-                   CreatedDate = now,
                };
 
                List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
@@ -175,9 +169,7 @@ namespace BusinessLogic.Infrastructure
                        GamesGenresLookupLink linkEntity = new GamesGenresLookupLink()
                        {
                            GameId = gameEntity.Id,
-                           GenreLookupId = genreId,
-                           CreatedBy = "SamJDriver",
-                           CreatedDate = now,
+                           GenreLookupId = genreId
                        };
                        genreLinks.Add(linkEntity);
                    }
@@ -210,9 +202,7 @@ namespace BusinessLogic.Infrastructure
                     Id = platform["id"].ToObject<int>(),
                     Name = platform["name"].ToString(),
                     ReleaseDate = default,
-                    ImageFilePath = "PLACEHOLDER",
-                    CreatedBy = "SamJDriver",
-                    CreatedDate = now,
+                    ImageFilePath = "PLACEHOLDER"
                };
                platforms.Add(platformEntity);
             }
@@ -268,9 +258,7 @@ namespace BusinessLogic.Infrastructure
                             {
                                 GameId = gameId,
                                 PlatformId = platformId,
-                                ReleaseDate = null,
-                                CreatedBy = "SamJDriver",
-                                CreatedDate = now
+                                ReleaseDate = null
                             };
                             gamesPlatformsLinks.Add(linkEntity);
                         }
@@ -338,9 +326,7 @@ namespace BusinessLogic.Infrastructure
                         DeveloperFlag = developerFlag,
                         PublisherFlag = publisherFlag,
                         PortingFlag = portingFlag,
-                        SupportingFlag = supportingFlag,
-                        CreatedBy = "SamJDriver",
-                        CreatedDate = now
+                        SupportingFlag = supportingFlag
                     };
                     gamesCompaniesLinks.Add(linkEntity);
                 }

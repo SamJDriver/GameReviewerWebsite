@@ -32,6 +32,14 @@ namespace GameReview.Controllers
             return Ok(newId) ;
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login()
+        {
+
+            var result = await _userService.LoginEntraId();
+            return Ok(result);
+        }
+
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize]
         [HttpGet]

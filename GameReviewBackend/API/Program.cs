@@ -7,6 +7,8 @@ using API.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Configuration;
 
 namespace GameReview
 {
@@ -37,23 +39,8 @@ namespace GameReview
                     }
                 });
 
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
-                c.OperationFilter<SecurityRequirementsOperationFilter>();
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
-                      Enter 'Bearer' [space] and then your token in the text input below.
-                      \r\n\r\nExample: 'Bearer 12345abcdef'",
-                      Name = "Authorization",
-                      In = ParameterLocation.Header,
-                      Type = SecuritySchemeType.ApiKey,
-                      Scheme = "Bearer"
-                });
+                var scopes = new Dictionary<string, string>();
+                scopes.Add("https://graph.microsoft.com/.default", "Access application on user behalf");
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
@@ -63,16 +50,37 @@ namespace GameReview
                         Reference = new OpenApiReference
                           {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
+                            Id = "oauth2"
                           },
                           Scheme = "oauth2",
-                          Name = "Bearer",
+                          Name = "oauth2",
                           In = ParameterLocation.Header,
 
                         },
                         new List<string>()
                       }
                 });
+
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Implicit = new OpenApiOAuthFlow()
+                        {
+                            AuthorizationUrl = new Uri("https://login.microsoftonline.com/common/oauth2/v2.0/authorize"),
+                            TokenUrl = new Uri("https://login.microsoftonline.com/common/oauth2/v2.0/token"),
+                            Scopes = scopes,
+                        }
+                    },
+                    In = ParameterLocation.Header,
+                    Name = "Authorization"
+
+ 
+                    // Type = SecuritySchemeType.ApiKey
+                });
+                // c.OperationFilter<SecurityRequirementsOperationFilter>();
+
                 // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 // c.IncludeXmlComments(xmlPath);
@@ -97,12 +105,29 @@ namespace GameReview
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)
            ).EnableDetailedErrors());
 
-           builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+              options.CheckConsentNeeded = context => false;
+              options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
-                    options.Audience = config["ClientSecrets:DGCApiDevelopment:ResourceId"]; //Receiving token from Azure Entra
-                    options.Authority = config["ClientSecrets:DGCApiDevelopment:InstanceId"] + config["ClientSecrets:DGCApiDevelopment:TenantId"]; //Sends out tokens
+                    options.Audience = config["ClientSecrets:SwaggerClient:ResourceId"]; //Receiving token from Azure Entra
+                    options.Authority = config["ClientSecrets:SwaggerClient:InstanceId"] + config["ClientSecrets:SwaggerClient:TenantId"]; //Sends out tokens
+                })
+                .AddCookie("Cookies")
+                .AddOpenIdConnect("oidc", options => {
+                    options.SignInScheme = "Cookies";
+                    options.Authority = config["ClientSecrets:SwaggerClient:InstanceId"] + config["ClientSecrets:SwaggerClient:TenantId"];
+                    options.ClientId = config["ClientSecrets:SwaggerClient:ClientId"];
+                    options.ResponseType = "code";
+                    options.Prompt = "login";
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.SaveTokens = true;
                 });
 
+            builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme);
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IIgdbApiService, IgdbApiService>();
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
@@ -112,7 +137,7 @@ namespace GameReview
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
-
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -136,9 +161,10 @@ namespace GameReview
                 options.RoutePrefix = string.Empty;
 
                 options.OAuthAppName("Swagger Client");
-                options.OAuthClientId($"{config["AzureActiveDirectory:ClientId"]}");
-                options.OAuthClientSecret($"{config["AzureActiveDirectory:ClientSecret"]}");
-                options.OAuthUseBasicAuthenticationWithAccessCodeGrant(); 
+                options.OAuthClientId($"{config["ClientSecrets:SwaggerClient:ClientId"]}");
+                options.OAuthClientSecret($"{config["ClientSecrets:SwaggerClient:ClientSecret"]}");
+                options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
+                options.OAuth2RedirectUrl("https://jwt.ms");
             });
 
             app.UseHttpsRedirection();
@@ -146,8 +172,10 @@ namespace GameReview
 
             app.UseRouting();
             app.UseAuthentication();
+            app.UseCookiePolicy();
             app.UseAuthorization();
 
+            app.UseMiddleware<SwaggerOAuthMiddleware>();
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.MapControllerRoute(

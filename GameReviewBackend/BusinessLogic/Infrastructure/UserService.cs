@@ -5,17 +5,25 @@ using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Repositories;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace BusinessLogic.Infrastructure
 {
     public class UserService : IUserService
     {
-        GenericRepository<DockerDbContext> _genericRepository;
-        public UserService(GenericRepository<DockerDbContext> genericRepository)
+        private readonly GenericRepository<DockerDbContext> _genericRepository;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
+        public UserService(GenericRepository<DockerDbContext> genericRepository, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _genericRepository = genericRepository;
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         public int CreateUser(UserDto user)
@@ -40,6 +48,18 @@ namespace BusinessLogic.Infrastructure
             DockerDbContext.SetUsername(user.Username);
             _genericRepository.InsertRecord(userEntity);
             return userEntity.Id;
+        }
+
+        public async Task<string> LoginEntraId()
+        {
+
+            var codeUri = $"https://login.microsoftonline.com/{_configuration["ClientSecrets:DGCApiDevelopment:TenantId"]}/oauth2/v2.0/authorize?client_id={_configuration["ClientSecrets:DGCApiDevelopment:ClientId"]}&response_type=code&redirect_uri=https://jwt.ms&response_mode=query&scope={_configuration["ClientSecrets:DGCApiDevelopment:ClientId"]}/.default&state=12345";
+
+            var client = _httpClientFactory.CreateClient();
+            var codeUrl = (await client.GetAsync(codeUri)).RequestMessage.RequestUri.AbsoluteUri;
+            var stuff = (await client.GetAsync(codeUrl)).RequestMessage.RequestUri.AbsoluteUri;
+            
+            return JsonConvert.SerializeObject(codeUrl);
         }
 
         private string saltPassword(string password, byte[] salt)

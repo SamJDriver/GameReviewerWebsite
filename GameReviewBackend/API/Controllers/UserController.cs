@@ -1,6 +1,7 @@
 using BusinessLogic.Abstractions;
 using Components.Models;
 using GameReview.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameReview.Controllers
@@ -31,7 +32,8 @@ namespace GameReview.Controllers
             return Ok(newId) ;
         }
 
-
+        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         [HttpGet]
         public IActionResult GetUsers()
         {

@@ -4,6 +4,9 @@ using DataAccess.Contexts.DockerDb;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using API.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GameReview
 {
@@ -13,9 +16,67 @@ namespace GameReview
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddUserSecrets<Program>()
+                .Build();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen( c => 
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "DGC Game Review API",
+                    Version = "v1",
+                    Description = "An API created by Team Dominion Gaming Company to Manage Games and Reviews",
+                    // TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "DGC",
+                    }
+                });
+
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+                      Name = "Authorization",
+                      In = ParameterLocation.Header,
+                      Type = SecuritySchemeType.ApiKey,
+                      Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                      new OpenApiSecurityScheme
+                      {
+                        Reference = new OpenApiReference
+                          {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                          },
+                          Scheme = "oauth2",
+                          Name = "Bearer",
+                          In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                      }
+                });
+                // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                // c.IncludeXmlComments(xmlPath);
+            });
 
             //If working locally, default environment variables to localhost values
             var serverName = Environment.GetEnvironmentVariable("MYSQL_SERVICE_NAME") ?? "127.0.0.1";
@@ -36,6 +97,12 @@ namespace GameReview
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)
            ).EnableDetailedErrors());
 
+           builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.Audience = config["ClientSecrets:DGCApiDevelopment:ResourceId"]; //Receiving token from Azure Entra
+                    options.Authority = config["ClientSecrets:DGCApiDevelopment:InstanceId"] + config["ClientSecrets:DGCApiDevelopment:TenantId"]; //Sends out tokens
+                });
+
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IIgdbApiService, IgdbApiService>();
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
@@ -45,9 +112,6 @@ namespace GameReview
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
-
-            // builder.Services.AddIdentity<UserDto, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                // .AddEntityFrameworkStores<DockerDbContext>();
 
             var app = builder.Build();
 
@@ -70,13 +134,18 @@ namespace GameReview
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
+
+                options.OAuthAppName("Swagger Client");
+                options.OAuthClientId($"{config["AzureActiveDirectory:ClientId"]}");
+                options.OAuthClientSecret($"{config["AzureActiveDirectory:ClientSecret"]}");
+                options.OAuthUseBasicAuthenticationWithAccessCodeGrant(); 
             });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();

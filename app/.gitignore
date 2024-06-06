@@ -1,4 +1,3 @@
-node_modules/
 .expo/
 dist/
 npm-debug.*
@@ -85,3 +84,10 @@ yarn-error.log
 
 # testing
 /coverage
+
+.cache
+.next
+out/
+*.tsbuildinfo
+pages/versions/latest/
+public/static/constants

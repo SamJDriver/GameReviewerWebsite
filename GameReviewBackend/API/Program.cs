@@ -40,12 +40,8 @@ namespace GameReview
                     }
                 });
 
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
+                var scopes = new Dictionary<string, string>();
+                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-read", "Read access to API");
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
@@ -55,15 +51,28 @@ namespace GameReview
                         Reference = new OpenApiReference
                           {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
+                            Id = "oauth2"
                           },
                           Scheme = "oauth2",
-                          Name = "Bearer",
+                          Name = "oauth2",
                           In = ParameterLocation.Header,
 
                         },
                         new List<string>()
                       }
+                });
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Implicit = new OpenApiOAuthFlow()
+                        {
+                            AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/oauth2/v2.0/authorize"),
+                            TokenUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/{config["AzureAd:TenantId"]}/v2.0/token"),
+                            Scopes = scopes
+                        }
+                    }
                 });
                 // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -118,8 +127,10 @@ namespace GameReview
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                options.RoutePrefix = string.Empty;
+                options.OAuthAppName("Swagger Client");
+                options.OAuthClientId(config["AzureAd:ClientId"]);
+                options.OAuthClientSecret(config["AzureAd:ClientSecret"]);
+                options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
             });
 
             app.UseHttpsRedirection();

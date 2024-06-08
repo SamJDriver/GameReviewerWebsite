@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, router } from "expo-router";
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { PaperProvider, TextInput, Button, Text, MD3DarkTheme } from 'react-native-paper';
+import UploadImage from '../components/UploadImage';
 // import Background from '../components/Background'
 // import Logo from '../components/Logo'
 // import Header from '../components/Header'
@@ -19,6 +20,7 @@ export default function RegisterScreen() {
   const [username, setUsername] = useState({ value: '', error: '' })
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+  const [passwordConfirmation, setPasswordConfirmation] = useState({ value: '', error: '' })
 
   const onSignUpPressed = () => {
     // const nameError = nameValidator(name.value)
@@ -34,6 +36,10 @@ export default function RegisterScreen() {
     //   index: 0,
     //   routes: [{ name: 'Dashboard' }],
     // })
+    // TODO: maybe would be cool if we changed the onChangeText to call a method to query the api to see if a username is available
+    // and then can use HelperText to display if its available or not
+    // TODO: HelperText to tell user if there is a specific problem with the password they are trying to use
+    // TODO: verify both entered passwords are the same
   }
 
   return (
@@ -42,6 +48,9 @@ export default function RegisterScreen() {
       {/* <BackButton goBack={navigation.goBack} />
       <Logo />
       <Header>Create Account</Header> */}
+      <View style={styles.container}>
+        <UploadImage/>
+      </View>
       <Text>Create Account</Text>
       <TextInput
         label="Username"
@@ -72,6 +81,15 @@ export default function RegisterScreen() {
         // errorText={password.error}
         secureTextEntry
       />
+      <TextInput
+        label="Confirm Password"
+        returnKeyType="done"
+        value={passwordConfirmation.value}
+        onChangeText={(text) => setPasswordConfirmation({ value: text, error: '' })}
+        error={!!passwordConfirmation.error}
+        // errorText={passwordConfirmation.error}
+        secureTextEntry
+      />
       <Button
         mode="contained"
         onPress={onSignUpPressed}
@@ -83,6 +101,7 @@ export default function RegisterScreen() {
         <Text>Already have an account? </Text>
         <TouchableOpacity onPress={() => router.replace('LoginScreen')}>
           <Text style={styles.link}>Login</Text>
+          {/* TODO: this route doesn't work */}
         </TouchableOpacity>
       </View>
     </View>
@@ -98,5 +117,11 @@ const styles = StyleSheet.create({
   link: {
     fontWeight: 'bold',
     color: MD3DarkTheme.colors.primary,
+  },
+  container: {
+    padding:50,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })

@@ -1,55 +1,58 @@
 import React, { useState } from 'react'
 import { Link, router } from "expo-router";
-import { Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
-import { PaperProvider, TextInput, Button, Text, MD3DarkTheme } from 'react-native-paper';
+import { Image, StyleSheet, Platform, TouchableOpacity, FlatList, StatusBar, View } from 'react-native';
+import { PaperProvider, TextInput, Button, Text, MD3DarkTheme, FAB  } from 'react-native-paper';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import TopAppBar from '@/components/TopAppBar';
+
+const DATA = [
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      title: 'First Item',
+    },
+    {
+      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      title: 'Second Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+  ];
+
+  type ItemProps = {title: string};
+
+    const Item = ({title}: ItemProps) => (
+    <View style={styles.item}>
+        <Text style={styles.title}>{title}</Text>
+    </View>
+    );
 
 export default function MainScreen() {
     return(
     <PaperProvider>
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-        </ThemedView>
-    </ParallaxScrollView>
+        {/* TODO Fix Top Search BaR */}
+        <TopAppBar></TopAppBar>
+        <Text>New from friends</Text>
+        {/* TODO: For the FlatList objects, probably want some sort of container or collection object to group in the Image of a game, user's pfp, rating, if comments or not */}
+      <FlatList
+        data={DATA}
+        renderItem={({item}) => <Item title={item.title} />}
+        keyExtractor={item => item.id}
+      />
+      <Text>Popular games</Text>
+      {/* TODO: FlatList for the popular games. This should scroll left and right */}
+      <Text>Popular reviews</Text>
+      {/* TODO: FlatList for the popular reviews. This should scroll left and right */}
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => console.log('Pressed')}
+    />
+      {/* TODO Tab navigation bottom bar. Home, reviews, games, profile. If the tab navigating shit is too confusing can maybe use another AppBar */}
   </PaperProvider>
     );
 }
@@ -88,4 +91,23 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       color: MD3DarkTheme.colors.primary,
     },
+    container: {
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+      },
+      item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+      },
+      title: {
+        fontSize: 32,
+      },
+      fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+      },
   });

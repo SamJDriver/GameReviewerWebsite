@@ -82,7 +82,7 @@ export default function RegisterScreen() {
         secureTextEntry
       />
       <TextInput
-        label="Confirm Password"
+        label="Re-enter Password"
         returnKeyType="done"
         value={passwordConfirmation.value}
         onChangeText={(text) => setPasswordConfirmation({ value: text, error: '' })}

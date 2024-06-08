@@ -1,6 +1,7 @@
 using BusinessLogic.Abstractions;
 using Components.Models;
 using GameReview.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

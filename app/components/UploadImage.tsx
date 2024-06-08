@@ -4,13 +4,36 @@ import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 
-const addImage = async () => {
-    let _image = await ImagePicker.launchImageLibraryAsync();
-  }
-
 export default function UploadImage() {
+    
   const [image, setImage] = useState(null);
-  const addImage=()=>{};
+
+  // TODO: in theory, we don't need to do this as Expo should handle it for us? But it may be good practice to keep anyway
+//   const  checkForCameraRollPermission=async()=>{
+//     const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+//     if (status !== 'granted') {
+//       alert("Please grant camera roll permissions inside your system's settings");
+//     }else{
+//       console.log('Media Permissions are granted')
+//     }
+//   }
+//     useEffect(() => {
+//         checkForCameraRollPermission()
+//     }, []);
+  
+  const addImage = async () => {
+    let _image = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4,3],
+      quality: 1,
+    });
+    console.log(JSON.stringify(_image));
+    if (!_image.canceled) {
+        setImage(_image.assets[0].uri); // Visual Studio is complaining about this but it seems to work fine
+    }
+  };
+
   return (
             <View style={imageUploaderStyles.container}>
                 {

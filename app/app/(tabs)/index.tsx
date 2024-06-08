@@ -8,6 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 // This is the entry point of the app
+// TODO: get rid of bottom tab on this screen
 
 export default function HomeScreen() {
   const [email, setEmail] = useState({ value: '', error: '' })

@@ -37,8 +37,7 @@ namespace GameReview.Controllers
         public async Task<IActionResult> Login()
         {
 
-            var result = await _userService.LoginEntraId();
-            return Ok(result);
+            return Ok();
         }
 
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

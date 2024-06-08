@@ -6,6 +6,5 @@ namespace BusinessLogic.Abstractions
     public interface IUserService
     {
         public int CreateUser(UserDto user);
-        public Task<string> LoginEntraId();
     }
 }

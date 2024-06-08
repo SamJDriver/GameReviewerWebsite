@@ -49,19 +49,7 @@ namespace BusinessLogic.Infrastructure
             _genericRepository.InsertRecord(userEntity);
             return userEntity.Id;
         }
-
-        public async Task<string> LoginEntraId()
-        {
-
-            var codeUri = $"https://login.microsoftonline.com/{_configuration["ClientSecrets:DGCApiDevelopment:TenantId"]}/oauth2/v2.0/authorize?client_id={_configuration["ClientSecrets:DGCApiDevelopment:ClientId"]}&response_type=code&redirect_uri=https://jwt.ms&response_mode=query&scope={_configuration["ClientSecrets:DGCApiDevelopment:ClientId"]}/.default&state=12345";
-
-            var client = _httpClientFactory.CreateClient();
-            var codeUrl = (await client.GetAsync(codeUri)).RequestMessage.RequestUri.AbsoluteUri;
-            var stuff = (await client.GetAsync(codeUrl)).RequestMessage.RequestUri.AbsoluteUri;
-            
-            return JsonConvert.SerializeObject(codeUrl);
-        }
-
+        
         private string saltPassword(string password, byte[] salt)
         {
             // TODO i think with how the model is set up right now, we are expecting to receive the salt and hashed password? But that should be something the api will do here

@@ -26,8 +26,6 @@ namespace BusinessLogic.Infrastructure
             }
 
             var gameEntity = new Games().Assign(game);
-            gameEntity.CreatedBy = "SamJDriver";
-            gameEntity.CreatedDate = DateTime.Now;
 
             //TODO add validation checks for game?
             _genericRepository.InsertRecord(gameEntity);

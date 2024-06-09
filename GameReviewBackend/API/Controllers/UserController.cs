@@ -1,6 +1,8 @@
 using BusinessLogic.Abstractions;
 using Components.Models;
 using GameReview.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameReview.Controllers
@@ -31,7 +33,15 @@ namespace GameReview.Controllers
             return Ok(newId) ;
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login()
+        {
 
+            return Ok();
+        }
+
+        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         [HttpGet]
         public IActionResult GetUsers()
         {

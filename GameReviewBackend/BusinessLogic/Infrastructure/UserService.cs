@@ -5,17 +5,25 @@ using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Repositories;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace BusinessLogic.Infrastructure
 {
     public class UserService : IUserService
     {
-        GenericRepository<DockerDbContext> _genericRepository;
-        public UserService(GenericRepository<DockerDbContext> genericRepository)
+        private readonly GenericRepository<DockerDbContext> _genericRepository;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
+        public UserService(GenericRepository<DockerDbContext> genericRepository, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _genericRepository = genericRepository;
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         public int CreateUser(UserDto user)
@@ -37,10 +45,11 @@ namespace BusinessLogic.Infrastructure
             user.Salt = Convert.ToBase64String(salt); ;
 
             Users userEntity = new Users().Assign(user);
+            DockerDbContext.SetUsername(user.Username);
             _genericRepository.InsertRecord(userEntity);
             return userEntity.Id;
         }
-
+        
         private string saltPassword(string password, byte[] salt)
         {
             // TODO i think with how the model is set up right now, we are expecting to receive the salt and hashed password? But that should be something the api will do here

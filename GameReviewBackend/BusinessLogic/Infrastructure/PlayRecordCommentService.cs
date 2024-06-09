@@ -32,8 +32,7 @@ namespace BusinessLogic.Infrastructure
             
 
             var newplayRecordCommentEntity = new PlayRecordComments().Assign(playRecordComment);
-            newplayRecordCommentEntity.CreatedBy = existingUser.Username;
-            newplayRecordCommentEntity.CreatedDate = DateTime.Now;
+            DockerDbContext.SetUsername(existingUser.Username);
             _genericRepository.InsertRecord(newplayRecordCommentEntity);  
         }
 

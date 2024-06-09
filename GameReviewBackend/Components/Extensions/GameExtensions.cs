@@ -11,8 +11,6 @@ namespace Components.Extensions
             self.ReleaseDate = game.ReleaseDate;
             self.ImageFilePath = game.ImageFilePath;
             self.Description = game.Description;
-            self.CreatedBy = game.CreatedBy;
-            self.CreatedDate = game.CreatedDate;
             return self;
         }
 

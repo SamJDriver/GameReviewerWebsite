@@ -1,4 +1,5 @@
-﻿using Components.Models;
+﻿using System.Runtime.CompilerServices;
+using Components.Models;
 
 namespace BusinessLogic.Abstractions
 {

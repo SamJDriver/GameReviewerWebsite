@@ -34,6 +34,7 @@ const DATA = [
 export default function MainScreen() {
     return(
     <PaperProvider>
+        <MyDrawer></MyDrawer>
         {/* TODO Fix Top Search BaR */}
         <TopAppBar></TopAppBar>
         <Text>New from friends</Text>

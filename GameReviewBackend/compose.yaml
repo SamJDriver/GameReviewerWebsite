@@ -26,8 +26,11 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: /run/secrets/db_password
       MYSQL_PORT: 3306
+      AZURE_AD: /run/secrets/azure_ad
+      RUNNING_IN_CONTAINER_FLAG: true
     secrets:
        - db_password
+       - azure_ad
   db: #docker exec -it mariadb mariadb -u user -p
     image: mariadb:latest
     environment:
@@ -65,4 +68,6 @@ secrets:
     file: secrets/db_password.txt
   db_root_password:
     file: secrets/db_root_password.txt
+  azure_ad:
+    file: secrets/azure_ad.json
 

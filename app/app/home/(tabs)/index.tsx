@@ -35,82 +35,98 @@ const DATA = [
 export default function Dashboard() {
   return (
     <PaperProvider>
-      
-    {/* TODO Fix Top Search BaR */}
-    <TopAppBar></TopAppBar>
-    <Text>New from friends</Text>
-    {/* TODO: For the FlatList objects, probably want some sort of container or collection object to group in the Image of a game, user's pfp, rating, if comments or not */}
-  <FlatList
-    data={DATA}
-    renderItem={({item}) => <Item title={item.title} />}
-    keyExtractor={item => item.id}
-  />
-  <Text>Popular games</Text>
-  {/* TODO: FlatList for the popular games. This should scroll left and right */}
-  <Text>Popular reviews</Text>
-  {/* TODO: FlatList for the popular reviews. This should scroll left and right */}
-  <FAB
-    icon="plus"
-    style={styles.fab}
-    onPress={() => console.log('Pressed FAB button')}
-/>
-  {/* TODO Tab navigation bottom bar. Home, reviews, games, profile. If the tab navigating shit is too confusing can maybe use another AppBar */}
-</PaperProvider>
+          <View
+              style={[
+                  styles.container,
+                  {
+                      // Try setting `flexDirection` to `"row"`.
+                      flexDirection: 'column',
+                      backgroundColor: '#1E1E1E'
+                  },
+              ]}>
+        <View style={{flex:1, backgroundColor: '#000000'}}>
+            {/* TODO Fix Top Search BaR */}
+            <TopAppBar></TopAppBar>
+        </View>
+            
+        <Text>New from friends</Text>
+        {/* TODO: For the FlatList objects, probably want some sort of container or collection object to group in the Image of a game, user's pfp, rating, if comments or not */}
+        <FlatList
+            data={DATA}
+            renderItem={({ item }) => <Item title={item.title} />}
+            keyExtractor={item => item.id}
+        />
+        <Text>Popular games</Text>
+        {/* TODO: FlatList for the popular games. This should scroll left and right */}
+        <Text>Popular reviews</Text>
+        {/* TODO: FlatList for the popular reviews. This should scroll left and right */}
+        <FAB
+            icon="plus"
+            style={styles.fab}
+            onPress={() => console.log('Pressed FAB button')}
+        />
+        {/* TODO Tab navigation bottom bar. Home, reviews, games, profile. If the tab navigating shit is too confusing can maybe use another AppBar */}
+        </View>
+    </PaperProvider>
+    
   );
 }
 
 
 const styles = StyleSheet.create({
     titleContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
     },
     stepContainer: {
-      gap: 8,
-      marginBottom: 8,
+        gap: 8,
+        marginBottom: 8,
     },
     reactLogo: {
-      height: 178,
-      width: 290,
-      bottom: 0,
-      left: 0,
-      position: 'absolute',
+        height: 178,
+        width: 290,
+        bottom: 0,
+        left: 0,
+        position: 'absolute',
     },
     forgotPassword: {
-      width: '100%',
-      alignItems: 'flex-end',
-      marginBottom: 24,
+        width: '100%',
+        alignItems: 'flex-end',
+        marginBottom: 24,
     },
     row: {
-      flexDirection: 'row',
-      marginTop: 4,
+        flexDirection: 'row',
+        marginTop: 4,
     },
     forgot: {
-      fontSize: 13,
-      color: MD3DarkTheme.colors.secondary,
+        fontSize: 13,
+        color: MD3DarkTheme.colors.secondary,
     },
     link: {
-      fontWeight: 'bold',
-      color: MD3DarkTheme.colors.primary,
+        fontWeight: 'bold',
+        color: MD3DarkTheme.colors.primary,
     },
     container: {
         flex: 1,
         marginTop: StatusBar.currentHeight || 0,
-      },
-      item: {
+    },
+    item: {
         backgroundColor: '#f9c2ff',
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
-      },
-      title: {
+    },
+    title: {
         fontSize: 32,
-      },
-      fab: {
+    },
+    fab: {
         position: 'absolute',
         margin: 16,
         right: 0,
         bottom: 0,
-      },
+    },
+    // primaryColor: '#1E1E1E',
+    // secondaryColor: '#000000',
+    // tertiaryColor: '0d99ff',
   });

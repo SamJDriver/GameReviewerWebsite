@@ -10,7 +10,7 @@ import { ThemedView } from '@/components/ThemedView';
 // This is the entry point of the app
 // TODO: get rid of bottom tab on this screen
 
-export default function HomeScreen() {
+export default function LoginScreen() {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
 
@@ -27,7 +27,7 @@ export default function HomeScreen() {
     //   index: 0,
     //   routes: [{ name: 'Dashboard' }],
     // })
-    router.replace('MainScreen')
+    router.replace('home/(tabs)/')
   
   }
 

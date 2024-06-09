@@ -10,7 +10,7 @@
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "DataAccess",
    "Schemas": null,
-   "SelectedHandlebarsLanguage": 2,
+   "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 0,
    "T4TemplatePath": null,
    "Tables": [
@@ -72,7 +72,7 @@
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
    "UseFluentApiOnly": false,
-   "UseHandleBars": false,
+   "UseHandleBars": true,
    "UseHierarchyId": false,
    "UseInflector": false,
    "UseLegacyPluralizer": false,

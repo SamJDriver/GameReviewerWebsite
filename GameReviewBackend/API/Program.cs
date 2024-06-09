@@ -4,7 +4,6 @@ using DataAccess.Contexts.DockerDb;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using API.Middlewares;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.Identity.Web;
@@ -16,13 +15,23 @@ namespace GameReview
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            bool.TryParse(Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER_FLAG"), out bool containerFlag);
+
 
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false)
                 .AddUserSecrets<Program>()
                 .Build();
 
-            builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
+            var secretConfig = new ConfigurationBuilder()
+                .AddJsonFile( 
+                    containerFlag ? 
+                    Environment.GetEnvironmentVariable("AZURE_AD")
+                    : Path.Combine(Path.GetFullPath(Environment.CurrentDirectory), @"..\secrets\azure_ad.json")
+                    , optional: false
+                ).Build();
+
+            builder.Services.AddMicrosoftIdentityWebApiAuthentication(secretConfig);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -68,8 +77,8 @@ namespace GameReview
                     {
                         Implicit = new OpenApiOAuthFlow()
                         {
-                            AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/oauth2/v2.0/authorize"),
-                            TokenUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/{config["AzureAd:TenantId"]}/v2.0/token"),
+                            AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{secretConfig["AzureAd:TenantId"]}/oauth2/v2.0/authorize"),
+                            TokenUrl = new Uri($"https://login.microsoftonline.com/{secretConfig["AzureAd:TenantId"]}/{secretConfig["AzureAd:TenantId"]}/v2.0/token"),
                             Scopes = scopes
                         }
                     }
@@ -125,13 +134,31 @@ namespace GameReview
             }
             
             app.UseSwagger();
-            app.UseSwaggerUI(options =>
+
+            if (containerFlag)
             {
-                options.OAuthAppName("Swagger Client");
-                options.OAuthClientId(config["AzureAd:ClientId"]);
-                options.OAuthClientSecret(config["AzureAd:ClientSecret"]);
-                options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
-            });
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+
+                    options.OAuthAppName("Swagger Client");
+                    options.OAuthClientId(secretConfig["AzureAd:ClientId"]);
+                    options.OAuthClientSecret(secretConfig["AzureAd:ClientSecret"]);
+                    options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
+                });
+            }
+            else
+            {
+                app.UseSwaggerUI(options =>
+                {
+                    options.OAuthAppName("Swagger Client");
+                    options.OAuthClientId(secretConfig["AzureAd:ClientId"]);
+                    options.OAuthClientSecret(secretConfig["AzureAd:ClientSecret"]);
+                    options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
+                });
+            }
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

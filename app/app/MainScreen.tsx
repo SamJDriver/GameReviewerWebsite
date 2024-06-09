@@ -7,6 +7,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import TopAppBar from '@/components/TopAppBar';
+import { Drawer } from 'expo-router/drawer';
 
 const DATA = [
     {
@@ -34,7 +35,7 @@ const DATA = [
 export default function MainScreen() {
     return(
     <PaperProvider>
-        <MyDrawer></MyDrawer>
+      
         {/* TODO Fix Top Search BaR */}
         <TopAppBar></TopAppBar>
         <Text>New from friends</Text>

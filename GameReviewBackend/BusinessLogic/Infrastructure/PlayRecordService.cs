@@ -35,8 +35,7 @@ namespace BusinessLogic.Infrastructure
             }
 
             var newPlayRecordEntity = new PlayRecords().Assign(playRecord);
-            newPlayRecordEntity.CreatedBy = existingUser.Username;
-            newPlayRecordEntity.CreatedDate = DateTime.Now;
+            DockerDbContext.SetUsername(existingUser.Username);
             _genericRepository.InsertRecord(newPlayRecordEntity);  
         }
 
@@ -71,8 +70,6 @@ namespace BusinessLogic.Infrastructure
             existingPlayRecord.Assign(playRecord);
             existingPlayRecord.GameId = existingGame.Id;
             existingPlayRecord.UserId = existingUser.Id;
-            existingPlayRecord.CreatedBy = existingUser.Username;
-            existingPlayRecord.CreatedDate = DateTime.Now;
 
             //TODO overrite savechanges for this
             _genericRepository.UpdateRecord(existingPlayRecord);

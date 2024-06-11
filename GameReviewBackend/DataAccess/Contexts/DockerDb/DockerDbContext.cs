@@ -32,7 +32,8 @@ namespace DataAccess.Contexts.DockerDb
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("myconnectionstring", ServerVersion.AutoDetect("myconnectionstring")););
+            var connectionString = "myconnectionstring";
+            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

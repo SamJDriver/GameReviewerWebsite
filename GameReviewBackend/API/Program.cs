@@ -89,17 +89,12 @@ namespace GameReview
             });
 
             //If working locally, default environment variables to localhost values
-            var serverName = Environment.GetEnvironmentVariable("MYSQL_SERVICE_NAME") ?? "127.0.0.1";
-            var port = Environment.GetEnvironmentVariable("MYSQL_PORT") ?? "3306";
-            var databaseName = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? "mydatabase";
-            var username = Environment.GetEnvironmentVariable("MYSQL_USER") ?? "user";
-            var password_file_path = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
-            var password = "password";
-            if (password_file_path != null) 
-            {
-                password = File.ReadAllText(@$"{password_file_path}");
-            }
-            
+            var serverName = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_SERVICE_NAME") : secretConfig["Database:Host"];
+            var port = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_PORT") : secretConfig["Database:Port"];
+            var databaseName = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_DATABASE") : secretConfig["Database:Database"];
+            var username = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_USER") : secretConfig["Database:Username"];
+            var password = containerFlag ? File.ReadAllText(@$"{Environment.GetEnvironmentVariable("MYSQL_PASSWORD")}") : secretConfig["Database:Password"];
+
             var connectionString = $"Server={serverName}; Port={port}; Database={databaseName}; Uid={username}; Pwd={password}";
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options

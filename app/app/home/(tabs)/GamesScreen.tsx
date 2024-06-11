@@ -1,9 +1,13 @@
+import TopAppBar from '@/components/TopAppBar';
 import { View, Text } from 'react-native';
 
-export default function GamesScreen() {
+const GamesScreen = () => {
   return (
     <View>
+        <TopAppBar></TopAppBar>
       <Text>Games Screen</Text>
     </View>
   );
 }
+
+export default GamesScreen;

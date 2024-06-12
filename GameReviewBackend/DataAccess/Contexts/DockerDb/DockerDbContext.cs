@@ -30,11 +30,19 @@ namespace DataAccess.Contexts.DockerDb
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var connectionString = "myconnectionstring";
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-        }
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
+
+
+        //     var serverName = Environment.GetEnvironmentVariable("MYSQL_HOST");
+        //     var port = Environment.GetEnvironmentVariable("MYSQL_PORT");
+        //     var databaseName = Environment.GetEnvironmentVariable("MYSQL_DATABASE");
+        //     var username = Environment.GetEnvironmentVariable("MYSQL_USER");
+        //     var password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
+
+        //     var connectionString = ;
+        //     optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        // }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

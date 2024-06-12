@@ -19,8 +19,8 @@ namespace GameReview
 
 
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddUserSecrets<Program>()
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                .AddUserSecrets("34a2eb48-f55e-4322-8205-5f51e2572770")
                 .Build();
 
             var secretConfig = new ConfigurationBuilder()

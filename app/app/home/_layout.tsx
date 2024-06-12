@@ -1,24 +1,25 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
-import TopAppBar from '@/components/TopAppBar';
+import { MD3DarkTheme } from 'react-native-paper';
+
 
 export default function Layout() {
   return (
     <GestureHandlerRootView>
-      <Drawer>
+      <Drawer 
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: MD3DarkTheme.colors.background,
+        },
+        drawerLabelStyle: {
+          color: 'white'
+        }
+        }}>
         <Drawer.Screen
           name="(tabs)"
           options={{
-            drawerLabel: "(tabs)",
-            title: "(tabs)",
-            headerShown: false,
-          }}
-        />
-        <Drawer.Screen
-          name="settings"
-          options={{
-            drawerLabel: "Settings",
-            title: "Settings",
+            drawerLabel: "Home",
+            title: "Home",
             headerShown: false,
           }}
         />
@@ -30,6 +31,15 @@ export default function Layout() {
             headerShown: false,
           }}
         />
+        <Drawer.Screen
+          name="settings"
+          options={{
+            drawerLabel: "Settings",
+            title: "Settings",
+            headerShown: false,
+          }}
+        />
+        
       </Drawer>
       </GestureHandlerRootView>
   );

@@ -8,7 +8,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 // This is the entry point of the app
-// TODO: get rid of bottom tab on this screen
 
 export default function LoginScreen() {
   const [email, setEmail] = useState({ value: '', error: '' })
@@ -38,10 +37,10 @@ export default function LoginScreen() {
         {/* TODO logo image here */}
         <Image style={{ justifyContent: 'center', alignSelf: 'center' }} source={require('./../assets/images/react-logo.png')} />
 
-        <View>
+        <View style={styles.loginContainer}>
           <Text>Login to continue</Text>
 
-          {/* TODO: be able to login with email or username */}
+          {/* TODO: be able to login with email OR username? pie in the sky*/}
           <TextInput
             label="Email"
             value={email.value}
@@ -52,10 +51,9 @@ export default function LoginScreen() {
             autoComplete='email'
             textContentType="emailAddress"
             error={!!email.error}
-            style={styles.textInput}
+            style={styles.textInputStyle}
           />
 
-          {/* TODO: Display password requirements to the user. HelperText may be the right thing for that */}
           <TextInput
             label="Password"
             returnKeyType="done"
@@ -63,7 +61,7 @@ export default function LoginScreen() {
             onChangeText={(text) => setPassword({ value: text, error: '' })}
             secureTextEntry
             error={!!password.error}
-            style={styles.textInput}
+            style={styles.textInputStyle}
           />
 
           <Button mode="contained" buttonColor='#0d99ff' textColor='white' onPress={onLoginPressed}>
@@ -96,6 +94,10 @@ const styles = StyleSheet.create({
     flex: 1,
 
   },
+  loginContainer: {
+    marginVertical: "2%",
+    gap: 10,
+  },
   reactLogo: {
     height: 178,
     width: 290,
@@ -120,10 +122,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-  mainButton: {
-    color: '#0d99ff'
-  },
-  textInput: {
+  textInputStyle: {
     selectionColor: 'white',
+    cursorColor: 'white',
+    underlineColor: 'white',
+    activeUnderlineColor: 'white',
   }
 });

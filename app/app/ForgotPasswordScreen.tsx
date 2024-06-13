@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link, router } from "expo-router";
 import { PaperProvider, TextInput, Button, Text, MD3DarkTheme, Modal, Portal, Dialog, } from 'react-native-paper';
 // import Background from '../components/Background'
@@ -24,46 +24,58 @@ export default function ResetPasswordScreen() {
     //   setEmail({ ...email, error: emailError })
     //   return
     // }
-    
 
-      
+
+
 
     // router.replace('LoginScreen')
     // TODO: tell the user that something happened, maybe pop up a toast that they should get an email or something
   }
 
   return (
-    <PaperProvider>
-    <View>
-      {/* <BackButton goBack={navigation.goBack} />
+    <View style={styles.bigContainer}>
+      <View style={styles.margins}>
+        {/* <BackButton goBack={navigation.goBack} />
       <Logo />
       <Header>Restore Password</Header> */}
-      <Text>Reset Password</Text>
-      <Text>Enter your email address or username and we’ll send you a link to reset your password</Text>
-      {/* TODO: work with username or email */}
-      <TextInput
-        label="Email or username"
-        returnKeyType="done"
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        // errorText={email.error}
-        autoCapitalize="none"
-        autoComplete="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
-      <Button
-        mode="contained"
-        onPress={
+      <View style={{gap:10}}>
+        <Text style={{fontWeight: 'bold'}}>Reset Password</Text>
+        <Text>Enter your email address or username and we’ll send you a link to reset your password</Text>
+    
+        {/* TODO: work with username or email */}
+        
+        <TextInput
+          label="Email or username"
+          returnKeyType="done"
+          value={email.value}
+          onChangeText={(text) => setEmail({ value: text, error: '' })}
+          error={!!email.error}
+          // errorText={email.error}
+          autoCapitalize="none"
+          autoComplete="email"
+          textContentType="emailAddress"
+          keyboardType="email-address"
+        />
+        <Button
+          mode="contained"
+          onPress={
             () => { sendResetPasswordEmail(); showDialog(); }
-           }
-        style={{ marginTop: 16 }}
-      >
-        Reset Password
-      </Button>
-      <Portal>
-      <Dialog visible={visible} onDismiss={hideDialog}>
+          }
+          buttonColor='#0d99ff' 
+          textColor='white'
+        >
+          Reset Password
+        </Button>
+        </View>
+
+        <View style={{flexDirection: 'row',justifyContent:'center'}}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.link}> Already have an account? Login</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Portal>
+          <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Content>
               <Text variant="bodyLarge">An email with a link to reset your password was sent to the email address associated with your account</Text>
             </Dialog.Content>
@@ -71,8 +83,27 @@ export default function ResetPasswordScreen() {
               <Button onPress={hideDialog}>Done</Button>
             </Dialog.Actions>
           </Dialog>
-      </Portal>
+        </Portal>
+      </View>
     </View>
-    </PaperProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  margins: {
+    marginHorizontal: "5%",
+    marginVertical: "15%",
+    justifyContent: "space-evenly",
+    flex: 1,
+    gap: 10
+    
+  },
+  bigContainer: {
+    backgroundColor: '#101316',
+    flex: 1,
+  },
+  link: {
+    fontWeight: 'bold',
+    color: 'white',
+  },
+})

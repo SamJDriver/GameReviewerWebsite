@@ -43,85 +43,103 @@ export default function RegisterScreen() {
   }
 
   return (
-    <PaperProvider>
-    <View>
-      {/* <BackButton goBack={navigation.goBack} />
+    <View style={styles.bigContainer}>
+      <View style={styles.margins}>
+        {/* <BackButton goBack={navigation.goBack} />
       <Logo />
       <Header>Create Account</Header> */}
-      <View style={styles.container}>
-        <UploadImage/>
-      </View>
-      <Text>Create Account</Text>
-      <TextInput
-        label="Username"
-        returnKeyType="next"
-        value={username.value}
-        onChangeText={(text) => setUsername({ value: text, error: '' })}
-        error={!!username.error}
-        // errorText={username.error}
-      />
-      <TextInput
-        label="Email"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        // errorText={email.error}
-        autoCapitalize="none"
-        autoComplete="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
-      <TextInput
-        label="Password"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={(text) => setPassword({ value: text, error: '' })}
-        error={!!password.error}
-        // errorText={password.error}
-        secureTextEntry
-      />
-      <TextInput
-        label="Re-enter Password"
-        returnKeyType="done"
-        value={passwordConfirmation.value}
-        onChangeText={(text) => setPasswordConfirmation({ value: text, error: '' })}
-        error={!!passwordConfirmation.error}
-        // errorText={passwordConfirmation.error}
-        secureTextEntry
-      />
-      <Button
-        mode="contained"
-        onPress={onSignUpPressed}
-        style={{ marginTop: 24 }}
-      >
-        Create Account
-      </Button>
-      <View style={styles.row}>
-        <Text>Already have an account? </Text>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.link}>Login</Text>
-          {/* TODO: this route doesn't work */}
-        </TouchableOpacity>
+        <View style={styles.container}>
+          <UploadImage />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text>Create Account</Text>
+          <TextInput
+            label="Username"
+            returnKeyType="next"
+            value={username.value}
+            onChangeText={(text) => setUsername({ value: text, error: '' })}
+            error={!!username.error}
+          // errorText={username.error}
+          />
+          <TextInput
+            label="Email"
+            returnKeyType="next"
+            value={email.value}
+            onChangeText={(text) => setEmail({ value: text, error: '' })}
+            error={!!email.error}
+            // errorText={email.error}
+            autoCapitalize="none"
+            autoComplete="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+          />
+          <TextInput
+            label="Password"
+            returnKeyType="done"
+            value={password.value}
+            onChangeText={(text) => setPassword({ value: text, error: '' })}
+            error={!!password.error}
+            // errorText={password.error}
+            secureTextEntry
+          />
+          <TextInput
+            label="Re-enter Password"
+            returnKeyType="done"
+            value={passwordConfirmation.value}
+            onChangeText={(text) => setPasswordConfirmation({ value: text, error: '' })}
+            error={!!passwordConfirmation.error}
+            // errorText={passwordConfirmation.error}
+            secureTextEntry
+          />
+          <Button
+            mode="contained"
+            onPress={onSignUpPressed}
+            buttonColor='#0d99ff' 
+            textColor='white'
+          >
+            Create Account
+          </Button>
+        </View>
+        <View style={styles.row}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.link}>Already have an account? Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
-    </PaperProvider>
   )
 }
 
 const styles = StyleSheet.create({
+  margins: {
+    marginHorizontal: "5%",
+    marginVertical: "5%",
+    justifyContent: "space-evenly",
+    flex: 1
+  },
+  bigContainer: {
+    backgroundColor: '#101316',
+    flex: 1,
+  },
+  inputContainer: {
+    marginVertical: "2%",
+    gap: 10,
+  },
   row: {
     flexDirection: 'row',
     marginTop: 4,
+    justifyContent: 'center'
   },
   link: {
     fontWeight: 'bold',
-    color: MD3DarkTheme.colors.primary,
+    color: 'white',
   },
   container: {
-    padding:50,
-    backgroundColor: '#fff',
+    backgroundColor: '#101316',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  mainButton: {
+    color: '#0d99ff'
   },
 })

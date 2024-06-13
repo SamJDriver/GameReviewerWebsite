@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React from 'react';
 import { View, Text } from 'react-native';
 import { IconButton, MD3Colors, Searchbar } from 'react-native-paper';
@@ -14,7 +15,7 @@ const SearchScreen = () => {
           icon="arrow-left"
           iconColor={MD3Colors.error50}
           size={20}
-          onPress={() => console.log('Pressed iconbutton')}
+          onPress={() => router.back()}
         />
         </View>
         <View style={{ flex: 9}}>

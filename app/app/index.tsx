@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, router } from "expo-router";
-import { Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Platform, TouchableOpacity, View } from 'react-native';
 import { PaperProvider, TextInput, Button, Text, MD3DarkTheme } from 'react-native-paper';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -32,11 +32,17 @@ export default function LoginScreen() {
   }
 
   return (
-    <PaperProvider>
-        <ThemedView style={styles.stepContainer}>          
+    <View style={styles.bigContainer}>
+      <View style={styles.margins}>
+
+        {/* TODO logo image here */}
+        <Image style={{ justifyContent: 'center', alignSelf: 'center' }} source={require('./../assets/images/react-logo.png')} />
+
+        <View>
           <Text>Login to continue</Text>
+
           {/* TODO: be able to login with email or username */}
-          <TextInput 
+          <TextInput
             label="Email"
             value={email.value}
             onChangeText={(text) => setEmail({ value: text, error: '' })}
@@ -46,7 +52,9 @@ export default function LoginScreen() {
             autoComplete='email'
             textContentType="emailAddress"
             error={!!email.error}
-            />
+            style={styles.textInput}
+          />
+
           {/* TODO: Display password requirements to the user. HelperText may be the right thing for that */}
           <TextInput
             label="Password"
@@ -55,32 +63,38 @@ export default function LoginScreen() {
             onChangeText={(text) => setPassword({ value: text, error: '' })}
             secureTextEntry
             error={!!password.error}
+            style={styles.textInput}
           />
-          <Button mode="contained" onPress={onLoginPressed}>
-          Sign In
-        </Button>
-        <Text>Don’t have an account?</Text>
+
+          <Button mode="contained" buttonColor='#0d99ff' textColor='white' onPress={onLoginPressed}>
+            <Text style={styles.buttonText}>Sign in</Text>
+          </Button>
+        </View>
+
         <Button mode="outlined" onPress={() => router.navigate('RegisterScreen')}>
-          <Text style={styles.link}>Create Account</Text>
+          <Text style={styles.buttonText}>Sign up</Text>
         </Button>
-        <Text>Forgot your password?</Text>
-        <Button mode="outlined" onPress={() => router.navigate('ForgotPasswordScreen')}>
-          <Text style={styles.link}>Reset Password</Text>
+
+        <Button onPress={() => router.navigate('ForgotPasswordScreen')}>
+          <Text style={styles.buttonText}>Forgot your password?</Text>
         </Button>
-          </ThemedView>
-    </PaperProvider>
+
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  margins: {
+    marginHorizontal: "5%",
+    marginVertical: "5%",
+    justifyContent: "space-evenly",
+    flex: 1
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  bigContainer: {
+    backgroundColor: '#101316',
+    flex: 1,
+
   },
   reactLogo: {
     height: 178,
@@ -102,8 +116,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: MD3DarkTheme.colors.secondary,
   },
-  link: {
+  buttonText: {
     fontWeight: 'bold',
-    color: MD3DarkTheme.colors.primary,
+    color: 'white',
   },
+  mainButton: {
+    color: '#0d99ff'
+  },
+  textInput: {
+    selectionColor: 'white',
+  }
 });

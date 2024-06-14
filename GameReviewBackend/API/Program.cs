@@ -110,7 +110,8 @@ namespace GameReview
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
-            builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+            builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();
+            builder.Services.AddTransient<ProductionExceptionHandlingMiddleware>();
 
             var app = builder.Build();
 
@@ -162,7 +163,15 @@ namespace GameReview
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                app.UseMiddleware<DevelopmentExceptionHandlingMiddleware>();
+            }
+            else
+            {
+                app.UseMiddleware<ProductionExceptionHandlingMiddleware>();
+            }
+
 
             app.MapControllerRoute(
                 name: "default",

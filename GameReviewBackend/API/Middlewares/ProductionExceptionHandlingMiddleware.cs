@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Middlewares
 {
-    public class GlobalExceptionHandlingMiddleware : IMiddleware
+    public class ProductionExceptionHandlingMiddleware : IMiddleware
     {
-        private readonly ILogger<GlobalExceptionHandlingMiddleware> _logger;
+        private readonly ILogger<ProductionExceptionHandlingMiddleware> _logger;
 
-        public GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> logger)
+        public ProductionExceptionHandlingMiddleware(ILogger<ProductionExceptionHandlingMiddleware> logger)
         {
             _logger = logger;
         }

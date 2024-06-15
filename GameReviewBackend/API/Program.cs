@@ -18,20 +18,27 @@ namespace GameReview
             bool.TryParse(Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER_FLAG"), out bool containerFlag);
 
 
-            var config = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
-                .AddUserSecrets("34a2eb48-f55e-4322-8205-5f51e2572770")
-                .Build();
+            IConfigurationRoot? config = default;
 
-            var secretConfig = new ConfigurationBuilder()
-                .AddJsonFile( 
-                    containerFlag ? 
-                    Environment.GetEnvironmentVariable("AZURE_AD")
-                    : Path.Combine(Path.GetFullPath(Environment.CurrentDirectory), @"..\secrets\azure_ad.json")
-                    , optional: false
-                ).Build();
+            if (containerFlag)
+            {
+                config = new ConfigurationBuilder()
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("AZURE_AD") ?? "", optional: true)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "", optional: true)
+                    .Build();
+            }
+            else
+            {
+                config = new ConfigurationBuilder()
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                    .AddUserSecrets("34a2eb48-f55e-4322-8205-5f51e2572770")
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .Build();
+            }
 
-            builder.Services.AddMicrosoftIdentityWebApiAuthentication(secretConfig);
+            builder.Services.AddMicrosoftIdentityWebApiAuthentication(config);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -77,8 +84,8 @@ namespace GameReview
                     {
                         Implicit = new OpenApiOAuthFlow()
                         {
-                            AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{secretConfig["AzureAd:TenantId"]}/oauth2/v2.0/authorize"),
-                            TokenUrl = new Uri($"https://login.microsoftonline.com/{secretConfig["AzureAd:TenantId"]}/{secretConfig["AzureAd:TenantId"]}/v2.0/token"),
+                            AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/oauth2/v2.0/authorize"),
+                            TokenUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/{config["AzureAd:TenantId"]}/v2.0/token"),
                             Scopes = scopes
                         }
                     }
@@ -88,14 +95,8 @@ namespace GameReview
                 // c.IncludeXmlComments(xmlPath);
             });
 
-            //If working locally, default environment variables to localhost values
-            var serverName = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_SERVICE_NAME") : secretConfig["Database:Host"];
-            var port = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_PORT") : secretConfig["Database:Port"];
-            var databaseName = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_DATABASE") : secretConfig["Database:Database"];
-            var username = containerFlag ? Environment.GetEnvironmentVariable("MYSQL_USER") : secretConfig["Database:Username"];
-            var password = containerFlag ? File.ReadAllText(@$"{Environment.GetEnvironmentVariable("MYSQL_PASSWORD")}") : secretConfig["Database:Password"];
+            var connectionString = config.GetConnectionString("DockerDb");
 
-            var connectionString = $"Server={serverName}; Port={port}; Database={databaseName}; Uid={username}; Pwd={password}";
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options
                 .UseLazyLoadingProxies()
@@ -139,8 +140,8 @@ namespace GameReview
                     options.RoutePrefix = string.Empty;
 
                     options.OAuthAppName("Swagger Client");
-                    options.OAuthClientId(secretConfig["AzureAd:ClientId"]);
-                    options.OAuthClientSecret(secretConfig["AzureAd:ClientSecret"]);
+                    options.OAuthClientId(config["AzureAd:ClientId"]);
+                    options.OAuthClientSecret(config["AzureAd:ClientSecret"]);
                     options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
                 });
             }
@@ -149,8 +150,8 @@ namespace GameReview
                 app.UseSwaggerUI(options =>
                 {
                     options.OAuthAppName("Swagger Client");
-                    options.OAuthClientId(secretConfig["AzureAd:ClientId"]);
-                    options.OAuthClientSecret(secretConfig["AzureAd:ClientSecret"]);
+                    options.OAuthClientId(config["AzureAd:ClientId"]);
+                    options.OAuthClientSecret(config["AzureAd:ClientSecret"]);
                     options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
                 });
             }

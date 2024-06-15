@@ -15,8 +15,9 @@ namespace BusinessLogic.Infrastructure
     public class IgdbApiService : IIgdbApiService
     {
         GenericRepository<DockerDbContext> _genericRepository;
-        private string CLIENT_ID = "0w2j0mktoxkvehox8hl42p15tladu0";
-        private string CLIENT_SECRET = "gpptkmravp51lkhl5d22msu8i2rs2f";
+        private readonly string CLIENT_ID = "0w2j0mktoxkvehox8hl42p15tladu0";
+        private readonly string CLIENT_SECRET = "gpptkmravp51lkhl5d22msu8i2rs2f";
+        private JObject? _accessToken = null;
 
         public IgdbApiService(GenericRepository<DockerDbContext> genericRepository)
         {
@@ -175,17 +176,18 @@ namespace BusinessLogic.Infrastructure
                    }
                    gameEntity.GamesGenresLookupLink = genreLinks;
                }
-               games.Add(gameEntity);
+                games.Add(gameEntity); 
             }
 
             try
             {
-            _genericRepository.InsertRecordList(games);
+                games = games.DistinctBy(g => g.Id).ToList();
+                _genericRepository.InsertRecordList(games);
             }
             catch(Exception ex)
             {
-                Debug.Write(ex);
-                
+                Console.WriteLine(ex);
+                Console.WriteLine(ex.StackTrace);                
             }
         }
         private async Task insertPlatforms()
@@ -369,9 +371,19 @@ namespace BusinessLogic.Infrastructure
         }
         private async Task<string> GetGenericApiCall(string uri, string bodyParams)
         {
-            var accessToken = await GetAccessToken();
-            var data = (JObject)JsonConvert.DeserializeObject(accessToken);
-            string token = data["access_token"].Value<string>();
+            string? token = null;
+
+            if (_accessToken == null) //Refresh the token
+            {
+                var tokenJson = await GetAccessToken();
+                _accessToken = (JObject)JsonConvert.DeserializeObject(tokenJson);
+                token = _accessToken["access_token"].Value<string>();
+            }
+            else
+            {
+                token = _accessToken["access_token"].Value<string>();
+            }
+
 
             var contentData = new StringContent(bodyParams, Encoding.UTF8, "application/text");
 

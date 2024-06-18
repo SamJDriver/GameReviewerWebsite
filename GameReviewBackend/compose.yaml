@@ -28,9 +28,12 @@ services:
       MYSQL_PORT: 3306
       AZURE_AD: /run/secrets/azure_ad
       RUNNING_IN_CONTAINER_FLAG: true
+      DB_CONNECTION_STRING: /run/secrets/db_connection_string
+      IGDB_CLIENT: /run/secrets/igdb
     secrets:
        - db_password
        - azure_ad
+       - db_connection_string
   db: #docker exec -it mariadb mariadb -u user -p
     image: mariadb:latest
     environment:
@@ -70,4 +73,8 @@ secrets:
     file: secrets/db_root_password.txt
   azure_ad:
     file: secrets/azure_ad.json
+  db_connection_string:
+    file: secrets/db_connection_string.json
+  igdb:
+    file: secrets/igdb.json
 

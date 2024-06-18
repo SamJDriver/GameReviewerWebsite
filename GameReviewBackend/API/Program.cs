@@ -18,20 +18,28 @@ namespace GameReview
             bool.TryParse(Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER_FLAG"), out bool containerFlag);
 
 
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddUserSecrets<Program>()
-                .Build();
+            IConfigurationRoot? config = default;
 
-            var secretConfig = new ConfigurationBuilder()
-                .AddJsonFile( 
-                    containerFlag ? 
-                    Environment.GetEnvironmentVariable("AZURE_AD")
-                    : Path.Combine(Path.GetFullPath(Environment.CurrentDirectory), @"..\secrets\azure_ad.json")
-                    , optional: false
-                ).Build();
+            if (containerFlag)
+            {
+                config = new ConfigurationBuilder()
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("AZURE_AD") ?? "", optional: true)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "", optional: true)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("IGDB_CLIENT") ?? "", optional: true)
+                    .Build();
+            }
+            else
+            {
+                config = new ConfigurationBuilder()
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                    .AddUserSecrets("34a2eb48-f55e-4322-8205-5f51e2572770")
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .Build();
+            }
 
-            builder.Services.AddMicrosoftIdentityWebApiAuthentication(secretConfig);
+            builder.Services.AddMicrosoftIdentityWebApiAuthentication(config);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -77,8 +85,8 @@ namespace GameReview
                     {
                         Implicit = new OpenApiOAuthFlow()
                         {
-                            AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{secretConfig["AzureAd:TenantId"]}/oauth2/v2.0/authorize"),
-                            TokenUrl = new Uri($"https://login.microsoftonline.com/{secretConfig["AzureAd:TenantId"]}/{secretConfig["AzureAd:TenantId"]}/v2.0/token"),
+                            AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/oauth2/v2.0/authorize"),
+                            TokenUrl = new Uri($"https://login.microsoftonline.com/{config["AzureAd:TenantId"]}/{config["AzureAd:TenantId"]}/v2.0/token"),
                             Scopes = scopes
                         }
                     }
@@ -88,19 +96,8 @@ namespace GameReview
                 // c.IncludeXmlComments(xmlPath);
             });
 
-            //If working locally, default environment variables to localhost values
-            var serverName = Environment.GetEnvironmentVariable("MYSQL_SERVICE_NAME") ?? "127.0.0.1";
-            var port = Environment.GetEnvironmentVariable("MYSQL_PORT") ?? "3306";
-            var databaseName = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? "mydatabase";
-            var username = Environment.GetEnvironmentVariable("MYSQL_USER") ?? "user";
-            var password_file_path = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
-            var password = "password";
-            if (password_file_path != null) 
-            {
-                password = File.ReadAllText(@$"{password_file_path}");
-            }
-            
-            var connectionString = $"Server={serverName}; Port={port}; Database={databaseName}; Uid={username}; Pwd={password}";
+            var connectionString = config.GetConnectionString("DockerDb");
+
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options
                 .UseLazyLoadingProxies()
@@ -115,7 +112,8 @@ namespace GameReview
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
-            builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+            builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();
+            builder.Services.AddTransient<ProductionExceptionHandlingMiddleware>();
 
             var app = builder.Build();
 
@@ -143,8 +141,8 @@ namespace GameReview
                     options.RoutePrefix = string.Empty;
 
                     options.OAuthAppName("Swagger Client");
-                    options.OAuthClientId(secretConfig["AzureAd:ClientId"]);
-                    options.OAuthClientSecret(secretConfig["AzureAd:ClientSecret"]);
+                    options.OAuthClientId(config["AzureAd:ClientId"]);
+                    options.OAuthClientSecret(config["AzureAd:ClientSecret"]);
                     options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
                 });
             }
@@ -153,8 +151,8 @@ namespace GameReview
                 app.UseSwaggerUI(options =>
                 {
                     options.OAuthAppName("Swagger Client");
-                    options.OAuthClientId(secretConfig["AzureAd:ClientId"]);
-                    options.OAuthClientSecret(secretConfig["AzureAd:ClientSecret"]);
+                    options.OAuthClientId(config["AzureAd:ClientId"]);
+                    options.OAuthClientSecret(config["AzureAd:ClientSecret"]);
                     options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
                 });
             }
@@ -167,7 +165,15 @@ namespace GameReview
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                app.UseMiddleware<ProductionExceptionHandlingMiddleware>();
+            }
+            else
+            {
+                app.UseMiddleware<DevelopmentExceptionHandlingMiddleware>();
+            }
+
 
             app.MapControllerRoute(
                 name: "default",

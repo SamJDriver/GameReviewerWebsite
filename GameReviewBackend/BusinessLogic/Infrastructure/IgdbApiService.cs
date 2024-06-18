@@ -2,6 +2,7 @@
 using Components;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Repositories;
@@ -15,12 +16,13 @@ namespace BusinessLogic.Infrastructure
     public class IgdbApiService : IIgdbApiService
     {
         GenericRepository<DockerDbContext> _genericRepository;
-        private string CLIENT_ID = "0w2j0mktoxkvehox8hl42p15tladu0";
-        private string CLIENT_SECRET = "gpptkmravp51lkhl5d22msu8i2rs2f";
+        private readonly IConfiguration _config;
+        private JObject? _accessToken = null;
 
-        public IgdbApiService(GenericRepository<DockerDbContext> genericRepository)
+        public IgdbApiService(GenericRepository<DockerDbContext> genericRepository, IConfiguration config)
         {
             _genericRepository = genericRepository;
+            _config = config;
         }
 
         public async Task QueryApi()
@@ -46,7 +48,7 @@ namespace BusinessLogic.Infrastructure
         private async Task<string> GetAccessToken()
         {
 
-            var uri = $"https://id.twitch.tv/oauth2/token?client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}&grant_type=client_credentials";
+            var uri = $"https://id.twitch.tv/oauth2/token?client_id={_config["Igdb:ClientId"]}&client_secret={_config["Igdb:ClientSecret"]}&grant_type=client_credentials";
             using (var httpClient = new HttpClient())
             {
                 var result = await httpClient.PostAsync(uri, null);
@@ -175,17 +177,18 @@ namespace BusinessLogic.Infrastructure
                    }
                    gameEntity.GamesGenresLookupLink = genreLinks;
                }
-               games.Add(gameEntity);
+                games.Add(gameEntity); 
             }
 
             try
             {
-            _genericRepository.InsertRecordList(games);
+                games = games.DistinctBy(g => g.Id).ToList();
+                _genericRepository.InsertRecordList(games);
             }
             catch(Exception ex)
             {
-                Debug.Write(ex);
-                
+                Console.WriteLine(ex);
+                Console.WriteLine(ex.StackTrace);                
             }
         }
         private async Task insertPlatforms()
@@ -369,15 +372,25 @@ namespace BusinessLogic.Infrastructure
         }
         private async Task<string> GetGenericApiCall(string uri, string bodyParams)
         {
-            var accessToken = await GetAccessToken();
-            var data = (JObject)JsonConvert.DeserializeObject(accessToken);
-            string token = data["access_token"].Value<string>();
+            string? token = null;
+
+            if (_accessToken == null) //Refresh the token
+            {
+                var tokenJson = await GetAccessToken();
+                _accessToken = (JObject)JsonConvert.DeserializeObject(tokenJson);
+                token = _accessToken["access_token"].Value<string>();
+            }
+            else
+            {
+                token = _accessToken["access_token"].Value<string>();
+            }
+
 
             var contentData = new StringContent(bodyParams, Encoding.UTF8, "application/text");
 
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Add("Client-ID", CLIENT_ID);
+                httpClient.DefaultRequestHeaders.Add("Client-ID", _config["Igdb:ClientId"]);
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
                 httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
                 var response = await httpClient.PostAsync(uri, contentData);

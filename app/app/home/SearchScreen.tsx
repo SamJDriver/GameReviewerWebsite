@@ -3,11 +3,13 @@ import React from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { IconButton, MD3Colors, Searchbar } from 'react-native-paper';
 
+// All this declared before the SearchScreen is for previous searches
 type PreviousSearchData = {
   id: string;
   searchQuery: string;
 };
 
+// TODO: probably don't need this ID, just the query that was searched
 const DATA: PreviousSearchData[] = [
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -26,6 +28,7 @@ type ItemProps = {
   textColor: string;
 };
 
+
 const Item = ({item, onPress, backgroundColor, textColor}: ItemProps) => (
   <TouchableOpacity onPress={onPress}>
     <Text>{item.searchQuery}</Text>
@@ -37,6 +40,7 @@ const SearchScreen = () => {
   const [selectedId, setSelectedId] = React.useState<string>();
   
 
+  // Used for the previous searches
   const renderItem = ({item}: {item: PreviousSearchData}) => {
     const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff';
     const color = item.id === selectedId ? 'white' : 'black';
@@ -44,7 +48,8 @@ const SearchScreen = () => {
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.id)}
+        // TODO: onPress should do a search
+        onPress={() => setSelectedId(item.id)} 
         backgroundColor={backgroundColor}
         textColor={color}
       />
@@ -75,7 +80,6 @@ const SearchScreen = () => {
           />
         </View>
       </View>
-      <Text>Search Screen</Text>
       <FlatList
         data={DATA}
         renderItem={renderItem}
@@ -87,17 +91,3 @@ const SearchScreen = () => {
 }
 
 export default SearchScreen;
-
-// const MyComponent = () => {
-//   const [searchQuery, setSearchQuery] = React.useState('');
-
-//   return (
-//     <Searchbar
-//       placeholder="Search"
-//       onChangeText={setSearchQuery}
-//       value={searchQuery}
-//     />
-//   );
-// };
-
-// export default MyComponent;

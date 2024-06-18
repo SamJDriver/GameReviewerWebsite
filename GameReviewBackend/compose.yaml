@@ -29,6 +29,7 @@ services:
       AZURE_AD: /run/secrets/azure_ad
       RUNNING_IN_CONTAINER_FLAG: true
       DB_CONNECTION_STRING: /run/secrets/db_connection_string
+      IGDB_CLIENT: /run/secrets/igdb
     secrets:
        - db_password
        - azure_ad
@@ -74,4 +75,6 @@ secrets:
     file: secrets/azure_ad.json
   db_connection_string:
     file: secrets/db_connection_string.json
+  igdb:
+    file: secrets/igdb.json
 

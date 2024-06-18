@@ -27,6 +27,7 @@ namespace GameReview
                     .AddJsonFile("appsettings.json", optional: false)
                     .AddJsonFile(Environment.GetEnvironmentVariable("AZURE_AD") ?? "", optional: true)
                     .AddJsonFile(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "", optional: true)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("IGDB_CLIENT") ?? "", optional: true)
                     .Build();
             }
             else
@@ -164,13 +165,13 @@ namespace GameReview
             app.UseAuthentication();
             app.UseAuthorization();
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
-                app.UseMiddleware<DevelopmentExceptionHandlingMiddleware>();
+                app.UseMiddleware<ProductionExceptionHandlingMiddleware>();
             }
             else
             {
-                app.UseMiddleware<ProductionExceptionHandlingMiddleware>();
+                app.UseMiddleware<DevelopmentExceptionHandlingMiddleware>();
             }
 
 

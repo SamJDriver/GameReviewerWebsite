@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using DataAccess.Models.DockerDb;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace DataAccess.Contexts.DockerDb
 {
@@ -28,6 +29,20 @@ namespace DataAccess.Contexts.DockerDb
         public DockerDbContext(DbContextOptions<DockerDbContext> options) : base(options)
         {
         }
+
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
+
+
+        //     var serverName = Environment.GetEnvironmentVariable("MYSQL_HOST");
+        //     var port = Environment.GetEnvironmentVariable("MYSQL_PORT");
+        //     var databaseName = Environment.GetEnvironmentVariable("MYSQL_DATABASE");
+        //     var username = Environment.GetEnvironmentVariable("MYSQL_USER");
+        //     var password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
+
+        //     var connectionString = ;
+        //     optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        // }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

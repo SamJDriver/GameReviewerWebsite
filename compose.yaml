@@ -10,8 +10,8 @@
 services: 
   game-api-server:
     build:
-      context: .
       target: final
+      context: GameReviewBackend
       dockerfile: Dockerfile
     ports:
       - 80:8080
@@ -63,7 +63,7 @@ services:
   react-web-app:
     build:
       target: Development
-      context: ../web-client/react-spa
+      context: web-client/react-spa
       dockerfile: Dockerfile
     ports:
       - 3001:3000
@@ -76,13 +76,13 @@ networks:
   
 secrets:
   db_password:
-    file: secrets/db_password.txt
+    file: GameReviewBackend/secrets/db_password.txt
   db_root_password:
-    file: secrets/db_root_password.txt
+    file: GameReviewBackend/secrets/db_root_password.txt
   azure_ad:
-    file: secrets/azure_ad.json
+    file: GameReviewBackend/secrets/azure_ad.json
   db_connection_string:
-    file: secrets/db_connection_string.json
+    file: GameReviewBackend/secrets/db_connection_string.json
   igdb:
-    file: secrets/igdb.json
+    file: GameReviewBackend/secrets/igdb.json
 

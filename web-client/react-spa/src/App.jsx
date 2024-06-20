@@ -10,7 +10,8 @@ import './App.css';
 import Button from 'react-bootstrap/Button';
 
 import 'bootstrap/dist/css/bootstrap.css';
-import DgcUser from './components/games/ListGroup';
+import ListGroup from './components/ListGroup';
+import Alert from './components/Alert';
 
 /**
  * Renders information about the signed-in user or a button to retrieve data about the user
@@ -64,9 +65,18 @@ const MainContent = () => {
 };
 
 export default function App() {
+    let items = ["New York", "San Francisco", "Los Angeles", "Chicago", "Dallas"];
+
+    const handleISelectItem = (item) => {
+        console.log(item);
+    }
+
     return (
         <PageLayout>
-            <DgcUser />
+            <Alert>
+                Hello <b>world!</b>
+            </Alert>
+            <ListGroup items={items} heading="Cities" onSelectItem={handleISelectItem} />
             <MainContent />
         </PageLayout>
     );

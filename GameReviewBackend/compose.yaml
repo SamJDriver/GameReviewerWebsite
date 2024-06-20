@@ -12,6 +12,7 @@ services:
     build:
       context: .
       target: final
+      dockerfile: Dockerfile
     ports:
       - 80:8080
     networks:
@@ -59,6 +60,13 @@ services:
     secrets:
        - db_root_password
        - db_password
+  react-web-app:
+    build:
+      target: Development
+      context: ../web-client/react-spa
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
 
 volumes:
   mariadbvolume:

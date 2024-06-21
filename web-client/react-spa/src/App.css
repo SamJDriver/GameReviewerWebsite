@@ -1,18 +1,68 @@
+@import "bootstrap";
+
+
+:root {
+  --main-color: red;
+}
+
+
+
 .App {
   text-align: center;
   padding: 8px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .navbarStyle {
-  padding: .5rem 1rem !important
+  padding: .5rem 1rem !important;
+  font-family: Arial, Helvetica, sans-serif;
 }
+
 
 .title{
   text-align: center;
   padding: 8px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.profileContent {
+.mainContent {
   padding: 8px;
+  background-color: #2A3440;
+}
 
+.topContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.btn {
+  font-weight: bolder;
+  background-color: transparent;
+
+}
+
+
+.btn {
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: var(--bs-white);
+  --bs-btn-bg: var(--bd-violet-bg);
+  --bs-btn-border-color: var(--bd-violet-bg);
+  --bs-btn-hover-color: var(--bs-white);
+  --bs-btn-hover-bg: #{shade-color($bd-violet, 10%)};
+  --bs-btn-hover-border-color: #{shade-color($bd-violet, 10%)};
+  --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+  --bs-btn-active-color: var(--bs-btn-hover-color);
+  --bs-btn-active-bg: #{shade-color($bd-violet, 20%)};
+  --bs-btn-active-border-color: #{shade-color($bd-violet, 20%)};
+}
+
+
+.topNavButtons {
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.gameListItem {
+  margin: 5px;
+  border-radius: 5px;
 }

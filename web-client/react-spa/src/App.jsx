@@ -51,9 +51,16 @@ const ProfileContent = () => {
  * If a user is authenticated the ProfileContent component above is rendered. Otherwise a message indicating a user is not authenticated is rendered.
  */
 const MainContent = () => {
+    let items = ["New York", "San Francisco", "Los Angeles", "Chicago", "Dallas"];
+
+    const handleISelectItem = (item) => {
+        console.log(item);
+    }
+
     return (
         <div className="App">
             <AuthenticatedTemplate>
+                <ListGroup items={items} heading="New Reviews From Friends" onSelectItem={handleISelectItem} />
                 <ProfileContent />
             </AuthenticatedTemplate>
 
@@ -65,19 +72,12 @@ const MainContent = () => {
 };
 
 export default function App() {
-    let items = ["New York", "San Francisco", "Los Angeles", "Chicago", "Dallas"];
-
-    const handleISelectItem = (item) => {
-        console.log(item);
-    }
-
     return (
-        <PageLayout>
-            <Alert>
-                Hello <b>world!</b>
-            </Alert>
-            <ListGroup items={items} heading="Cities" onSelectItem={handleISelectItem} />
-            <MainContent />
-        </PageLayout>
+        <div style={{ backgroundColor: "#2A3440", height: "100vh" }}>
+            <PageLayout>
+                <MainContent>
+                </MainContent>
+            </PageLayout>
+        </div>
     );
 }

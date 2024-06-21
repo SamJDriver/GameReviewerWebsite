@@ -11,18 +11,15 @@ function ListGroup({ items, heading, onSelectItem }) {
     <>
       <h1>{heading}</h1>
       {items.length === 0 && <p>No items found.</p>}
-      <ul className="list-group">
+
+      <ul className="list-group list-group-horizontal-xxl" style={{ height: '25em' }}>
+
         {items.map((item, index) => (
-          <li key={item} className={selectedIndex === index ? 'list-group-item active' : 'list-group-item'} 
-            onClick={() => {
-              setSelectedIndex(index);
-              onSelectItem(item);
-              }
-            }
-          >
+          <li key={item} className={selectedIndex === index ? 'gameListItem list-group-item active flex-fill' : 'gameListItem list-group-item flex-fill'} onClick={() => { setSelectedIndex(index); onSelectItem(item); }}>
             {item}
           </li>
         ))}
+
       </ul>
     </>
   );

@@ -28,7 +28,6 @@ namespace GameReview.Controllers
             {
                 Title = gameJson.Title,
                 ReleaseDate = gameJson.ReleaseDate,
-                ImageFilePath = "PLACEHOLDER",
                 Description = gameJson.Description
             };
 

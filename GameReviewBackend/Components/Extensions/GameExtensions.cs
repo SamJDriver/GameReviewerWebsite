@@ -9,7 +9,6 @@ namespace Components.Extensions
         {
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
-            self.ImageFilePath = game.ImageFilePath;
             self.Description = game.Description;
             return self;
         }
@@ -19,7 +18,6 @@ namespace Components.Extensions
             self.Id = game.Id;
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
-            self.ImageFilePath = game.ImageFilePath;
             self.Description = game.Description;
             self.CreatedBy = game.CreatedBy;
             self.CreatedDate = game.CreatedDate;

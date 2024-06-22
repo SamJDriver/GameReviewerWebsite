@@ -60,21 +60,21 @@ namespace BusinessLogic.Infrastructure
         {
             var genresJson = await GetGenericApiCall(Constants.IgdbApi.GenreQueryUri, Constants.IgdbApi.GenreBodyParams);
 
-            List<GenresLookup> genres = new List<GenresLookup>();    
+            List<GenresLookup> genres = new List<GenresLookup>();
             var now = DateTime.Now;
 
-            foreach (var genre in (JArray)JsonConvert.DeserializeObject(genresJson)) 
+            foreach (var genre in (JArray)JsonConvert.DeserializeObject(genresJson))
             {
-               string name = genre["name"].ToString();
-               string code = new string(ReplaceWhitespace(name, "").Take(8).ToArray()).ToUpper();
-               GenresLookup genresLookup = new GenresLookup()
-               {
-                   Id = genre["id"].ToObject<int>(),
-                   Name = name,
-                   Code = code,
-                   Description = genre["slug"].ToString()
-               };
-               genres.Add(genresLookup);
+                string name = genre["name"].ToString();
+                string code = new string(ReplaceWhitespace(name, "").Take(8).ToArray()).ToUpper();
+                GenresLookup genresLookup = new GenresLookup()
+                {
+                    Id = genre["id"].ToObject<int>(),
+                    Name = name,
+                    Code = code,
+                    Description = genre["slug"].ToString()
+                };
+                genres.Add(genresLookup);
             }
 
             _genericRepository.InsertRecordList(genres);
@@ -102,7 +102,7 @@ namespace BusinessLogic.Infrastructure
             var mySet = totalList.OrderBy(o => o["id"].ToObject<int>()).Where(o => !o["name"].ToString().Contains("(Archive)"));
             var count = mySet.Count();
 
-                        List<Companies> companies = new List<Companies>();
+            List<Companies> companies = new List<Companies>();
             var now = DateTime.Now;
 
             foreach (var companyJsonElement in mySet)
@@ -151,69 +151,109 @@ namespace BusinessLogic.Infrastructure
 
             foreach (var gameJToken in totalList)
             {
-               var genreIds = gameJToken["genres"] != null ? ((JArray)gameJToken["genres"]).ToObject<int[]>() : null;
+                var genreIds = gameJToken["genres"] != null ? ((JArray)gameJToken["genres"]).ToObject<int[]>() : null;
 
-               Games gameEntity = new Games()
-               {
-                   Id = gameJToken["id"]?.ToObject<int>() ?? 0,
-                   Title = gameJToken["name"].ToString() ?? "",
-                   ReleaseDate = UnixTimeStampToDateTime(gameJToken["first_release_date"]?.ToObject<long>()), //get enum value here
-                   ImageFilePath = "PLACEHOLDER",
-                   Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
-               };
+                Games gameEntity = new Games()
+                {
+                    Id = gameJToken["id"]?.ToObject<int>() ?? 0,
+                    Title = gameJToken["name"].ToString() ?? "",
+                    ReleaseDate = UnixTimeStampToDateTime(gameJToken["first_release_date"]?.ToObject<long>()), //get enum value here
+                    Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
+                };
 
-               List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
-               //If the game has associated genres, add the links to the game
-               if (genreIds != null)
-               {
-                foreach (var genreId in genreIds)
-                   {
-                       GamesGenresLookupLink linkEntity = new GamesGenresLookupLink()
-                       {
-                           GameId = gameEntity.Id,
-                           GenreLookupId = genreId
-                       };
-                       genreLinks.Add(linkEntity);
-                   }
-                   gameEntity.GamesGenresLookupLink = genreLinks;
-               }
-                games.Add(gameEntity); 
+                List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
+                //If the game has associated genres, add the links to the game
+                if (genreIds != null)
+                {
+                    foreach (var genreId in genreIds)
+                    {
+                        GamesGenresLookupLink linkEntity = new GamesGenresLookupLink()
+                        {
+                            GameId = gameEntity.Id,
+                            GenreLookupId = genreId
+                        };
+                        genreLinks.Add(linkEntity);
+                    }
+                    gameEntity.GamesGenresLookupLink = genreLinks;
+                }
+                games.Add(gameEntity);
             }
 
-            try
+            games = games.DistinctBy(g => g.Id).ToList();
+            _genericRepository.InsertRecordList(games);
+
+        }
+
+        private async Task insertArtworks()
+        {
+            var offset = 0;
+            var limit = 500;
+            int artworkCountOnPage = 0;
+            var totalList = new List<JToken>();
+
+            do
             {
-                games = games.DistinctBy(g => g.Id).ToList();
-                _genericRepository.InsertRecordList(games);
+                string paginatedArtworkBodyParams = string.Concat(Constants.IgdbApi.ArtworkBodyParams, $"limit {limit};", $"offset {offset};");
+                var artworkJson = await GetGenericApiCall(Constants.IgdbApi.ArtworkQueryUri, paginatedArtworkBodyParams);
+                var artworkJArray = JsonConvert.DeserializeObject(artworkJson) != null ? ((JArray)JsonConvert.DeserializeObject(artworkJson)) : null;
+                artworkCountOnPage = artworkJArray.Count();
+
+                totalList.AddRange(artworkJArray);
+                offset += limit;
             }
-            catch(Exception ex)
+            while (artworkCountOnPage == limit);
+
+            var count = totalList.Count();
+            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+
+            List<Artwork> artworks = new List<Artwork>();
+            var now = DateTime.Now;
+
+            foreach (var artworkJToken in totalList)
             {
-                Console.WriteLine(ex);
-                Console.WriteLine(ex.StackTrace);                
+                var gameId = artworkJToken["game"].ToObject<int>();
+
+                if (gameIdInDbList.Contains(gameId))
+                {
+                    Artwork artworkEntity = new Artwork()
+                    {
+                        Id = artworkJToken["id"]?.ToObject<int>() ?? 0,
+                        GameId = artworkJToken["game"]?.ToObject<int>() ?? 0,
+                        AlphaChannelFlag = artworkJToken["alpha_channel"]?.ToObject<bool>() ?? false,
+                        AnimatedFlag = artworkJToken["animated"]?.ToObject<bool>() ?? false,
+                        Height = artworkJToken["height"]?.ToObject<int>() ?? 0,
+                        Width = artworkJToken["width"]?.ToObject<int>() ?? 0,
+                        ImageUrl = artworkJToken["url"]?.ToString() ?? "PLACEHOLDER",
+                    };
+                    artworks.Add(artworkEntity);
+                }
             }
+            artworks = artworks.DistinctBy(a => a.Id).ToList();
+            _genericRepository.InsertRecordList(artworks);
         }
         private async Task insertPlatforms()
         {
             var platformsJson = await GetGenericApiCall(Constants.IgdbApi.PlatformQueryUri, Constants.IgdbApi.PlatformBodyParams);
 
-            List<Platforms> platforms = new List<Platforms>();    
+            List<Platforms> platforms = new List<Platforms>();
             var now = DateTime.Now;
 
-            foreach (var platform in (JArray)JsonConvert.DeserializeObject(platformsJson)) 
+            foreach (var platform in (JArray)JsonConvert.DeserializeObject(platformsJson))
             {
-               Platforms platformEntity = new Platforms()
-               {
+                Platforms platformEntity = new Platforms()
+                {
                     Id = platform["id"].ToObject<int>(),
                     Name = platform["name"].ToString(),
                     ReleaseDate = default,
                     ImageFilePath = "PLACEHOLDER"
-               };
-               platforms.Add(platformEntity);
+                };
+                platforms.Add(platformEntity);
             }
             try
             {
                 _genericRepository.InsertRecordList(platforms);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.Write(ex);
             }
@@ -347,7 +387,8 @@ namespace BusinessLogic.Infrastructure
 
         public static DateOnly UnixTimeStampToDateTime(long? unixTimeStamp)
         {
-            if (unixTimeStamp == null){
+            if (unixTimeStamp == null)
+            {
                 return new DateOnly();
             }
 

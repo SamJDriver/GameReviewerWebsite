@@ -12,9 +12,6 @@ namespace Components.Models
 
         public DateOnly ReleaseDate { get; set; }
 
-        [StringLength(255)]
-        public string ImageFilePath { get; set; } = null!;
-
         [StringLength(65535)]
         public string Description { get; set; } = null!;
 

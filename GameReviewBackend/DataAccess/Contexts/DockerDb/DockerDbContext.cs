@@ -21,6 +21,7 @@ namespace DataAccess.Contexts.DockerDb
         public virtual DbSet<UserRelationship> UserRelationship { get; set; } = null!;
         public virtual DbSet<UserRelationshipTypeLookup> UserRelationshipTypeLookup { get; set; } = null!;
         public virtual DbSet<Users> Users { get; set; } = null!;
+        public virtual DbSet<Artwork> Artwork { get; set; } = null!;
 
         public DockerDbContext()
         {
@@ -92,6 +93,15 @@ namespace DataAccess.Contexts.DockerDb
                     .HasForeignKey(d => d.PlatformId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("games_platforms_link_ibfk_2");
+            });
+
+            modelBuilder.Entity<Artwork>(entity =>
+            {
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.Artwork)
+                    .HasForeignKey(d => d.GameId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("artwork_games_ibfk_1");
             });
 
             modelBuilder.Entity<PlayRecordComments>(entity =>

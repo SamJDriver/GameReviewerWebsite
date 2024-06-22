@@ -35,6 +35,7 @@ services:
        - db_password
        - azure_ad
        - db_connection_string
+       - igdb
   db: #docker exec -it mariadb mariadb -u user -p
     image: mariadb:latest
     environment:

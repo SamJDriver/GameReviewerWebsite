@@ -38,6 +38,8 @@ namespace BusinessLogic.Infrastructure
             var data = 
                     (await query
                     .OrderBy(g => g.Title)
+                    .Where(g => g.Artwork.Count > 0)
+                    .Where(g => g.Artwork.Any(a => a.Height > 500 && a.Width > 500))
                     .Skip(pageIndex*pageIndex)
                     .Take(pageSize)
                     .ToListAsync())

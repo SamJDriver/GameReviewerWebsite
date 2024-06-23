@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { PageLayout } from './components/PageLayout';
 import { loginRequest } from './authConfig';
@@ -47,20 +47,35 @@ const ProfileContent = () => {
     );
 };
 
+export const useData = (url) => {
+    const [state, setState] = useState();
+  
+    useEffect(() => {
+      const dataFetch = async () => {
+        const data = await (await fetch(url)).json();
+  
+        setState(data);
+      };
+  
+      dataFetch();
+    }, [url]);
+
+    return { data: state };
+  };
+
 /**
  * If a user is authenticated the ProfileContent component above is rendered. Otherwise a message indicating a user is not authenticated is rendered.
  */
 const MainContent = () => {
-    let items = ["New York", "San Francisco", "Los Angeles", "Chicago", "Dallas"];
 
-    const handleISelectItem = (item) => {
-        console.log(item);
-    }
+
+    const { data } = useData('https://localhost:7272/api/game/150/10');
+    if (!data) return 'loading';
 
     return (
         <div className="App">
             <AuthenticatedTemplate>
-                <ListGroup items={items} heading="New Reviews From Friends" onSelectItem={handleISelectItem} />
+                <ListGroup items={ data.data } heading="New Reviews From Friends" />
                 <ProfileContent />
             </AuthenticatedTemplate>
 

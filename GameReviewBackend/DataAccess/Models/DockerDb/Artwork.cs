@@ -32,12 +32,13 @@ namespace DataAccess.Models.DockerDb
         public int Width { get; set; }
 
         [Column("image_url", TypeName = "varchar(255)")]
+        [StringLength(255)]
         public string ImageUrl { get; set; } = null!;
-
 
         [Column("created_by")]
         [StringLength(25)]
         public string CreatedBy { get; set; } = null!;
+
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
 

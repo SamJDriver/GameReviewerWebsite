@@ -36,12 +36,12 @@ namespace BusinessLogic.Infrastructure
             var query = _genericRepository.GetAll<Games>();
 
             var data = 
-                    await query
+                    (await query
                     .OrderBy(g => g.Title)
                     .Skip(pageIndex*pageIndex)
                     .Take(pageSize)
-                    .Select(g => new GameDto().Assign(g))
-                    .ToListAsync();
+                    .ToListAsync())
+                    .Select(g => new GameDto().Assign(g));
 
             return new PagedResult<GameDto>()
             {

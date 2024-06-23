@@ -10,6 +10,7 @@ namespace Components.Extensions
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
             self.Description = game.Description;
+            self.Artwork = game.Artwork != null ? game.Artwork.Select(a => new Artwork().Assign(a)).ToList() : null;
             return self;
         }
 
@@ -19,6 +20,7 @@ namespace Components.Extensions
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
             self.Description = game.Description;
+            self.Artwork = game.Artwork != null ? game.Artwork.ToList().Select(a => new ArtworkDto().Assign(a)).ToList() : null;
             self.CreatedBy = game.CreatedBy;
             self.CreatedDate = game.CreatedDate;
             return self;

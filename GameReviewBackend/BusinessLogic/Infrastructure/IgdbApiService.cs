@@ -229,7 +229,7 @@ namespace BusinessLogic.Infrastructure
                         AnimatedFlag = coverJToken["animated"]?.ToObject<bool>() ?? false,
                         Height = coverJToken["height"]?.ToObject<int>() ?? 0,
                         Width = coverJToken["width"]?.ToObject<int>() ?? 0,
-                        ImageUrl = coverJToken["url"]?.ToString() ?? "PLACEHOLDER",
+                        ImageUrl = (coverJToken["url"]?.ToString() ?? "PLACEHOLDER").Replace("t_thumb", "t_1080p"),
                     };
                     covers.Add(coverEntity);
                 }

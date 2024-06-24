@@ -28,12 +28,18 @@ namespace BusinessLogic.Infrastructure
         public async Task QueryApi()
         {
 
-            await insertGenres();
-            await insertCompanies();
-            await insertGames();
-            await insertPlatforms();
-            await insertGamePlatformLinks();
-            await insertGameCompaniesLinks();
+            // await insertGenres();
+            // await insertCompanies();
+            // await insertGames();
+            
+            // await insertPlatforms();
+
+
+            // await insertGamePlatformLinks();
+            // await insertGameCompaniesLinks();
+
+            // await insertArtworks();
+            await insertCovers();
         }
 
         public async Task<string> GetOneGame()
@@ -182,6 +188,54 @@ namespace BusinessLogic.Infrastructure
             games = games.DistinctBy(g => g.Id).ToList();
             _genericRepository.InsertRecordList(games);
 
+        }
+
+        private async Task insertCovers()
+        {
+            var offset = 0;
+            var limit = 500;
+            int coverCountOnPage = 0;
+            var totalList = new List<JToken>();
+
+            do
+            {
+                string paginatedCoverBodyParams = string.Concat(Constants.IgdbApi.CoverBodyParams, $"limit {limit};", $"offset {offset};");
+                var coverJson = await GetGenericApiCall(Constants.IgdbApi.CoverQueryUri, paginatedCoverBodyParams);
+                var coverJArray = JsonConvert.DeserializeObject(coverJson) != null ? ((JArray)JsonConvert.DeserializeObject(coverJson)) : null;
+                coverCountOnPage = coverJArray.Count();
+
+                totalList.AddRange(coverJArray);
+                offset += limit;
+            }
+            while (coverCountOnPage == limit);
+
+            var count = totalList.Count();
+            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+
+            List<Cover> covers = new List<Cover>();
+            var now = DateTime.Now;
+
+            foreach (var coverJToken in totalList)
+            {
+                var gameId = coverJToken["game"]?.ToObject<int>();
+
+                if (gameId != null && gameIdInDbList.Contains(gameId.Value))
+                {
+                    Cover coverEntity = new Cover()
+                    {
+                        Id = coverJToken["id"]?.ToObject<int>() ?? 0,
+                        GameId = coverJToken["game"]?.ToObject<int>() ?? 0,
+                        AlphaChannelFlag = coverJToken["alpha_channel"]?.ToObject<bool>() ?? false,
+                        AnimatedFlag = coverJToken["animated"]?.ToObject<bool>() ?? false,
+                        Height = coverJToken["height"]?.ToObject<int>() ?? 0,
+                        Width = coverJToken["width"]?.ToObject<int>() ?? 0,
+                        ImageUrl = coverJToken["url"]?.ToString() ?? "PLACEHOLDER",
+                    };
+                    covers.Add(coverEntity);
+                }
+            }
+            covers = covers.DistinctBy(a => a.Id).ToList();
+            _genericRepository.InsertRecordList(covers);
         }
 
         private async Task insertArtworks()

@@ -14,6 +14,7 @@ namespace Components.Models
         public DateOnly ReleaseDate { get; set; }
 
         public IEnumerable<ArtworkDto>? Artwork { get; set; }
+        public IEnumerable<CoverDto>? Cover { get; set; }
 
         [StringLength(65535)]
         public string Description { get; set; } = null!;

@@ -18,6 +18,7 @@ namespace DataAccess.Models.DockerDb
             GamesPlatformsLink = new HashSet<GamesPlatformsLink>();
             PlayRecords = new HashSet<PlayRecords>();
             Artwork = new HashSet<Artwork>();
+            Cover = new HashSet<Cover>();
         }
 
         [Key]
@@ -50,5 +51,8 @@ namespace DataAccess.Models.DockerDb
 
         [InverseProperty("Game")]
         public virtual ICollection<Artwork> Artwork { get; set; }
+
+        [InverseProperty("Game")]
+        public virtual ICollection<Cover> Cover { get; set; }
     }
 }

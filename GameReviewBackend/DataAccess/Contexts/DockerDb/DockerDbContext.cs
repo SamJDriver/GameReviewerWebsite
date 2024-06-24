@@ -104,6 +104,15 @@ namespace DataAccess.Contexts.DockerDb
                     .HasConstraintName("artwork_games_ibfk_1");
             });
 
+            modelBuilder.Entity<Cover>(entity =>
+            {
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.Cover)
+                    .HasForeignKey(d => d.GameId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("cover_games_ibfk_1");
+            });
+
             modelBuilder.Entity<PlayRecordComments>(entity =>
             {
                 entity.HasOne(d => d.PlayRecord)

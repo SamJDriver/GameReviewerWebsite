@@ -1,6 +1,6 @@
 const Alert = ({children}) => {
   return (
-    <div className="alert alert-primary">{children}</div>
+    <div className="alert alert-secondary">{children}</div>
   )
 }
 

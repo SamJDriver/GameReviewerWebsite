@@ -28,17 +28,17 @@ namespace BusinessLogic.Infrastructure
         public async Task QueryApi()
         {
 
-            // await insertGenres();
-            // await insertCompanies();
-            // await insertGames();
+            await insertGenres();
+            await insertCompanies();
+            await insertGames();
             
-            // await insertPlatforms();
+            await insertPlatforms();
 
 
-            // await insertGamePlatformLinks();
-            // await insertGameCompaniesLinks();
+            await insertGamePlatformLinks();
+            await insertGameCompaniesLinks();
 
-            // await insertArtworks();
+            await insertArtworks();
             await insertCovers();
         }
 
@@ -277,7 +277,7 @@ namespace BusinessLogic.Infrastructure
                         AnimatedFlag = artworkJToken["animated"]?.ToObject<bool>() ?? false,
                         Height = artworkJToken["height"]?.ToObject<int>() ?? 0,
                         Width = artworkJToken["width"]?.ToObject<int>() ?? 0,
-                        ImageUrl = artworkJToken["url"]?.ToString() ?? "PLACEHOLDER",
+                        ImageUrl = (artworkJToken["url"]?.ToString() ?? "PLACEHOLDER").Replace("t_thumb", "t_1080p"),
                     };
                     artworks.Add(artworkEntity);
                 }

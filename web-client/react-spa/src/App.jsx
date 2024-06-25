@@ -69,18 +69,22 @@ export const useData = (url) => {
 const MainContent = () => {
 
 
-    const { data } = useData('https://localhost:7272/api/game/150/10');
+    const { data } = useData('https://localhost:7272/api/game/0/10');
     if (!data) return 'loading';
 
     return (
         <div className="App">
             <AuthenticatedTemplate>
+                <ListGroup items={ data.data } heading="Popular" />
+                
                 <ListGroup items={ data.data } heading="New Reviews From Friends" />
+
                 <ProfileContent />
             </AuthenticatedTemplate>
 
             <UnauthenticatedTemplate>
-                <h5 className="card-title">Please sign-in to see your profile information.</h5>
+                <Alert>Please sign-in to see your profile information.</Alert>
+                <ListGroup items={ data.data } heading="Popular" />
             </UnauthenticatedTemplate>
         </div>
     );

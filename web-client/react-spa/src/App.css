@@ -2,15 +2,17 @@
 
 
 :root {
-  --main-color: red;
+  --main-color-background: #2A3440;
+  --main-font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 
 
 .App {
-  text-align: center;
+  /* text-align: center; */
   padding: 8px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--main-font-family);
+  color: white;
 }
 
 .navbarStyle {
@@ -18,16 +20,27 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.list-group-heading {
+  font-family: var(--main-font-family);
+  border-bottom: 1px solid white;
+  font-size: 45px;
+  width: 40%;
+  margin-bottom: .5em;
+}
+
 
 .title{
   text-align: center;
   padding: 8px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--main-font-family);
 }
 
 .mainContent {
   padding: 8px;
-  background-color: #2A3440;
+  padding-left: 15em;
+  padding-right: 15em;
+  background-color: var(--main-color-background);
+
 }
 
 .topContainer {
@@ -64,5 +77,9 @@
 
 .gameListItem {
   margin: 5px;
+  border-radius: 5px;
+}
+
+.gameCover {
   border-radius: 5px;
 }

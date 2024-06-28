@@ -2,9 +2,6 @@
 import { useState } from 'react';
 
 function ListGroup({ items, heading, onSelectItem }) {
-
-  console.log(items);
-
   // Hook
   const [selectedIndex, setSelectedIndex] = useState(-1);
 

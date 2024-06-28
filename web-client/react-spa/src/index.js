@@ -10,7 +10,7 @@ import { msalConfig } from './authConfig';
 // Bootstrap components
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const msalInstance = new PublicClientApplication(msalConfig);
+export const msalInstance = new PublicClientApplication(msalConfig);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

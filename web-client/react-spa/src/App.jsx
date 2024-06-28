@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Axios, { AxiosInstance, AxiosResponse } from "axios"; // AxiosRequestConfig
 
 import { PageLayout } from './components/PageLayout';
-import { loginRequest } from './authConfig';
+import { loginRequest, msalConfig } from './authConfig';
 import { callMsGraph } from './graph';
 import { ProfileData } from './components/ProfileData';
 
@@ -16,6 +17,23 @@ import Alert from './components/Alert';
 /**
  * Renders information about the signed-in user or a button to retrieve data about the user
  */
+
+export const GetToken = () => {
+    const { instance, accounts } = useMsal();
+    const [state, setState] = useState();
+
+    const currentAccount = accounts[0];
+
+    const accessTokenRequest = {
+        ...loginRequest,
+        account: currentAccount,
+      };
+        instance.acquireTokenSilent(accessTokenRequest).then((response) => {
+          setState(response);
+      });
+        
+    return state?.accessToken;
+}
 
 const ProfileContent = () => {
     const { instance, accounts } = useMsal();
@@ -68,6 +86,17 @@ export const useData = (url) => {
  */
 const MainContent = () => {
 
+    // const token = GetToken();
+
+    // const headers = new Headers();
+    // headers.append("Authorization", `Bearer ${token}`);
+
+    fetch('https://localhost:7272/api/user', { 
+        method: 'get', 
+        headers: new Headers({
+            'Authorization': 'Bearer '+ ''
+        }), 
+    });    
 
     const { data } = useData('https://localhost:7272/api/game/0/10');
     if (!data) return 'loading';
@@ -76,9 +105,7 @@ const MainContent = () => {
         <div className="App">
             <AuthenticatedTemplate>
                 <ListGroup items={ data.data } heading="Popular" />
-                
                 <ListGroup items={ data.data } heading="New Reviews From Friends" />
-
                 <ProfileContent />
             </AuthenticatedTemplate>
 
@@ -89,8 +116,8 @@ const MainContent = () => {
         </div>
     );
 };
-
 export default function App() {
+
     return (
         <div style={{ backgroundColor: "#2A3440", height: "100vh" }}>
             <PageLayout>

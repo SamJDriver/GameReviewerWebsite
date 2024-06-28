@@ -20,7 +20,7 @@ namespace GameReview
             IConfiguration? config = default;
 
             if (containerFlag)
-            {
+            {                
                 config = new ConfigurationBuilder()
                     .AddJsonFile(Environment.GetEnvironmentVariable("IGDB_CLIENT") ?? "", optional: false)
                     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
@@ -160,7 +160,8 @@ namespace GameReview
             }
 
             app.UseCors(
-                options => options.WithOrigins("http://localhost:3000").AllowAnyMethod()
+                options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
+                
             );
 
 

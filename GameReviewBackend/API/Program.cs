@@ -7,6 +7,7 @@ using API.Middlewares;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace GameReview
 {
@@ -38,7 +39,28 @@ namespace GameReview
                     .Build();
             }
 
-            builder.Services.AddMicrosoftIdentityWebApiAuthentication(config);
+            
+
+            // Adds Microsoft Identity platform (Azure AD B2C) support to protect this Api
+            //AzureAdB2C is configured to use the react spa
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddMicrosoftIdentityWebApi(options =>
+                {
+                    config.Bind("AzureAdB2C", options);
+                    options.TokenValidationParameters.NameClaimType = "name";
+                },
+                options => { config.Bind("AzureAdB2C", options);
+            });
+
+            // For local debugging with swagger:
+            // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //         .AddMicrosoftIdentityWebApi(options =>
+            //     {
+            //         config.Bind("AzureAd", options);
+            //         options.TokenValidationParameters.NameClaimType = "name";
+            //     },
+            //     options => { config.Bind("AzureAd", options);
+            // });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -94,7 +116,6 @@ namespace GameReview
                 // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 // c.IncludeXmlComments(xmlPath);
             });
-
             var connectionString = config.GetConnectionString("DockerDb");
 
             builder.Services.AddDbContext<DockerDbContext>(

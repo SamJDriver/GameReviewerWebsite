@@ -10,7 +10,7 @@ function ListGroup({ items, heading, onSelectItem }) {
       <div className="list-group-heading">{heading}</div>
       {items.length === 0 && <p>No items found.</p>}
 
-      <ul className="list-group list-group-horizontal" style={{ "padding-bottom": "50px" }}>
+      <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
 
         {items.map((item, index) => (
           <li key={item.id} className={selectedIndex === index ? 'gameListItem active flex-fill' : 'gameListItem flex-fill'} onClick={() => { setSelectedIndex(index); }}>

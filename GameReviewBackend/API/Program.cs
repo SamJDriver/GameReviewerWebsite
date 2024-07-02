@@ -17,17 +17,16 @@ namespace GameReview
             var builder = WebApplication.CreateBuilder(args);
             bool.TryParse(Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER_FLAG"), out bool containerFlag);
 
-
-            IConfigurationRoot? config = default;
+            IConfiguration? config = default;
 
             if (containerFlag)
-            {
+            {                
                 config = new ConfigurationBuilder()
+                    .AddJsonFile(Environment.GetEnvironmentVariable("IGDB_CLIENT") ?? "", optional: false)
                     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
                     .AddJsonFile("appsettings.json", optional: false)
-                    .AddJsonFile(Environment.GetEnvironmentVariable("AZURE_AD") ?? "", optional: true)
-                    .AddJsonFile(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "", optional: true)
-                    .AddJsonFile(Environment.GetEnvironmentVariable("IGDB_CLIENT") ?? "", optional: true)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("AZURE_AD") ?? "", optional: false)
+                    .AddJsonFile(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "", optional: false)
                     .Build();
             }
             else
@@ -104,14 +103,17 @@ namespace GameReview
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)
            ).EnableDetailedErrors());
 
-            builder.Services.AddHttpClient();
-            builder.Services.AddScoped<IIgdbApiService, IgdbApiService>();
+            builder.Services.AddHttpClient()
+            ;
+            //Services
+            builder.Services.AddScoped<IIgdbApiService, IgdbApiService>(c => new IgdbApiService(c.GetRequiredService<GenericRepository<DockerDbContext>>(), config));
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
             builder.Services.AddScoped<IPlayRecordCommentService, PlayRecordCommentService>();
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
+
             builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();
             builder.Services.AddTransient<ProductionExceptionHandlingMiddleware>();
 
@@ -156,6 +158,11 @@ namespace GameReview
                     options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
                 });
             }
+
+            app.UseCors(
+                options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
+                
+            );
 
 
             app.UseHttpsRedirection();

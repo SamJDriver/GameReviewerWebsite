@@ -9,8 +9,9 @@ namespace Components.Extensions
         {
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
-            self.ImageFilePath = game.ImageFilePath;
             self.Description = game.Description;
+            self.Artwork = game.Artwork != null ? game.Artwork.Select(a => new Artwork().Assign(a)).ToList() : null;
+            self.Cover = game.Cover != null ? game.Cover.Select(c => new Cover().Assign(c)).ToList() : null;
             return self;
         }
 
@@ -19,8 +20,9 @@ namespace Components.Extensions
             self.Id = game.Id;
             self.Title = game.Title;
             self.ReleaseDate = game.ReleaseDate;
-            self.ImageFilePath = game.ImageFilePath;
             self.Description = game.Description;
+            self.Artwork = game.Artwork != null ? game.Artwork.ToList().Select(a => new ArtworkDto().Assign(a)).ToList() : null;
+            self.Cover = game.Cover != null ? game.Cover.ToList().Select(a => new CoverDto().Assign(a)).ToList() : null;
             self.CreatedBy = game.CreatedBy;
             self.CreatedDate = game.CreatedDate;
             return self;

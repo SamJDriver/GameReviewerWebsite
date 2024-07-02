@@ -1,6 +1,7 @@
 using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
+using Components.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -21,23 +22,15 @@ namespace GameReview.Controllers
 
         //Probably admin only
         [HttpPost]
-        public IActionResult CreateGame([FromBody] CreateGameJson gameJson)
+        public IActionResult CreateGame([FromBody] GameDto gameJson)
         {
-            //TODO implement file blob
-            GameDto gameDto = new GameDto()
-            {
-                Title = gameJson.Title,
-                ReleaseDate = gameJson.ReleaseDate,
-                ImageFilePath = "PLACEHOLDER",
-                Description = gameJson.Description
-            };
 
-            int newId = _gameService.CreateGame(gameDto);
+            int newId = _gameService.CreateGame(gameJson);
             return Ok(newId);
         }
 
 
-        [HttpGet]
+        [HttpGet("{pageIndex}/{pageSize}")]
         public async Task<IActionResult> GetAllGames(int pageIndex, int pageSize)
         {
             var pagedGames = await _gameService.GetAllGames(pageIndex, pageSize);

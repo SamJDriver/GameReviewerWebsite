@@ -1,0 +1,85 @@
+@import "bootstrap";
+
+
+:root {
+  --main-color-background: #2A3440;
+  --main-font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+
+
+.App {
+  /* text-align: center; */
+  padding: 8px;
+  font-family: var(--main-font-family);
+  color: white;
+}
+
+.navbarStyle {
+  padding: .5rem 1rem !important;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.list-group-heading {
+  font-family: var(--main-font-family);
+  border-bottom: 1px solid white;
+  font-size: 45px;
+  width: 40%;
+  margin-bottom: .5em;
+}
+
+
+.title{
+  text-align: center;
+  padding: 8px;
+  font-family: var(--main-font-family);
+}
+
+.mainContent {
+  padding: 8px;
+  padding-left: 15em;
+  padding-right: 15em;
+  background-color: var(--main-color-background);
+
+}
+
+.topContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.btn {
+  font-weight: bolder;
+  background-color: transparent;
+
+}
+
+
+.btn {
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: var(--bs-white);
+  --bs-btn-bg: var(--bd-violet-bg);
+  --bs-btn-border-color: var(--bd-violet-bg);
+  --bs-btn-hover-color: var(--bs-white);
+  --bs-btn-hover-bg: #{shade-color($bd-violet, 10%)};
+  --bs-btn-hover-border-color: #{shade-color($bd-violet, 10%)};
+  --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+  --bs-btn-active-color: var(--bs-btn-hover-color);
+  --bs-btn-active-bg: #{shade-color($bd-violet, 20%)};
+  --bs-btn-active-border-color: #{shade-color($bd-violet, 20%)};
+}
+
+
+.topNavButtons {
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.gameListItem {
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.gameCover {
+  border-radius: 5px;
+}

@@ -10,8 +10,9 @@
 services: 
   game-api-server:
     build:
-      context: .
       target: final
+      context: GameReviewBackend
+      dockerfile: Dockerfile
     ports:
       - 80:8080
     networks:
@@ -34,6 +35,7 @@ services:
        - db_password
        - azure_ad
        - db_connection_string
+       - igdb
   db: #docker exec -it mariadb mariadb -u user -p
     image: mariadb:latest
     environment:
@@ -59,6 +61,15 @@ services:
     secrets:
        - db_root_password
        - db_password
+  react-web-app:
+    build:
+      target: Development
+      context: web-client/react-spa
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+    networks:
+      - game-review-network
 
 volumes:
   mariadbvolume:
@@ -68,13 +79,13 @@ networks:
   
 secrets:
   db_password:
-    file: secrets/db_password.txt
+    file: GameReviewBackend/secrets/db_password.txt
   db_root_password:
-    file: secrets/db_root_password.txt
+    file: GameReviewBackend/secrets/db_root_password.txt
   azure_ad:
-    file: secrets/azure_ad.json
+    file: GameReviewBackend/secrets/azure_ad.json
   db_connection_string:
-    file: secrets/db_connection_string.json
+    file: GameReviewBackend/secrets/db_connection_string.json
   igdb:
-    file: secrets/igdb.json
+    file: GameReviewBackend/secrets/igdb.json
 

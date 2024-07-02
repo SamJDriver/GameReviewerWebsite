@@ -17,6 +17,8 @@ namespace DataAccess.Models.DockerDb
             GamesGenresLookupLink = new HashSet<GamesGenresLookupLink>();
             GamesPlatformsLink = new HashSet<GamesPlatformsLink>();
             PlayRecords = new HashSet<PlayRecords>();
+            Artwork = new HashSet<Artwork>();
+            Cover = new HashSet<Cover>();
         }
 
         [Key]
@@ -27,9 +29,6 @@ namespace DataAccess.Models.DockerDb
         public string Title { get; set; } = null!;
         [Column("release_date")]
         public DateOnly ReleaseDate { get; set; }
-        [Column("image_file_path")]
-        [StringLength(255)]
-        public string ImageFilePath { get; set; } = null!;
         [Column("description", TypeName = "text")]
         public string Description { get; set; } = null!;
         [Column("created_by")]
@@ -40,11 +39,20 @@ namespace DataAccess.Models.DockerDb
 
         [InverseProperty("Games")]
         public virtual ICollection<GamesCompaniesLink> GamesCompaniesLink { get; set; }
+
         [InverseProperty("Game")]
         public virtual ICollection<GamesGenresLookupLink> GamesGenresLookupLink { get; set; }
+
         [InverseProperty("Game")]
         public virtual ICollection<GamesPlatformsLink> GamesPlatformsLink { get; set; }
+
         [InverseProperty("Game")]
         public virtual ICollection<PlayRecords> PlayRecords { get; set; }
+
+        [InverseProperty("Game")]
+        public virtual ICollection<Artwork> Artwork { get; set; }
+
+        [InverseProperty("Game")]
+        public virtual ICollection<Cover> Cover { get; set; }
     }
 }

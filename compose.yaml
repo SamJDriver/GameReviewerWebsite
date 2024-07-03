@@ -82,8 +82,15 @@ secrets:
     file: GameReviewBackend/secrets/db_password.txt
   db_root_password:
     file: GameReviewBackend/secrets/db_root_password.txt
-  azure_ad:
+
+  # use with swagger
+  azure_ad: 
     file: GameReviewBackend/secrets/azure_ad.json
+
+  # use with react client
+  # azure_ad:
+  #   file: GameReviewBackend/secrets/azure_ad_b2c.json
+
   db_connection_string:
     file: GameReviewBackend/secrets/db_connection_string.json
   igdb:

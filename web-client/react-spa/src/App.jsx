@@ -136,6 +136,9 @@ const MainContent = () => {
     // // eslint-disable-next-line  
     // }, []);
 
+    // docker
+    // const { data } = useData('http://localhost/api/game/0/10');
+
     const { data } = useData('https://localhost:7272/api/game/0/10');
     if (!data) return 'loading';
 

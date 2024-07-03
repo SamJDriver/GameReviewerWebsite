@@ -45,8 +45,14 @@ export const msalConfig = {
         clientId: "037043cf-7754-4522-9d3a-c94f5a2c41d6",
         authority: b2cPolicies.authorities.signUpSignIn.authority,
         knownAuthorities: [b2cPolicies.authorityDomain],
+
+        // local
         redirectUri: "http://localhost:3000/",
         postLogoutRedirectUri: "http://localhost:3000/"
+
+        // docker
+        // redirectUri: "http://localhost:3001/",
+        // postLogoutRedirectUri: "http://localhost:3001/"
     },
     cache: {
         cacheLocation: "localStorage",
@@ -95,7 +101,12 @@ export const loginRequest = {
  */
 export const apiConfig = {
     scopes: ["https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-read"],
+
+    // local
     uri: 'http://localhost:3000/api/users'
+
+    //docker
+    // uri: 'http://localhost:3001/api/users'
 };
 
 /**

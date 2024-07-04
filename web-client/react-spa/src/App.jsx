@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Axios, { AxiosInstance, AxiosResponse } from "axios"; // AxiosRequestConfig
+import { EventType } from "@azure/msal-browser";
 
 import { PageLayout } from './components/PageLayout';
-import { loginRequest, msalConfig } from './authConfig';
+import { loginRequest, msalConfig, b2cPolicies } from './authConfig';
 import { callMsGraph } from './graph';
 import { ProfileData } from './components/ProfileData';
 
@@ -13,6 +15,7 @@ import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import ListGroup from './components/ListGroup';
 import Alert from './components/Alert';
+import { callApi } from './utils/ApiCall';
 
 /**
  * Renders information about the signed-in user or a button to retrieve data about the user
@@ -24,14 +27,17 @@ export const GetToken = () => {
 
     const currentAccount = accounts[0];
 
-    const accessTokenRequest = {
-        ...loginRequest,
-        account: currentAccount,
-      };
+    useEffect(() => {
+        const accessTokenRequest = {
+            ...loginRequest,
+            account: currentAccount,
+          };
+
         instance.acquireTokenSilent(accessTokenRequest).then((response) => {
-          setState(response);
-      });
-        
+            setState(response);
+        });
+    }, []);
+    
     return state?.accessToken;
 }
 
@@ -85,18 +91,53 @@ export const useData = (url) => {
  * If a user is authenticated the ProfileContent component above is rendered. Otherwise a message indicating a user is not authenticated is rendered.
  */
 const MainContent = () => {
+    // const { instance } = useMsal();
+    // const [status, setStatus] = useState(null);
+  
+    // useEffect(() => {
+    //     const callbackId = instance.addEventCallback((event) => {
+    //       if ((event.eventType === EventType.LOGIN_SUCCESS || event.eventType === EventType.ACQUIRE_TOKEN_SUCCESS) && event.payload.account) {
+    //           /**
+    //            * For the purpose of setting an active account for UI update, we want to consider only the auth 
+    //            * response resulting from SUSI flow. "tfp" claim in the id token tells us the policy (NOTE: legacy 
+    //            * policies may use "acr" instead of "tfp"). To learn more about B2C tokens, visit:
+    //            * https://docs.microsoft.com/en-us/azure/active-directory-b2c/tokens-overview
+    //            */
+    //           if (event.payload.idTokenClaims['tfp'] === b2cPolicies.names.editProfile) {
+    //             // retrieve the account from initial sign-in to the app
+    //             const originalSignInAccount = instance.getAllAccounts()
+    //                 .find(account =>
+    //                   account.idTokenClaims.oid === event.payload.idTokenClaims.oid
+    //                   &&
+    //                   account.idTokenClaims.sub === event.payload.idTokenClaims.sub
+    //                   &&
+    //                   account.idTokenClaims['tfp'] === b2cPolicies.names.signUpSignIn
+    //                 );
+                
+    //             let signUpSignInFlowRequest = {
+    //                 authority: b2cPolicies.authorities.signUpSignIn.authority,
+    //                 account: originalSignInAccount
+    //             };
+    //             // silently login again with the signUpSignIn policy
+    //             instance.ssoSilent(signUpSignInFlowRequest);
+    //           }
+    //         }
+  
+    //         if (event.eventType === EventType.SSO_SILENT_SUCCESS && event.payload.account) {
+    //           setStatus("ssoSilent success");
+    //         }
+    //     });
+  
+    //     return () => {
+    //         if (callbackId) {
+    //             instance.removeEventCallback(callbackId);
+    //         }
+    //     }
+    // // eslint-disable-next-line  
+    // }, []);
 
-    // const token = GetToken();
-
-    // const headers = new Headers();
-    // headers.append("Authorization", `Bearer ${token}`);
-
-    fetch('https://localhost:7272/api/user', { 
-        method: 'get', 
-        headers: new Headers({
-            'Authorization': 'Bearer '+ ''
-        }), 
-    });    
+    // docker
+    // const { data } = useData('http://localhost/api/game/0/10');
 
     const { data } = useData('https://localhost:7272/api/game/0/10');
     if (!data) return 'loading';
@@ -116,6 +157,7 @@ const MainContent = () => {
         </div>
     );
 };
+
 export default function App() {
 
     return (

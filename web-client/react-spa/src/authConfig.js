@@ -5,25 +5,58 @@
 
 import { LogLevel } from "@azure/msal-browser";
 
+
+// Browser check variables
+// If you support IE, our recommendation is that you sign-in using Redirect APIs
+// If you as a developer are testing using Edge InPrivate mode, please add "isEdge" to the if check
+const ua = window.navigator.userAgent;
+const msie = ua.indexOf("MSIE ");
+const msie11 = ua.indexOf("Trident/");
+const msedge = ua.indexOf("Edge/");
+const firefox = ua.indexOf("Firefox");
+const isIE = msie > 0 || msie11 > 0;
+const isEdge = msedge > 0;
+const isFirefox = firefox > 0; // Only needed if you need to support the redirect flow in Firefox incognito
+
 /**
  * Configuration object to be passed to MSAL instance on creation. 
  * For a full list of MSAL.js configuration parameters, visit:
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md 
  */
 
+export const b2cPolicies = {
+    names: {
+        signUpSignIn: "B2C_1_test"
+        // editProfile: "B2C_1_ProfileEditPolicy"
+    },
+    authorities: {
+        signUpSignIn: {
+            authority: "https://dominiongamingcompany.b2clogin.com/dominiongamingcompany.onmicrosoft.com/B2C_1_test"
+        }
+        // editProfile: {
+        //     authority: "https://msidlabb2c.b2clogin.com/msidlabb2c.onmicrosoft.com/B2C_1_ProfileEditPolicy"
+        // }
+    },
+    authorityDomain: "dominiongamingcompany.b2clogin.com"
+}
+
 export const msalConfig = {
     auth: {
-        authority: "https://login.microsoftonline.com/{tenantid}",
-        clientId: "{clientid}",
-        postLogoutRedirectUri: "http://localhost:3000",
-        redirectUri: "http://localhost:3000",
-        validateAuthority: true,
-        navigateToLoginRequestUrl: true,
-        tenantId: "{tenantid}"
+        clientId: "037043cf-7754-4522-9d3a-c94f5a2c41d6",
+        authority: b2cPolicies.authorities.signUpSignIn.authority,
+        knownAuthorities: [b2cPolicies.authorityDomain],
+
+        // local
+        redirectUri: "http://localhost:3000/",
+        postLogoutRedirectUri: "http://localhost:3000/"
+
+        // docker
+        // redirectUri: "http://localhost:3001/",
+        // postLogoutRedirectUri: "http://localhost:3001/"
     },
     cache: {
-        cacheLocation: "sessionStorage", // This configures where your cache will be stored
-        storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+        cacheLocation: "localStorage",
+        storeAuthStateInCookie: isIE || isEdge || isFirefox
     },
     system: {	
         loggerOptions: {	
@@ -59,7 +92,21 @@ export const msalConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-    scopes: [""]
+    scopes: ["https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-read"]
+};
+
+/**
+ * Enter here the coordinates of your web API and scopes for access token request
+ * The current application coordinates were pre-registered in a B2C tenant.
+ */
+export const apiConfig = {
+    scopes: ["https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-read"],
+
+    // local
+    uri: 'http://localhost:3000/api/users'
+
+    //docker
+    // uri: 'http://localhost:3001/api/users'
 };
 
 /**

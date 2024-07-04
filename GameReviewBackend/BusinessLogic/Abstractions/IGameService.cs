@@ -7,6 +7,6 @@ namespace BusinessLogic.Abstractions
     {
         public int CreateGame(GameDto game);
         public Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize);
-        public GameDto GetGameById(int gameId);
+        public Task<GameDto> GetGameById(int gameId);
     }
 }

@@ -54,9 +54,9 @@ namespace BusinessLogic.Infrastructure
             };
         }
         
-        public GameDto GetGameById(int gameId)
+        public async Task<GameDto> GetGameById(int gameId)
         {
-            var game = _genericRepository.GetById<Games>(gameId);
+            var game = await _genericRepository.GetByIdAsync<Games>(gameId);
             if (game == null)
             {
                 throw new DgcException("Can't retrieve game. Id not found.", DgcExceptionType.ResourceNotFound);

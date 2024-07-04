@@ -38,7 +38,7 @@ namespace GameReview.Controllers
         }
 
         [HttpGet("{gameId}")]
-        public IActionResult GetGameById(int gameId)
+        public async Task<IActionResult> GetGameById(int gameId)
         {
             var game = _gameService.GetGameById(gameId);
             return Ok(game);

@@ -20,6 +20,13 @@ namespace Repositories
             return entityObject;
         }
 
+        public async Task<TEntityType> GetByIdAsync<TEntityType>(int id) where TEntityType : class
+        {
+            DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
+            TEntityType entityObject = await dbSet.FindAsync(id);
+            return entityObject;
+        }
+
         public IQueryable<TEntityType> GetAll<TEntityType>() where TEntityType : class
         {
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();

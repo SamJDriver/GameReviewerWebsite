@@ -1,8 +1,8 @@
-using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
-using Components.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 
 namespace GameReview.Controllers
@@ -12,19 +12,18 @@ namespace GameReview.Controllers
     public class GameController : Controller
     {
         private IGameService _gameService;
-        private IIgdbApiService _igdbApiService;
 
-        public GameController(IGameService gameService, IIgdbApiService igdbApiService)
+        public GameController(IGameService gameService)
         {
             _gameService = gameService;
-            _igdbApiService = igdbApiService;
         }
 
         //Probably admin only
         [HttpPost]
+        [Authorize]
+        [RequiredScope("gamereview-admin")]
         public async Task<IActionResult> CreateGame([FromBody] GameDto gameJson)
         {
-
             int newId = await _gameService.CreateGame(gameJson);
             return Ok(newId);
         }

@@ -26,10 +26,17 @@ namespace BusinessLogic.Infrastructure
             }
 
             var gameEntity = new Games().Assign(game);
+            DockerDbContext.SetUsername("SamJDriv");
 
             //TODO add validation checks for game?
-            int id = await _genericRepository.InsertRecordAsync(gameEntity);
-            return id;
+            int numberOfEntriesWritten = await _genericRepository.InsertRecordAsync(gameEntity);
+
+            if (numberOfEntriesWritten < 1)
+            {
+                throw new DgcException("The game could not be added.", DgcExceptionType.InvalidOperation);
+            }
+
+            return gameEntity.Id;
         }
         public async Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize)
         {

@@ -18,7 +18,7 @@ namespace BusinessLogic.Infrastructure
             _genericRepository = genericRepository;
         }
 
-        public int CreateGame(GameDto game)
+        public async Task<int> CreateGame(GameDto game)
         {
             if (!game.ReleaseDate.ValidateDateOnly())
             {
@@ -28,8 +28,8 @@ namespace BusinessLogic.Infrastructure
             var gameEntity = new Games().Assign(game);
 
             //TODO add validation checks for game?
-            _genericRepository.InsertRecord(gameEntity);
-            return gameEntity.Id;
+            int id = await _genericRepository.InsertRecordAsync(gameEntity);
+            return id;
         }
         public async Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize)
         {
@@ -53,10 +53,9 @@ namespace BusinessLogic.Infrastructure
                 PageSize = pageSize,
             };
         }
-        
-        public async Task<GameDto> GetGameById(int gameId)
+        public GameDto GetGameById(int gameId)
         {
-            var game = await _genericRepository.GetByIdAsync<Games>(gameId);
+            var game = _genericRepository.GetById<Games>(gameId);
             if (game == null)
             {
                 throw new DgcException("Can't retrieve game. Id not found.", DgcExceptionType.ResourceNotFound);

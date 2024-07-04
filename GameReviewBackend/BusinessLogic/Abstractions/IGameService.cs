@@ -5,8 +5,8 @@ namespace BusinessLogic.Abstractions
 {
     public interface IGameService
     {
-        public int CreateGame(GameDto game);
+        public Task<int> CreateGame(GameDto game);
         public Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize);
-        public Task<GameDto> GetGameById(int gameId);
+        public GameDto GetGameById(int gameId);
     }
 }

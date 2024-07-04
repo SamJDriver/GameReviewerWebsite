@@ -22,10 +22,10 @@ namespace GameReview.Controllers
 
         //Probably admin only
         [HttpPost]
-        public IActionResult CreateGame([FromBody] GameDto gameJson)
+        public async Task<IActionResult> CreateGame([FromBody] GameDto gameJson)
         {
 
-            int newId = _gameService.CreateGame(gameJson);
+            int newId = await _gameService.CreateGame(gameJson);
             return Ok(newId);
         }
 
@@ -38,7 +38,7 @@ namespace GameReview.Controllers
         }
 
         [HttpGet("{gameId}")]
-        public async Task<IActionResult> GetGameById(int gameId)
+        public IActionResult GetGameById(int gameId)
         {
             var game = _gameService.GetGameById(gameId);
             return Ok(game);

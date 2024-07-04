@@ -20,13 +20,6 @@ namespace Repositories
             return entityObject;
         }
 
-        public async Task<TEntityType> GetByIdAsync<TEntityType>(int id) where TEntityType : class
-        {
-            DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
-            TEntityType entityObject = await dbSet.FindAsync(id);
-            return entityObject;
-        }
-
         public IQueryable<TEntityType> GetAll<TEntityType>() where TEntityType : class
         {
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
@@ -62,6 +55,14 @@ namespace Repositories
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
             dbSet.Add(itemToInsert);
             _dbContext.SaveChanges();
+        }
+
+        public async Task<int> InsertRecordAsync<TEntityType>(TEntityType itemToInsert) where TEntityType : class
+        {
+            DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
+            await dbSet.AddAsync(itemToInsert);
+            int id = await _dbContext.SaveChangesAsync();
+            return id;
         }
 
         public void InsertRecordList<TEntityType>(IEnumerable<TEntityType> listToInsert) where TEntityType : class

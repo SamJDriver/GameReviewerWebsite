@@ -32,5 +32,32 @@ namespace DataAccess.Contexts.DockerDb
             }
             return base.SaveChanges();
         }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+
+            await Task.Run(() =>
+            {
+                ChangeTracker.DetectChanges();
+
+                var added = this.ChangeTracker.Entries()
+                    .Where(e => e.State == EntityState.Added)
+                    .Select(e => e.Entity)
+                    .ToArray();
+
+                foreach (var entity in added)
+                {
+                    if (entity is ITrackable)
+                    {
+                        var track = entity as ITrackable;
+                        track.CreatedBy = _username;
+                        track.CreatedDate = DateTime.Now;
+                    }
+                }
+            });
+
+            return await base.SaveChangesAsync();
+
+        }
     }
 }

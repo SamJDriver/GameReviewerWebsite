@@ -6,7 +6,7 @@ namespace Components.Models
 {
     public class GameDto
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [StringLength(255)]
         public string Title { get; set; } = null!;
@@ -20,7 +20,7 @@ namespace Components.Models
         public string Description { get; set; } = null!;
 
         [StringLength(25)]
-        public string CreatedBy { get; set; } = null!;
-        public DateTime CreatedDate { get; set; }
+        public string? CreatedBy { get; set; } = null!;
+        public DateTime? CreatedDate { get; set; }
     }
 }

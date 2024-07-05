@@ -114,6 +114,7 @@ namespace GameReview
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
+            builder.Services.AddScoped(typeof(GameRepository));
 
             builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();
             builder.Services.AddTransient<ProductionExceptionHandlingMiddleware>();

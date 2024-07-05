@@ -4,6 +4,7 @@
     {
 
         public static int minimumReleaseYear = 1955;
+        public static int maximumReleaseYear = 3000;
 
 
         public static class IgdbApi

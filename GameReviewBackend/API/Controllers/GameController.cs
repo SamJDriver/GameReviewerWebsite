@@ -42,5 +42,12 @@ namespace GameReview.Controllers
             var game = _gameService.GetGameById(gameId);
             return Ok(game);
         }
+
+        [HttpGet("search/{pageIndex}/{pageSize}")]
+        public async Task<IActionResult> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        {
+            var games = await _gameService.SearchGames(searchTerm, genreId, releaseYear, pageIndex, pageSize);
+            return Ok(games);
+        }
     }
 }

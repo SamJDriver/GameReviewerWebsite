@@ -7,15 +7,19 @@ using DataAccess.Models.DockerDb;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Components.Exceptions;
+using System.Reflection.Metadata;
+using Components;
 
 namespace BusinessLogic.Infrastructure
 {
     public class GameService : IGameService
     {
         private readonly GenericRepository<DockerDbContext> _genericRepository;
-        public GameService(GenericRepository<DockerDbContext> genericRepository)
+        private readonly GameRepository _gameRepository;
+        public GameService(GenericRepository<DockerDbContext> genericRepository, GameRepository gameRepository)
         {
             _genericRepository = genericRepository;
+            _gameRepository = gameRepository;
         }
 
         public async Task<int> CreateGame(GameDto game)
@@ -70,6 +74,37 @@ namespace BusinessLogic.Infrastructure
 
             var gameDto = new GameDto().Assign(game);
             return gameDto;
+        }
+
+        public async Task<PagedResult<GameDto>> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        { 
+            
+            var genre = genreId != null ? _genericRepository.GetById<GenresLookup>(genreId.Value) : null;
+            if (genreId != null && genre == null)
+            {
+                throw new DgcException("Genre not found.", DgcExceptionType.ResourceNotFound);
+            }
+
+            if (releaseYear != null && releaseYear < Constants.minimumReleaseYear || releaseYear > Constants.maximumReleaseYear)
+            {
+                throw new DgcException("Invalid release year provided.", DgcExceptionType.ArgumentOutOfRange);
+            }
+
+            var query = await _gameRepository.SearchGames(searchTerm, genreId, releaseYear);
+
+            var games = (await query
+                        .Skip(pageIndex * pageSize)
+                        .Take(pageSize)
+                        .ToListAsync())
+                        .Select(g => new GameDto().Assign(g));
+
+            return new PagedResult<GameDto>()
+            {
+                Data = games,
+                TotalRowCount = query.Count(),
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+            };
         }
     }
 }

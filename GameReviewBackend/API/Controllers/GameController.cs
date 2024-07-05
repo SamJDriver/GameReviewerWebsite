@@ -1,7 +1,10 @@
+using System.Security.Claims;
 using BusinessLogic.Abstractions;
 using Components.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 
 
@@ -24,7 +27,8 @@ namespace GameReview.Controllers
         [RequiredScope("gamereview-admin")]
         public async Task<IActionResult> CreateGame([FromBody] GameDto gameJson)
         {
-            int newId = await _gameService.CreateGame(gameJson);
+            var userId = User.GetObjectId();
+            int newId = await _gameService.CreateGame(gameJson, userId);
             return Ok(newId);
         }
 

@@ -32,7 +32,7 @@ namespace DataAccess.Models.DockerDb
         [Column("description", TypeName = "text")]
         public string Description { get; set; } = null!;
         [Column("created_by")]
-        [StringLength(25)]
+        [StringLength(255)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

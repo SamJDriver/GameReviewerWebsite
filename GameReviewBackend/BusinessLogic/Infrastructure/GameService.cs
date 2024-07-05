@@ -22,7 +22,7 @@ namespace BusinessLogic.Infrastructure
             _gameRepository = gameRepository;
         }
 
-        public async Task<int> CreateGame(GameDto game)
+        public async Task<int> CreateGame(GameDto game, string userId)
         {
             if (!game.ReleaseDate.ValidateDateOnly())
             {
@@ -30,7 +30,7 @@ namespace BusinessLogic.Infrastructure
             }
 
             var gameEntity = new Games().Assign(game);
-            DockerDbContext.SetUsername("SamJDriv");
+            DockerDbContext.SetUsername(userId);
 
             //TODO add validation checks for game?
             int numberOfEntriesWritten = await _genericRepository.InsertRecordAsync(gameEntity);

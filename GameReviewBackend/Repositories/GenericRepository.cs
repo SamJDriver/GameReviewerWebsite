@@ -75,6 +75,16 @@ namespace Repositories
             _dbContext.SaveChanges();
         }
 
+        public async Task InsertRecordListAsync<TEntityType>(IEnumerable<TEntityType> listToInsert) where TEntityType : class
+        {
+            DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
+            foreach (TEntityType listItem in listToInsert)
+            {
+                dbSet.Add(listItem);
+            }
+            await _dbContext.SaveChangesAsync();
+        }
+
         public void UpdateRecord<TEntityType>(TEntityType itemToUpdate) where TEntityType : class
         {
             _dbContext.Entry(itemToUpdate).State = EntityState.Modified;

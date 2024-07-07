@@ -77,6 +77,28 @@ namespace DataAccess.Contexts.DockerDb
                     .HasConstraintName("game_self_link_games_link_ibfk_1");
             });
 
+            modelBuilder.Entity<GameSelfLinkTypeLookup>()
+            .HasData(
+                new GameSelfLinkTypeLookup
+                {
+                    Id = 1,
+                    Name = "DLC",
+                    Code = "DLC",
+                    Description = "Downloadable Content",
+                    CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                    CreatedDate = DateTime.Now
+                },
+                new GameSelfLinkTypeLookup
+                {
+                    Id = 2,
+                    Name = "Expansion",
+                    Code = "EXPANS",
+                    Description = "Expansion",
+                    CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                    CreatedDate = DateTime.Now
+                }
+            );
+
             modelBuilder.Entity<GamesCompaniesLink>(entity =>
             {
                 entity.HasOne(d => d.Companies)

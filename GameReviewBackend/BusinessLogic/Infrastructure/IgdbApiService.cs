@@ -18,11 +18,16 @@ namespace BusinessLogic.Infrastructure
         GenericRepository<DockerDbContext> _genericRepository;
         private readonly IConfiguration _config;
         private JObject? _accessToken = null;
+        private List<int[]> _childDlcGameIds;
+        private List<int[]> _childExpansionGameIds;
+
 
         public IgdbApiService(GenericRepository<DockerDbContext> genericRepository, IConfiguration config)
         {
             _genericRepository = genericRepository;
             _config = config;
+            _childDlcGameIds = new List<int[]>();
+            _childExpansionGameIds = new List<int[]>();
         }
 
         public async Task QueryApi()
@@ -31,10 +36,10 @@ namespace BusinessLogic.Infrastructure
             await insertGenres();
             await insertCompanies();
             await insertGames();
-            
             await insertPlatforms();
 
-
+            await insertDlcs();
+            await insertExpansions();
             await insertGamePlatformLinks();
             await insertGameCompaniesLinks();
 
@@ -158,6 +163,24 @@ namespace BusinessLogic.Infrastructure
             foreach (var gameJToken in totalList)
             {
                 var genreIds = gameJToken["genres"] != null ? ((JArray)gameJToken["genres"]).ToObject<int[]>() : null;
+                var dlcGameIds = gameJToken["dlcs"] != null ? ((JArray)gameJToken["dlcs"]).ToObject<int[]>() : null;
+                var expansionGameIds = gameJToken["expansions"] != null ? ((JArray)gameJToken["expansions"]).ToObject<int[]>() : null;
+
+                if (dlcGameIds != null)
+                {
+                    foreach (int dlcGameId in dlcGameIds)
+                    {
+                        _childDlcGameIds.Add([gameJToken["id"]?.ToObject<int>() ?? 0, dlcGameId]);
+                    }
+                }
+
+                if (expansionGameIds != null)
+                {
+                    foreach (int expansionGameId in expansionGameIds)
+                    {
+                        _childExpansionGameIds.Add([gameJToken["id"]?.ToObject<int>() ?? 0, expansionGameId]);
+                    }
+                }
 
                 Games gameEntity = new Games()
                 {
@@ -167,10 +190,10 @@ namespace BusinessLogic.Infrastructure
                     Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
                 };
 
-                List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
                 //If the game has associated genres, add the links to the game
                 if (genreIds != null)
                 {
+                    List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
                     foreach (var genreId in genreIds)
                     {
                         GamesGenresLookupLink linkEntity = new GamesGenresLookupLink()
@@ -185,8 +208,8 @@ namespace BusinessLogic.Infrastructure
                 games.Add(gameEntity);
             }
 
-            games = games.DistinctBy(g => g.Id).ToList();
-            _genericRepository.InsertRecordList(games);
+            // games = games.DistinctBy(g => g.Id).ToList();
+            // _genericRepository.InsertRecordList(games);
 
         }
 
@@ -312,6 +335,61 @@ namespace BusinessLogic.Infrastructure
                 Debug.Write(ex);
             }
         }
+
+        private async Task insertDlcs()
+        {
+            if (_childDlcGameIds != null)
+            {
+                var gameIds = _genericRepository.GetAll<Games>().Select(g => g.Id);
+                var dlcLookupId = _genericRepository.GetSingleNoTrack<GameSelfLinkTypeLookup>(g => g.Code == "DLC").Id;
+
+                List<GameSelfLink> gameSelfLinks = new List<GameSelfLink>();
+                foreach (int[] dlcGamePair in _childDlcGameIds)
+                {
+                    if (gameIds.Contains(dlcGamePair[0]) && gameIds.Contains(dlcGamePair[1]))
+                    {
+
+                        GameSelfLink linkEntity = new GameSelfLink()
+                        {
+                            ParentGameId = dlcGamePair[0],
+                            ChildGameId = dlcGamePair[1],
+                            GameSelfLinkTypeLookupId = dlcLookupId
+                        };
+                        gameSelfLinks.Add(linkEntity);
+                    }
+                }
+
+                _genericRepository.InsertRecordList(gameSelfLinks);
+            }
+        }
+
+
+        private async Task insertExpansions()
+        {
+            if (_childExpansionGameIds != null)
+            {
+                var gameIds = _genericRepository.GetAll<Games>().Select(g => g.Id);
+                var expansionLookupId = _genericRepository.GetSingleNoTrack<GameSelfLinkTypeLookup>(g => g.Code == "EXPANS").Id;
+
+                List<GameSelfLink> gameSelfLinks = new List<GameSelfLink>();
+                foreach (int[] expansionGamePair in _childExpansionGameIds)
+                {
+                    if (gameIds.Contains(expansionGamePair[0]) && gameIds.Contains(expansionGamePair[1]))
+                    {
+
+                        GameSelfLink linkEntity = new GameSelfLink()
+                        {
+                            ParentGameId = expansionGamePair[0],
+                            ChildGameId = expansionGamePair[1],
+                            GameSelfLinkTypeLookupId = expansionLookupId
+                        };
+                        gameSelfLinks.Add(linkEntity);
+                    }
+                }
+                _genericRepository.InsertRecordList(gameSelfLinks);
+            }
+        }
+
         private async Task insertGamePlatformLinks()
         {
             var offset = 0;

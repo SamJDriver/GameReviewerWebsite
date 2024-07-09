@@ -35,8 +35,8 @@ namespace BusinessLogic.Infrastructure
 
             await insertGenres();
             await insertCompanies();
-            await insertGames();
             await insertPlatforms();
+            await insertGames();
 
             await insertDlcs();
             await insertExpansions();
@@ -188,6 +188,7 @@ namespace BusinessLogic.Infrastructure
                     Title = gameJToken["name"].ToString() ?? "",
                     ReleaseDate = UnixTimeStampToDateTime(gameJToken["first_release_date"]?.ToObject<long>()), //get enum value here
                     Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
+                    ParentId = gameJToken["parent_game"]?.ToObject<int>() ?? null
                 };
 
                 //If the game has associated genres, add the links to the game
@@ -208,8 +209,8 @@ namespace BusinessLogic.Infrastructure
                 games.Add(gameEntity);
             }
 
-            // games = games.DistinctBy(g => g.Id).ToList();
-            // _genericRepository.InsertRecordList(games);
+            games = games.DistinctBy(g => g.Id).ToList();
+            _genericRepository.InsertRecordList(games);
 
         }
 

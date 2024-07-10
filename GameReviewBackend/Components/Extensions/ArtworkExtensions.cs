@@ -14,8 +14,6 @@ namespace Components.Extensions
             self.Height = artwork.Height;
             self.Width = artwork.Width;
             self.ImageUrl = artwork.ImageUrl;
-            self.CreatedBy = artwork.CreatedBy;
-            self.CreatedDate = artwork.CreatedDate;
             return self;
         }
 
@@ -28,8 +26,6 @@ namespace Components.Extensions
             self.Height = artwork.Height;
             self.Width = artwork.Width;
             self.ImageUrl = artwork.ImageUrl;
-            self.CreatedBy = artwork.CreatedBy;
-            self.CreatedDate = artwork.CreatedDate;
             return self;
         }
     }

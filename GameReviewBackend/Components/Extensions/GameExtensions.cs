@@ -24,11 +24,9 @@ namespace Components.Extensions
             self.Description = game.Description;
             self.Artwork = game.Artwork != null ? game.Artwork.Select(a => new ArtworkDto().Assign(a)).ToList() : null;
             self.Cover = game.Cover != null ? game.Cover.Select(a => new CoverDto().Assign(a)).ToList() : null;
-            self.ParentLinks = game.GameSelfLinkParentGame != null ? game.GameSelfLinkParentGame.Select(g => new GameSelfLinkDto().Assign(g)).ToList() : null;
-            self.ChildLinks = game.GameSelfLinkChildGame != null ? game.GameSelfLinkChildGame.Select(g => new GameSelfLinkDto().Assign(g)).ToList() : null;
+            // self.ParentLinks = game.GameSelfLinkParentGame != null ? game.GameSelfLinkParentGame.Select(g => new GameSelfLinkDto().Assign(g)).ToList() : null;
+            // self.ChildLinks = game.GameSelfLinkChildGame != null ? game.GameSelfLinkChildGame.Select(g => new GameSelfLinkDto().Assign(g)).ToList() : null;
             self.ParentId = game.ParentId;
-            self.CreatedBy = game.CreatedBy;
-            self.CreatedDate = game.CreatedDate;
             return self;
         }
 
@@ -69,8 +67,6 @@ namespace Components.Extensions
             self.ParentGameId = gameSelfLink.ParentGameId;
             self.ChildGameId = gameSelfLink.ChildGameId;
             self.GameSelfLinkTypeLookupId = gameSelfLink.GameSelfLinkTypeLookupId;
-            self.CreatedBy = gameSelfLink.CreatedBy;
-            self.CreatedDate = gameSelfLink.CreatedDate;
             return self;
         }
 
@@ -80,8 +76,6 @@ namespace Components.Extensions
             self.ParentGameId = gameSelfLink.ParentGameId;
             self.ChildGameId = gameSelfLink.ChildGameId;
             self.GameSelfLinkTypeLookupId = gameSelfLink.GameSelfLinkTypeLookupId;
-            self.CreatedBy = gameSelfLink.CreatedBy;
-            self.CreatedDate = gameSelfLink.CreatedDate;
             return self;
         }
     }

@@ -8,6 +8,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using API.Webframework;
+using MapsterMapper;
 
 namespace GameReview
 {
@@ -43,24 +45,24 @@ namespace GameReview
 
             // Adds Microsoft Identity platform (Azure AD B2C) support to protect this Api
             //AzureAdB2C is configured to use the react spa
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddMicrosoftIdentityWebApi(options =>
-                {
-                    config.Bind("AzureAdB2C", options);
-                    options.TokenValidationParameters.NameClaimType = "name";
-                },
-                options => { config.Bind("AzureAdB2C", options);
-            });
-
-            // For local debugging with swagger:
             // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //         .AddMicrosoftIdentityWebApi(options =>
             //     {
-            //         config.Bind("AzureAd", options);
+            //         config.Bind("AzureAdB2C", options);
             //         options.TokenValidationParameters.NameClaimType = "name";
             //     },
-            //     options => { config.Bind("AzureAd", options);
+            //     options => { config.Bind("AzureAdB2C", options);
             // });
+
+            // For local debugging with swagger:
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddMicrosoftIdentityWebApi(options =>
+                {
+                    config.Bind("AzureAd", options);
+                    options.TokenValidationParameters.NameClaimType = "name";
+                },
+                options => { config.Bind("AzureAd", options);
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -134,11 +136,14 @@ namespace GameReview
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICompanyService, CompanyService>();
+            builder.Services.AddScoped<ILookupService, LookupService>();
             builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddScoped(typeof(GameRepository));
 
             builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();
             builder.Services.AddTransient<ProductionExceptionHandlingMiddleware>();
+
+            builder.Services.AddMapster();
 
             var app = builder.Build();
 

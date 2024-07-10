@@ -14,11 +14,13 @@ namespace GameReview.Controllers
     [Route("api/game")]
     public class GameController : Controller
     {
-        private IGameService _gameService;
+        private readonly IGameService _gameService;
+        private readonly ILookupService _lookupService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService, ILookupService lookupService)
         {
             _gameService = gameService;
+            _lookupService = lookupService;
         }
 
         //Probably admin only
@@ -52,6 +54,13 @@ namespace GameReview.Controllers
         {
             var games = await _gameService.SearchGames(searchTerm, genreId, releaseYear, pageIndex, pageSize);
             return Ok(games);
+        }
+
+        [HttpGet("genres")]
+        public IActionResult GetGenres()
+        {
+            var genres = _lookupService.GetGenreLookups();
+            return Ok(genres);
         }
     }
 }

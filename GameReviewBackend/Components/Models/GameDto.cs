@@ -4,7 +4,7 @@ using DataAccess.Models.DockerDb;
 
 namespace Components.Models
 {
-    public class GameDto
+    public class GameDto : BaseDto<GameDto, Games>
     {
         public int? Id { get; set; }
 
@@ -14,15 +14,11 @@ namespace Components.Models
         public IEnumerable<ArtworkDto>? Artwork { get; set; }
         public IEnumerable<CoverDto>? Cover { get; set; }
         public int? ParentId { get; set; }
-        public IEnumerable<GameSelfLinkDto>? ParentLinks { get; set; }
-        public IEnumerable<GameSelfLinkDto>? ChildLinks { get; set; }
+        public IEnumerable<GameSelfLinkDto>? GameSelfLinkParentGame { get; set; }
+        public IEnumerable<GameSelfLinkDto>? GameSelfLinkChildGame { get; set; }
+        public IEnumerable<GameGenresLookupLinkDto> GamesGenresLookupLink { get; set; }
 
         [StringLength(65535)]
         public string Description { get; set; } = null!;
-
-        [StringLength(25)]
-        public string? CreatedBy { get; set; } = null!;
-        
-        public DateTime? CreatedDate { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using Repositories;
 using Components.Exceptions;
 using System.Reflection.Metadata;
 using Components;
+using Mapster;
 
 namespace BusinessLogic.Infrastructure
 {
@@ -72,7 +73,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't retrieve game. Id not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            var gameDto = new GameDto().Assign(game);
+            var gameDto = game.Adapt<GameDto>();
             return gameDto;
         }
 
@@ -92,11 +93,11 @@ namespace BusinessLogic.Infrastructure
 
             var query = _gameRepository.SearchGames(searchTerm, genreId, releaseYear);
 
-            var games = (await query
+            var games = query
                         .Skip(pageIndex * pageSize)
                         .Take(pageSize)
-                        .ToListAsync())
-                        .Select(g => new GameDto().Assign(g));
+                        .ToList()
+                        .Adapt<IEnumerable<GameDto>>();
 
             return new PagedResult<GameDto>()
             {

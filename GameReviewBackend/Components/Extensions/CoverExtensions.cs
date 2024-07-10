@@ -14,8 +14,6 @@ namespace Components.Extensions
             self.Height = Cover.Height;
             self.Width = Cover.Width;
             self.ImageUrl = Cover.ImageUrl;
-            self.CreatedBy = Cover.CreatedBy;
-            self.CreatedDate = Cover.CreatedDate;
             return self;
         }
 
@@ -28,8 +26,6 @@ namespace Components.Extensions
             self.Height = Cover.Height;
             self.Width = Cover.Width;
             self.ImageUrl = Cover.ImageUrl;
-            self.CreatedBy = Cover.CreatedBy;
-            self.CreatedDate = Cover.CreatedDate;
             return self;
         }
     }

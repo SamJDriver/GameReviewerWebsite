@@ -90,7 +90,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Invalid release year provided.", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            var query = await _gameRepository.SearchGames(searchTerm, genreId, releaseYear);
+            var query = _gameRepository.SearchGames(searchTerm, genreId, releaseYear);
 
             var games = (await query
                         .Skip(pageIndex * pageSize)

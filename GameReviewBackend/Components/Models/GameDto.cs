@@ -10,17 +10,19 @@ namespace Components.Models
 
         [StringLength(255)]
         public string Title { get; set; } = null!;
-
         public DateOnly ReleaseDate { get; set; }
-
         public IEnumerable<ArtworkDto>? Artwork { get; set; }
         public IEnumerable<CoverDto>? Cover { get; set; }
+        public int? ParentId { get; set; }
+        public IEnumerable<GameSelfLinkDto>? ParentLinks { get; set; }
+        public IEnumerable<GameSelfLinkDto>? ChildLinks { get; set; }
 
         [StringLength(65535)]
         public string Description { get; set; } = null!;
 
         [StringLength(25)]
         public string? CreatedBy { get; set; } = null!;
+        
         public DateTime? CreatedDate { get; set; }
     }
 }

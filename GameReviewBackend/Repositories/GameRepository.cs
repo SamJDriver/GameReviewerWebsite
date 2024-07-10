@@ -15,12 +15,16 @@ namespace Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IQueryable<Games>> SearchGames(string? searchTerm, int? genreId, int? releaseYear)
+        public IQueryable<Games> SearchGames(string? searchTerm, int? genreId, int? releaseYear)
         {
+            if (searchTerm != null)
+            {
+                searchTerm = searchTerm.ToLower();
+            }
 
             var query = 
                 from 
-                    game in _dbContext.Games.Include(g => g.GamesGenresLookupLink)
+                    game in _dbContext.Games
                 join
                     gameGenresLookupLink in _dbContext.GamesGenresLookupLink.Include(g => g.GenreLookup)
                     on game.Id equals gameGenresLookupLink.GameId
@@ -28,9 +32,12 @@ namespace Repositories
                     genre in _dbContext.GenresLookup
                     on gameGenresLookupLink.GenreLookupId equals genre.Id
                 where 
-                    searchTerm != null ? game.Title.Contains(searchTerm) : true
-                    && genreId != null ? genre.Id == genreId : true
-                    && releaseYear != null ? game.ReleaseDate.Year == releaseYear : true
+                    game.ParentId == null  
+                    && (searchTerm != null ? game.Title.ToLower().Contains(searchTerm) : true)
+                    && (genreId != null ? genre.Id == genreId : true)
+                    && (releaseYear != null ? game.ReleaseDate.Year == releaseYear : true)
+                orderby
+                    game.ReleaseDate descending
                 select
                     game;
 

@@ -30,6 +30,9 @@ public partial class Games
     [Column("description", TypeName = "mediumtext")]
     public string Description { get; set; } = null!;
 
+    [Column("parent_game_id", TypeName = "int(11)")]
+    public int? ParentGameId { get; set; }
+
     [Column("created_by")]
     [StringLength(25)]
     public string CreatedBy { get; set; } = null!;

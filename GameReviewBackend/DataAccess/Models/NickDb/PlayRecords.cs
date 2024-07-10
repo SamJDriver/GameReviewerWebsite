@@ -18,8 +18,8 @@ public partial class PlayRecords
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("user_id", TypeName = "int(11)")]
-    public int UserId { get; set; }
+    [Column("user_id", TypeName = "char(16)")]
+    public string UserId { get; set; }
 
     [Column("game_id", TypeName = "int(11)")]
     public int GameId { get; set; }

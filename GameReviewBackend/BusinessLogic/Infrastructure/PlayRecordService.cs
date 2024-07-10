@@ -4,6 +4,7 @@ using Components.Extensions;
 using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
+using Mapster;
 using Repositories;
 
 namespace BusinessLogic.Infrastructure
@@ -15,10 +16,9 @@ namespace BusinessLogic.Infrastructure
         {
             _genericRepository = genericRepository;
         }
-        public void CreatePlayRecord(PlayRecordDto playRecord)
+        public void CreatePlayRecord(CreatePlayRecordDto playRecord, string? userId)
         {
-            var existingUser = _genericRepository.GetById<Users>(playRecord.UserId);
-            if (existingUser == default)
+            if (userId == null)
             {
                 throw new DgcException("Can't create play record. User not found.", DgcExceptionType.ResourceNotFound);
             }
@@ -34,8 +34,9 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't create play record. Rating out of range.", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            var newPlayRecordEntity = new PlayRecords().Assign(playRecord);
-            DockerDbContext.SetUsername(existingUser.Username);
+            var newPlayRecordEntity = playRecord.Adapt<PlayRecords>();
+            newPlayRecordEntity.UserId = userId;
+            DockerDbContext.SetUsername(userId);
             _genericRepository.InsertRecord(newPlayRecordEntity);  
         }
 

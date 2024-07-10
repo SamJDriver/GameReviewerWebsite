@@ -1,11 +1,11 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using DataAccess.Models.DockerDb;
 
-namespace API.Models
+namespace Components.Models
 {
-    public class CreatePlayRecordJson
+    public class CreatePlayRecordDto : BaseDto<CreatePlayRecordDto, PlayRecords>
     {
         public int GameId { get; set; }
-        public int UserId { get; set; }
         public bool? CompletedFlag { get; set; }
         public int? HoursPlayed { get; set; }
         public int? Rating { get; set; }

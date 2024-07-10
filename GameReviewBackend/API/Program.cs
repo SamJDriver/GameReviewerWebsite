@@ -44,7 +44,7 @@ namespace GameReview
             
 
             // Adds Microsoft Identity platform (Azure AD B2C) support to protect this Api
-            //AzureAdB2C is configured to use the react spa
+            // AzureAdB2C is configured to use the react spa
             // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //         .AddMicrosoftIdentityWebApi(options =>
             //     {
@@ -81,7 +81,7 @@ namespace GameReview
                 });
 
                 var scopes = new Dictionary<string, string>();
-                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-read", "Read access to API");
+                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-user", "Read access to API");
                 scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-admin", "Admin access to DGC");
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()

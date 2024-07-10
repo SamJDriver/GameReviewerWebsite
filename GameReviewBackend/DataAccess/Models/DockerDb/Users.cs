@@ -14,7 +14,6 @@ namespace DataAccess.Models.DockerDb
         public Users()
         {
             PlayRecordComments = new HashSet<PlayRecordComments>();
-            PlayRecords = new HashSet<PlayRecords>();
             UserRelationshipFriend = new HashSet<UserRelationship>();
             UserRelationshipUser = new HashSet<UserRelationship>();
         }
@@ -47,8 +46,6 @@ namespace DataAccess.Models.DockerDb
 
         [InverseProperty("User")]
         public virtual ICollection<PlayRecordComments> PlayRecordComments { get; set; }
-        [InverseProperty("User")]
-        public virtual ICollection<PlayRecords> PlayRecords { get; set; }
         [InverseProperty(nameof(UserRelationship.Friend))]
         public virtual ICollection<UserRelationship> UserRelationshipFriend { get; set; }
         [InverseProperty(nameof(UserRelationship.User))]

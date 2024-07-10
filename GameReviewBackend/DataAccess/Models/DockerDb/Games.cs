@@ -34,7 +34,7 @@ namespace DataAccess.Models.DockerDb
         [Column("description", TypeName = "text")]
         public string Description { get; set; } = null!;
         [Column("parent_game_id", TypeName = "int(11)")]
-        public int? ParentId { get; set; }
+        public int? ParentGameId { get; set; }
         [Column("created_by")]
         [StringLength(255)]
         public string CreatedBy { get; set; } = null!;

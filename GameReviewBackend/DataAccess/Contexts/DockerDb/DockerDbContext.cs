@@ -78,7 +78,7 @@ namespace DataAccess.Contexts.DockerDb
             });
 
             modelBuilder.Entity<GameSelfLinkTypeLookup>()
-            .HasData(
+                .HasData(
                 new GameSelfLinkTypeLookup
                 {
                     Id = 1,
@@ -97,7 +97,7 @@ namespace DataAccess.Contexts.DockerDb
                     CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
                     CreatedDate = DateTime.Now
                 }
-            );
+              );
 
             modelBuilder.Entity<GamesCompaniesLink>(entity =>
             {
@@ -161,17 +161,13 @@ namespace DataAccess.Contexts.DockerDb
 
             modelBuilder.Entity<PlayRecords>(entity =>
             {
+                entity.Property(e => e.UserId).IsFixedLength();
+
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.PlayRecords)
                     .HasForeignKey(d => d.GameId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("play_records_ibfk_2");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.PlayRecords)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("play_records_ibfk_1");
             });
 
             modelBuilder.Entity<UserRelationship>(entity =>

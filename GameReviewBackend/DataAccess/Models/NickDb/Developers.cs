@@ -34,19 +34,6 @@ public partial class Developers
     [Column("created_date", TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column("modified_by")]
-    [StringLength(25)]
-    public string? ModifiedBy { get; set; }
-
-    [Column("modified_date", TypeName = "datetime")]
-    public DateTime? ModifiedDate { get; set; }
-
-    [Column("obsolete_flag")]
-    public bool ObsoleteFlag { get; set; }
-
-    [Column("obsolete_date", TypeName = "datetime")]
-    public DateTime? ObsoleteDate { get; set; }
-
     [InverseProperty("Developer")]
     public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; } = new List<GamesDevelopersLink>();
 }

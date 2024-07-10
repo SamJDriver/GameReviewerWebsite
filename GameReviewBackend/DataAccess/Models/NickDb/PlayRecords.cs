@@ -43,19 +43,6 @@ public partial class PlayRecords
     [Column("created_date", TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column("modified_by")]
-    [StringLength(25)]
-    public string? ModifiedBy { get; set; }
-
-    [Column("modified_date")]
-    public DateOnly? ModifiedDate { get; set; }
-
-    [Column("obsolete_flag")]
-    public bool ObsoleteFlag { get; set; }
-
-    [Column("obsolete_date")]
-    public DateOnly? ObsoleteDate { get; set; }
-
     [ForeignKey("GameId")]
     [InverseProperty("PlayRecords")]
     public virtual Games Game { get; set; } = null!;

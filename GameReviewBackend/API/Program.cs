@@ -1,15 +1,15 @@
+using API.Middlewares;
+using API.Webframework;
 using BusinessLogic.Abstractions;
 using BusinessLogic.Infrastructure;
 using DataAccess.Contexts.DockerDb;
-using Microsoft.EntityFrameworkCore;
-using Repositories;
-using API.Middlewares;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
-using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using API.Webframework;
-using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.OpenApi.Models;
+using MySqlConnector;
+using Repositories;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GameReview
 {
@@ -121,10 +121,15 @@ namespace GameReview
             });
             var connectionString = config.GetConnectionString("DockerDb");
 
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString)
+            {
+                GuidFormat = MySqlGuidFormat.Char32
+            };
+
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options
                 .UseLazyLoadingProxies()
-                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)
+                .UseMySql(connectionStringBuilder.ConnectionString, ServerVersion.AutoDetect(connectionStringBuilder.ConnectionString)
            ).EnableDetailedErrors());
 
             builder.Services.AddHttpClient()

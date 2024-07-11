@@ -14,8 +14,7 @@ namespace DataAccess.Models.DockerDb
         public Users()
         {
             PlayRecordComments = new HashSet<PlayRecordComments>();
-            UserRelationshipFriend = new HashSet<UserRelationship>();
-            UserRelationshipUser = new HashSet<UserRelationship>();
+            UserRelationship = new HashSet<UserRelationship>();
         }
 
         [Key]
@@ -39,16 +38,14 @@ namespace DataAccess.Models.DockerDb
         [StringLength(255)]
         public string? ImageFilePath { get; set; }
         [Column("created_by")]
-        [StringLength(25)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
 
         [InverseProperty("User")]
         public virtual ICollection<PlayRecordComments> PlayRecordComments { get; set; }
-        [InverseProperty(nameof(UserRelationship.Friend))]
-        public virtual ICollection<UserRelationship> UserRelationshipFriend { get; set; }
-        [InverseProperty(nameof(UserRelationship.User))]
-        public virtual ICollection<UserRelationship> UserRelationshipUser { get; set; }
+        [InverseProperty("Friend")]
+        public virtual ICollection<UserRelationship> UserRelationship { get; set; }
     }
 }

@@ -33,13 +33,13 @@ namespace DataAccess.Models.DockerDb
         public DateOnly ReleaseDate { get; set; }
         [Column("description", TypeName = "text")]
         public string Description { get; set; } = null!;
-        [Column("parent_game_id", TypeName = "int(11)")]
-        public int? ParentGameId { get; set; }
         [Column("created_by")]
-        [StringLength(255)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
+        [Column("parent_game_id", TypeName = "int(11)")]
+        public int? ParentGameId { get; set; }
 
         [InverseProperty("Game")]
         public virtual ICollection<Artwork> Artwork { get; set; }

@@ -161,8 +161,6 @@ namespace DataAccess.Contexts.DockerDb
 
             modelBuilder.Entity<PlayRecords>(entity =>
             {
-                entity.Property(e => e.UserId).IsFixedLength();
-
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.PlayRecords)
                     .HasForeignKey(d => d.GameId)
@@ -173,7 +171,7 @@ namespace DataAccess.Contexts.DockerDb
             modelBuilder.Entity<UserRelationship>(entity =>
             {
                 entity.HasOne(d => d.Friend)
-                    .WithMany(p => p.UserRelationshipFriend)
+                    .WithMany(p => p.UserRelationship)
                     .HasForeignKey(d => d.FriendId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("user_relationship_ibfk_2");
@@ -183,12 +181,6 @@ namespace DataAccess.Contexts.DockerDb
                     .HasForeignKey(d => d.RelationshipTypeLookupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("user_relationship_ibfk_3");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserRelationshipUser)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("user_relationship_ibfk_1");
             });
 
             OnModelCreatingPartial(modelBuilder);

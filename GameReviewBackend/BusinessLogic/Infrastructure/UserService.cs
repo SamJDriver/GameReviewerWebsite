@@ -28,26 +28,28 @@ namespace BusinessLogic.Infrastructure
 
         public int CreateUser(UserDto user)
         {
-            var existingEmailUser = _genericRepository.GetSingleNoTrack<Users>(u => u.Email == user.Email);
-            if ( existingEmailUser != default)
-            {
-                throw new DgcException("Error creating user. An account with that email already exists.", DgcExceptionType.InvalidOperation);
-            }
+            //var existingEmailUser = _genericRepository.GetSingleNoTrack<Users>(u => u.Email == user.Email);
+            //if ( existingEmailUser != default)
+            //{
+            //    throw new DgcException("Error creating user. An account with that email already exists.", DgcExceptionType.InvalidOperation);
+            //}
 
-            var existingUsernameUser = _genericRepository.GetSingleNoTrack<Users>(u => u.Username == user.Username);
-            if (existingUsernameUser != default)
-            {
-                throw new DgcException("Error creating user. An account with that username already exists.", DgcExceptionType.InvalidOperation);
-            }
+            //var existingUsernameUser = _genericRepository.GetSingleNoTrack<Users>(u => u.Username == user.Username);
+            //if (existingUsernameUser != default)
+            //{
+            //    throw new DgcException("Error creating user. An account with that username already exists.", DgcExceptionType.InvalidOperation);
+            //}
 
-            byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes
-            user.Password = saltPassword(user.Password, salt);
-            user.Salt = Convert.ToBase64String(salt); ;
+            //byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes
+            //user.Password = saltPassword(user.Password, salt);
+            //user.Salt = Convert.ToBase64String(salt); ;
 
-            Users userEntity = new Users().Assign(user);
-            DockerDbContext.SetUsername(user.Username);
-            _genericRepository.InsertRecord(userEntity);
-            return userEntity.Id;
+            //Users userEntity = new Users().Assign(user);
+            //DockerDbContext.SetUsername(user.Username);
+            //_genericRepository.InsertRecord(userEntity);
+            //return userEntity.Id;
+
+            return 0;
         }
         
         private string saltPassword(string password, byte[] salt)

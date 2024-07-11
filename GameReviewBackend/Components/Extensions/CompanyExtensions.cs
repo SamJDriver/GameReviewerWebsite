@@ -23,8 +23,6 @@ namespace Components.Extensions
             self.ImageFilePath = company.ImageFilePath;
             self.DeveloperFlag = company.DeveloperFlag;
             self.PublisherFlag = company.PublisherFlag;
-            self.CreatedBy = company.CreatedBy;
-            self.CreatedDate = company.CreatedDate;
             return self;
         }
     }

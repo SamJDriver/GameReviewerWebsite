@@ -17,26 +17,24 @@ namespace DataAccess.Models.DockerDb
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
-        [Column("user_id", TypeName = "int(11)")]
-        public int UserId { get; set; }
+        [Column("user_id")]
+        [StringLength(36)]
+        public string UserId { get; set; } = null!;
         [Column("friend_id", TypeName = "int(11)")]
         public int FriendId { get; set; }
         [Column("relationship_type_lookup_id", TypeName = "int(11)")]
         public int RelationshipTypeLookupId { get; set; }
         [Column("created_by")]
-        [StringLength(25)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
 
         [ForeignKey(nameof(FriendId))]
-        [InverseProperty(nameof(Users.UserRelationshipFriend))]
+        [InverseProperty(nameof(Users.UserRelationship))]
         public virtual Users Friend { get; set; } = null!;
         [ForeignKey(nameof(RelationshipTypeLookupId))]
         [InverseProperty(nameof(UserRelationshipTypeLookup.UserRelationship))]
         public virtual UserRelationshipTypeLookup RelationshipTypeLookup { get; set; } = null!;
-        [ForeignKey(nameof(UserId))]
-        [InverseProperty(nameof(Users.UserRelationshipUser))]
-        public virtual Users User { get; set; } = null!;
     }
 }

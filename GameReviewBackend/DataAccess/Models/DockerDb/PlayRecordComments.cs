@@ -27,7 +27,7 @@ namespace DataAccess.Models.DockerDb
         [Column("downvote_count", TypeName = "int(11)")]
         public int DownvoteCount { get; set; }
         [Column("created_by")]
-        [StringLength(25)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

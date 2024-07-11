@@ -1,7 +1,6 @@
-using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
-using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
@@ -21,6 +20,7 @@ namespace GameReview.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [RequiredScope("gamereview-user")]
         public ActionResult CreatePlayRecord([FromBody]CreatePlayRecordDto playRecord)
         {
@@ -30,18 +30,11 @@ namespace GameReview.Controllers
         }
 
         [HttpPut("{playRecordId}")]
-        public ActionResult UpdatePlayRecord(int playRecordId, [FromBody]UpdatePlayRecordJson playRecord)
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public ActionResult UpdatePlayRecord(int playRecordId, [FromBody]UpdatePlayRecordDto playRecord)
         {
-            var dto = new PlayRecordDto()
-            {
-                Id = playRecordId,
-                CompletedFlag = playRecord.CompletedFlag,
-                HoursPlayed = playRecord.HoursPlayed,
-                Rating = playRecord.Rating,
-                PlayDescription = playRecord.PlayDescription
-            };
-
-            _playRecordService.UpdatePlayRecord(dto);
+            _playRecordService.UpdatePlayRecord(playRecordId, playRecord, User.GetObjectId());
             return Ok();
         }
     }

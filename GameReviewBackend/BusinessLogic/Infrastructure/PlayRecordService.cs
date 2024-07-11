@@ -35,24 +35,23 @@ namespace BusinessLogic.Infrastructure
             }
 
             var newPlayRecordEntity = playRecord.Adapt<PlayRecords>();
+
             newPlayRecordEntity.UserId = userId;
-            DockerDbContext.SetUsername(userId);
+
+            DockerDbContext.SetCreatedByUserId(userId);
             _genericRepository.InsertRecord(newPlayRecordEntity);  
         }
 
-        public void UpdatePlayRecord(PlayRecordDto playRecord)
+        public void UpdatePlayRecord(int playRecordId, UpdatePlayRecordDto playRecord, string? userId)
         {
 
-            var existingPlayRecord = _genericRepository.GetSingleTracked<PlayRecords>(p =>p.Id == playRecord.Id);
+            var existingPlayRecord = _genericRepository.GetSingleNoTrack<PlayRecords>(p => p.Id == playRecordId);
             if (existingPlayRecord == default)
             {
                 throw new DgcException("Can't update Play Record. Play Record not found.", DgcExceptionType.ResourceNotFound);
             }
-
-            //TODO validate that the user in the record is the logged in user.
-
-            var existingUser = _genericRepository.GetById<Users>(existingPlayRecord.UserId);
-            if (existingUser == default)
+            
+            if (userId == null || existingPlayRecord.UserId != userId)
             {
                 throw new DgcException("Can't update Play Record. User not found.", DgcExceptionType.ResourceNotFound);
             }
@@ -68,11 +67,11 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't update play record. Rating out of range.", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            existingPlayRecord.Assign(playRecord);
-            existingPlayRecord.GameId = existingGame.Id;
-            existingPlayRecord.UserId = existingUser.Id;
 
-            //TODO overrite savechanges for this
+            playRecord.Adapt(existingPlayRecord);
+
+            DockerDbContext.SetCreatedByUserId(userId);
+
             _genericRepository.UpdateRecord(existingPlayRecord);
         }
     }

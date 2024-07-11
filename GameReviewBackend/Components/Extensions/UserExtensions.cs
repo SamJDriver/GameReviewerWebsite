@@ -24,8 +24,6 @@ namespace Components.Extensions
             self.Salt = user.Salt;
             self.Email = user.Email;
             self.ImageFilePath = user.ImageFilePath;
-            self.CreatedBy = user.CreatedBy;
-            self.CreatedDate = user.CreatedDate;
             return self;
         }
     }

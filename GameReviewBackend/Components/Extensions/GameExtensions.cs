@@ -12,7 +12,6 @@ namespace Components.Extensions
             self.Description = game.Description;
             self.Artwork = game.Artwork != null ? game.Artwork.Select(a => new Artwork().Assign(a)).ToList() : null;
             self.Cover = game.Cover != null ? game.Cover.Select(c => new Cover().Assign(c)).ToList() : null;
-            self.ParentId = game.ParentId;
             return self;
         }
 
@@ -26,13 +25,11 @@ namespace Components.Extensions
             self.Cover = game.Cover != null ? game.Cover.Select(a => new CoverDto().Assign(a)).ToList() : null;
             // self.ParentLinks = game.GameSelfLinkParentGame != null ? game.GameSelfLinkParentGame.Select(g => new GameSelfLinkDto().Assign(g)).ToList() : null;
             // self.ChildLinks = game.GameSelfLinkChildGame != null ? game.GameSelfLinkChildGame.Select(g => new GameSelfLinkDto().Assign(g)).ToList() : null;
-            self.ParentId = game.ParentId;
             return self;
         }
 
         public static PlayRecords Assign(this PlayRecords self, PlayRecordDto playRecord)
         {
-            self.UserId = playRecord.UserId;
             self.GameId = playRecord.GameId;
             self.CompletedFlag = playRecord.CompletedFlag;
             self.HoursPlayed = playRecord.HoursPlayed;
@@ -51,14 +48,11 @@ namespace Components.Extensions
         public static PlayRecordDto Assign(this PlayRecordDto self, PlayRecords playRecord)
         {
             self.Id = playRecord.Id;
-            self.UserId = playRecord.UserId;
             self.GameId = playRecord.GameId;
             self.CompletedFlag = playRecord.CompletedFlag;
             self.HoursPlayed = playRecord.HoursPlayed;
             self.Rating = playRecord.Rating;
             self.PlayDescription = playRecord.PlayDescription;
-            self.CreatedBy = playRecord.CreatedBy;
-            self.CreatedDate = playRecord.CreatedDate;
             return self;
         }
 

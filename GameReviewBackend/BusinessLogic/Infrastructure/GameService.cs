@@ -30,8 +30,8 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException($"Invalid game release date. Ensure release date is between {Components.Constants.minimumReleaseYear} and {DateTime.Now}", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            var gameEntity = new Games().Assign(game);
-            DockerDbContext.SetUsername(userId);
+            var gameEntity = game.Adapt<Games>();
+            DockerDbContext.SetCreatedByUserId(userId);
 
             //TODO add validation checks for game?
             int numberOfEntriesWritten = await _genericRepository.InsertRecordAsync(gameEntity);

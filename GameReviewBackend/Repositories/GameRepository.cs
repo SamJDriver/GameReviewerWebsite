@@ -32,7 +32,7 @@ namespace Repositories
                     genre in _dbContext.GenresLookup
                     on gameGenresLookupLink.GenreLookupId equals genre.Id
                 where 
-                    game.ParentId == null  
+                    game.ParentGameId == null  
                     && (searchTerm != null ? game.Title.ToLower().Contains(searchTerm) : true)
                     && (genreId != null ? genre.Id == genreId : true)
                     && (releaseYear != null ? game.ReleaseDate.Year == releaseYear : true)

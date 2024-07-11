@@ -5,7 +5,7 @@ namespace BusinessLogic.Abstractions
     public interface IPlayRecordService
     {
         public void CreatePlayRecord(CreatePlayRecordDto playRecord, string? userId);
-        public void UpdatePlayRecord(PlayRecordDto playRecord);
+        public void UpdatePlayRecord(int playRecordId, UpdatePlayRecordDto playRecord, string? userId);
 
     }
 }

@@ -23,7 +23,7 @@ namespace DataAccess.Models.DockerDb
         [Column("game_self_link_type_lookup_id", TypeName = "int(11)")]
         public int GameSelfLinkTypeLookupId { get; set; }
         [Column("created_by")]
-        [StringLength(255)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

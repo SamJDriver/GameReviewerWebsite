@@ -28,7 +28,7 @@ namespace DataAccess.Models.DockerDb
         [StringLength(255)]
         public string? Description { get; set; }
         [Column("created_by")]
-        [StringLength(255)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

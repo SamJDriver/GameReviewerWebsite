@@ -10,8 +10,14 @@ namespace DataAccess.Models.DockerDb
     [Table("play_record_comments")]
     [Index(nameof(Id), Name = "id", IsUnique = true)]
     [Index(nameof(PlayRecordId), Name = "play_record_id")]
+    [Index(nameof(UserId), Name = "user_id")]
     public partial class PlayRecordComments : ITrackable
     {
+        public PlayRecordComments()
+        {
+            PlayRecordCommentVote = new HashSet<PlayRecordCommentVote>();
+        }
+
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
@@ -35,5 +41,7 @@ namespace DataAccess.Models.DockerDb
         [ForeignKey(nameof(PlayRecordId))]
         [InverseProperty(nameof(PlayRecords.PlayRecordComments))]
         public virtual PlayRecords PlayRecord { get; set; } = null!;
+        [InverseProperty("PlayRecordComment")]
+        public virtual ICollection<PlayRecordCommentVote> PlayRecordCommentVote { get; set; }
     }
 }

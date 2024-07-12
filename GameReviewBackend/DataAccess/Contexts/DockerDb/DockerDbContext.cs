@@ -19,6 +19,7 @@ namespace DataAccess.Contexts.DockerDb
         public virtual DbSet<GamesPlatformsLink> GamesPlatformsLink { get; set; } = null!;
         public virtual DbSet<GenresLookup> GenresLookup { get; set; } = null!;
         public virtual DbSet<Platforms> Platforms { get; set; } = null!;
+        public virtual DbSet<PlayRecordCommentVote> PlayRecordCommentVote { get; set; } = null!;
         public virtual DbSet<PlayRecordComments> PlayRecordComments { get; set; } = null!;
         public virtual DbSet<PlayRecords> PlayRecords { get; set; } = null!;
         public virtual DbSet<UserRelationship> UserRelationship { get; set; } = null!;
@@ -142,6 +143,15 @@ namespace DataAccess.Contexts.DockerDb
                     .HasForeignKey(d => d.PlatformId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("games_platforms_link_ibfk_2");
+            });
+
+            modelBuilder.Entity<PlayRecordCommentVote>(entity =>
+            {
+                entity.HasOne(d => d.PlayRecordComment)
+                    .WithMany(p => p.PlayRecordCommentVote)
+                    .HasForeignKey(d => d.PlayRecordCommentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("play_record_comment_vote_ibfk_1");
             });
 
             modelBuilder.Entity<PlayRecordComments>(entity =>

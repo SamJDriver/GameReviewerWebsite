@@ -59,6 +59,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "play_record_comment_vote",
+         "ObjectType": 0
+      },
+      {
          "Name": "play_record_comments",
          "ObjectType": 0
       },

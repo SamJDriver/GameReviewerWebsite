@@ -27,50 +27,5 @@ namespace Components.Extensions
             // self.ChildLinks = game.GameSelfLinkChildGame != null ? game.GameSelfLinkChildGame.Select(g => new GameSelfLinkDto().Assign(g)).ToList() : null;
             return self;
         }
-
-        public static PlayRecords Assign(this PlayRecords self, PlayRecordDto playRecord)
-        {
-            self.GameId = playRecord.GameId;
-            self.CompletedFlag = playRecord.CompletedFlag;
-            self.HoursPlayed = playRecord.HoursPlayed;
-            self.Rating = playRecord.Rating;
-            self.PlayDescription = playRecord.PlayDescription;
-            return self;
-        }
-        public static PlayRecordComments Assign(this PlayRecordComments self, PlayRecordCommentDto playRecordComment)
-        {
-            self.UserId = playRecordComment.UserId;
-            self.PlayRecordId = playRecordComment.PlayRecordId;
-            self.CommentText = playRecordComment.CommentText;
-            return self;
-        }
-
-        public static PlayRecordDto Assign(this PlayRecordDto self, PlayRecords playRecord)
-        {
-            self.Id = playRecord.Id;
-            self.GameId = playRecord.GameId;
-            self.CompletedFlag = playRecord.CompletedFlag;
-            self.HoursPlayed = playRecord.HoursPlayed;
-            self.Rating = playRecord.Rating;
-            self.PlayDescription = playRecord.PlayDescription;
-            return self;
-        }
-
-        public static GameSelfLink Assign(this GameSelfLink self, GameSelfLinkDto gameSelfLink)
-        {
-            self.ParentGameId = gameSelfLink.ParentGameId;
-            self.ChildGameId = gameSelfLink.ChildGameId;
-            self.GameSelfLinkTypeLookupId = gameSelfLink.GameSelfLinkTypeLookupId;
-            return self;
-        }
-
-        public static GameSelfLinkDto Assign(this GameSelfLinkDto self, GameSelfLink gameSelfLink)
-        {
-            self.Id = gameSelfLink.Id;
-            self.ParentGameId = gameSelfLink.ParentGameId;
-            self.ChildGameId = gameSelfLink.ChildGameId;
-            self.GameSelfLinkTypeLookupId = gameSelfLink.GameSelfLinkTypeLookupId;
-            return self;
-        }
     }
 }

@@ -1,12 +1,9 @@
-using System.Security.Claims;
 using BusinessLogic.Abstractions;
 using Components.Models;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
-
 
 namespace GameReview.Controllers
 {
@@ -34,7 +31,6 @@ namespace GameReview.Controllers
             return Ok(newId);
         }
 
-
         [HttpGet("{pageIndex}/{pageSize}")]
         public async Task<IActionResult> GetAllGames(int pageIndex, int pageSize)
         {
@@ -50,9 +46,9 @@ namespace GameReview.Controllers
         }
 
         [HttpGet("search/{pageIndex}/{pageSize}")]
-        public async Task<IActionResult> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        public async Task<IActionResult> SearchGames( string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
         {
-            var games = await _gameService.SearchGames(searchTerm, genreId, releaseYear, pageIndex, pageSize);
+            var games = await _gameService.SearchGames( searchTerm, genreId, releaseYear, pageIndex, pageSize);
             return Ok(games);
         }
 

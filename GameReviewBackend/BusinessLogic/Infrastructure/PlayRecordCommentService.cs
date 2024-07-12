@@ -4,6 +4,7 @@ using Components.Extensions;
 using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
+using Mapster;
 using Repositories;
 
 namespace BusinessLogic.Infrastructure
@@ -15,10 +16,9 @@ namespace BusinessLogic.Infrastructure
         {
             _genericRepository = genericRepository;
         }
-        public void CreatePlayRecordComment(PlayRecordCommentDto playRecordComment)
+        public void CreatePlayRecordComment(CreatePlayRecordCommentDto playRecordComment, string? userId)
         {
-            var existingUser = _genericRepository.GetById<Users>(playRecordComment.UserId);
-            if (existingUser == default)
+            if (userId == null)
             {
                 throw new DgcException("Can't create play record comment. User not found.", DgcExceptionType.ResourceNotFound);
             }
@@ -29,35 +29,36 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't create play record. Play record not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            
+            var newplayRecordCommentEntity = playRecordComment.Adapt<PlayRecordComments>();
+            newplayRecordCommentEntity.UserId = userId;
 
-            var newplayRecordCommentEntity = new PlayRecordComments().Assign(playRecordComment);
-            //DockerDbContext.SetUsername(existingUser.Username);
+            DockerDbContext.SetCreatedByUserId(userId);
             _genericRepository.InsertRecord(newplayRecordCommentEntity);  
         }
 
-        public void UpdatePlayRecordComment(PlayRecordCommentDto playRecordComment)
+        public void UpdatePlayRecordComment(int playRecordCommentId, UpdatePlayRecordCommentDto playRecordComment, string? userId)
         {
 
-            var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p =>p.Id == playRecordComment.Id);
+            var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p =>p.Id == playRecordCommentId);
             if (existingPlayRecordComment == default)
             {
                 throw new DgcException("Can't update Play Record comment. Play Record comment not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            //TODO validate that the user in the record is the logged in user.
-
-            var existingUser = _genericRepository.GetById<Users>(existingPlayRecordComment.UserId);
-            if (existingUser == default)
+            if (userId == null || existingPlayRecordComment.UserId != userId)
             {
                 throw new DgcException("Can't update Play Record comment. User not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            existingPlayRecordComment.Assign(playRecordComment);
-            existingPlayRecordComment.PlayRecordId = existingPlayRecordComment.Id;
-            existingPlayRecordComment.UserId = existingUser.Id;
+            var existingPlayRecord = _genericRepository.GetSingleNoTrack<PlayRecords>(p => p.Id == existingPlayRecordComment.PlayRecordId);
+            if (existingPlayRecord == default || existingPlayRecordComment.PlayRecordId != existingPlayRecord.Id)
+            {
+                throw new DgcException("Can't find play record with comment.", DgcExceptionType.ResourceNotFound);
+            }
 
-            //TODO overrite savechanges for this
+            playRecordComment.Adapt(existingPlayRecordComment);
+            
+            DockerDbContext.SetCreatedByUserId(userId);
             _genericRepository.UpdateRecord(existingPlayRecordComment);
         }
     }

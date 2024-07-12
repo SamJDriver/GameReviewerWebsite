@@ -151,12 +151,6 @@ namespace DataAccess.Contexts.DockerDb
                     .HasForeignKey(d => d.PlayRecordId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("play_record_comments_ibfk_2");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.PlayRecordComments)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("play_record_comments_ibfk_1");
             });
 
             modelBuilder.Entity<PlayRecords>(entity =>

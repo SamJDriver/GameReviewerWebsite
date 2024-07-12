@@ -10,14 +10,14 @@ namespace DataAccess.Models.DockerDb
     [Table("play_record_comments")]
     [Index(nameof(Id), Name = "id", IsUnique = true)]
     [Index(nameof(PlayRecordId), Name = "play_record_id")]
-    [Index(nameof(UserId), Name = "user_id")]
     public partial class PlayRecordComments : ITrackable
     {
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
-        [Column("user_id", TypeName = "int(11)")]
-        public int UserId { get; set; }
+        [Column("user_id")]
+        [StringLength(36)]
+        public string UserId { get; set; } = null!;
         [Column("play_record_id", TypeName = "int(11)")]
         public int PlayRecordId { get; set; }
         [Column("comment_text", TypeName = "mediumtext")]
@@ -35,8 +35,5 @@ namespace DataAccess.Models.DockerDb
         [ForeignKey(nameof(PlayRecordId))]
         [InverseProperty(nameof(PlayRecords.PlayRecordComments))]
         public virtual PlayRecords PlayRecord { get; set; } = null!;
-        [ForeignKey(nameof(UserId))]
-        [InverseProperty(nameof(Users.PlayRecordComments))]
-        public virtual Users User { get; set; } = null!;
     }
 }

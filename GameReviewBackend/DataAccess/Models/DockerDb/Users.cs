@@ -13,7 +13,6 @@ namespace DataAccess.Models.DockerDb
     {
         public Users()
         {
-            PlayRecordComments = new HashSet<PlayRecordComments>();
             UserRelationship = new HashSet<UserRelationship>();
         }
 
@@ -43,8 +42,6 @@ namespace DataAccess.Models.DockerDb
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
 
-        [InverseProperty("User")]
-        public virtual ICollection<PlayRecordComments> PlayRecordComments { get; set; }
         [InverseProperty("Friend")]
         public virtual ICollection<UserRelationship> UserRelationship { get; set; }
     }

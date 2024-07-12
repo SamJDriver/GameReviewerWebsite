@@ -7,7 +7,6 @@ using DataAccess.Models.DockerDb;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Components.Exceptions;
-using System.Reflection.Metadata;
 using Components;
 using Mapster;
 
@@ -23,17 +22,21 @@ namespace BusinessLogic.Infrastructure
             _gameRepository = gameRepository;
         }
 
-        public async Task<int> CreateGame(GameDto game, string userId)
+        public async Task<int> CreateGame(GameDto game, string? userId)
         {
             if (!game.ReleaseDate.ValidateDateOnly())
             {
                 throw new DgcException($"Invalid game release date. Ensure release date is between {Components.Constants.minimumReleaseYear} and {DateTime.Now}", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            var gameEntity = game.Adapt<Games>();
-            DockerDbContext.SetCreatedByUserId(userId);
+            if (userId == null)
+            {
+                throw new DgcException("Can't create game. No user logged in.", DgcExceptionType.Unauthorized);
+            }
 
-            //TODO add validation checks for game?
+            var gameEntity = game.Adapt<Games>();
+
+            DockerDbContext.SetCreatedByUserId(userId);
             int numberOfEntriesWritten = await _genericRepository.InsertRecordAsync(gameEntity);
 
             if (numberOfEntriesWritten < 1)

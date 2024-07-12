@@ -20,7 +20,7 @@ namespace BusinessLogic.Infrastructure
         {
             if (userId == null)
             {
-                throw new DgcException("Can't create play record. User not found.", DgcExceptionType.ResourceNotFound);
+                throw new DgcException("Can't create play record. User not found.", DgcExceptionType.Unauthorized);
             }
 
             var existingGame = _genericRepository.GetById<Games>(playRecord.GameId);
@@ -51,9 +51,14 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't update Play Record. Play Record not found.", DgcExceptionType.ResourceNotFound);
             }
             
-            if (userId == null || existingPlayRecord.UserId != userId)
+            if (userId == null)
             {
-                throw new DgcException("Can't update Play Record. User not found.", DgcExceptionType.ResourceNotFound);
+                throw new DgcException("Can't update Play Record. User not found.", DgcExceptionType.Unauthorized);
+            }
+
+            if (existingPlayRecord.UserId != userId)
+            {
+                throw new DgcException("You cannot update another user's play record.", DgcExceptionType.Forbidden);
             }
 
             var existingGame = _genericRepository.GetById<Games>(existingPlayRecord.GameId);
@@ -71,7 +76,6 @@ namespace BusinessLogic.Infrastructure
             playRecord.Adapt(existingPlayRecord);
 
             DockerDbContext.SetCreatedByUserId(userId);
-
             _genericRepository.UpdateRecord(existingPlayRecord);
         }
     }

@@ -36,5 +36,24 @@ namespace GameReview.Controllers
             _playRecordCommentService.UpdatePlayRecordComment(playRecordCommentId, playRecordComment, User.GetObjectId());
             return Ok();
         }
+
+        [HttpPost("upvote")]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public ActionResult Upvote([FromBody]int playRecordCommentId)
+        {
+            _playRecordCommentService.Upvote(playRecordCommentId, User.GetObjectId());
+            return Ok();
+        }
+
+        [HttpPost("downvote")]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public ActionResult Downvote([FromBody]int playRecordCommentId)
+        {
+            _playRecordCommentService.Downvote(playRecordCommentId, User.GetObjectId());
+            return Ok();
+        }
+
     }
 }

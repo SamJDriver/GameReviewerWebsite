@@ -20,7 +20,7 @@ namespace BusinessLogic.Infrastructure
         {
             if (userId == null)
             {
-                throw new DgcException("Can't create play record comment. User not found.", DgcExceptionType.ResourceNotFound);
+                throw new DgcException("Can't create play record comment. User not found.", DgcExceptionType.Unauthorized);
             }
 
             var existingPlayRecord = _genericRepository.GetById<PlayRecords>(playRecordComment.PlayRecordId);
@@ -47,7 +47,7 @@ namespace BusinessLogic.Infrastructure
 
             if (userId == null || existingPlayRecordComment.UserId != userId)
             {
-                throw new DgcException("Can't update Play Record comment. User not found.", DgcExceptionType.ResourceNotFound);
+                throw new DgcException("Can't update Play Record comment. User not found.", DgcExceptionType.Unauthorized);
             }
 
             var existingPlayRecord = _genericRepository.GetSingleNoTrack<PlayRecords>(p => p.Id == existingPlayRecordComment.PlayRecordId);
@@ -59,6 +59,43 @@ namespace BusinessLogic.Infrastructure
             playRecordComment.Adapt(existingPlayRecordComment);
             
             DockerDbContext.SetCreatedByUserId(userId);
+            _genericRepository.UpdateRecord(existingPlayRecordComment);
+        }
+
+        public void Upvote(int playRecordCommentId, string? userId)
+        {
+            //TODO: Upvotes and downvotes will need to be separated into their own table for further validations. 
+            // That way a user won't be able to spam upvote/downvote something.
+            var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p => p.Id == playRecordCommentId);
+            if (existingPlayRecordComment == default)
+            {
+                throw new DgcException("Can't find comment to upvote.", DgcExceptionType.ResourceNotFound);
+            }
+
+            if (userId == null)
+            {
+                throw new DgcException("No user found to upvote comment. Ensure you are logged in.", DgcExceptionType.Unauthorized);
+            }
+
+            existingPlayRecordComment.UpvoteCount += 1;
+            _genericRepository.UpdateRecord(existingPlayRecordComment);
+
+        }
+
+        public void Downvote(int playRecordCommentId, string? userId)
+        {
+            var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p => p.Id == playRecordCommentId);
+            if (existingPlayRecordComment == default)
+            {
+                throw new DgcException("Can't find comment to upvote.", DgcExceptionType.ResourceNotFound);
+            }
+
+            if (userId == null)
+            {
+                throw new DgcException("No user found to upvote comment. Ensure you are logged in.", DgcExceptionType.Unauthorized);
+            }
+
+            existingPlayRecordComment.DownvoteCount += 1;
             _genericRepository.UpdateRecord(existingPlayRecordComment);
         }
     }

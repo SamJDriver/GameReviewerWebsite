@@ -9,7 +9,7 @@ using Microsoft.Identity.Web.Resource;
 namespace GameReview.Controllers
 {
     [ApiController]
-    [Route("api/review/comment")]
+    [Route("api/play-record/comment")]
     public class PlayRecordCommentController : Controller
     {
         private readonly IPlayRecordCommentService _playRecordCommentService;
@@ -37,19 +37,19 @@ namespace GameReview.Controllers
             return Ok();
         }
 
-        [HttpPost("upvote")]
+        [HttpPost("{playRecordCommentId}/upvote")]
         [Authorize]
         [RequiredScope("gamereview-user")]
-        public ActionResult Upvote([FromBody]int playRecordCommentId)
+        public ActionResult Upvote(int playRecordCommentId)
         {
             _playRecordCommentService.Upvote(playRecordCommentId, User.GetObjectId());
             return Ok();
         }
 
-        [HttpPost("downvote")]
+        [HttpPost("{playRecordCommentId}/downvote")]
         [Authorize]
         [RequiredScope("gamereview-user")]
-        public ActionResult Downvote([FromBody]int playRecordCommentId)
+        public ActionResult Downvote(int playRecordCommentId)
         {
             _playRecordCommentService.Downvote(playRecordCommentId, User.GetObjectId());
             return Ok();

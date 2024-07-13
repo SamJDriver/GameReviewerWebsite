@@ -33,13 +33,21 @@ namespace BusinessLogic.Infrastructure
             newplayRecordCommentEntity.UserId = userId;
 
             DockerDbContext.SetCreatedByUserId(userId);
-            _genericRepository.InsertRecord(newplayRecordCommentEntity);  
+            _genericRepository.InsertRecord(newplayRecordCommentEntity);
+
+            var newCommentVote = new PlayRecordCommentVote()
+            {
+                PlayRecordCommentId = newplayRecordCommentEntity.Id,
+                NumericalValue = 1,
+            };
+            DockerDbContext.SetCreatedByUserId(userId);
+            _genericRepository.InsertRecord(newCommentVote);
         }
 
         public void UpdatePlayRecordComment(int playRecordCommentId, UpdatePlayRecordCommentDto playRecordComment, string? userId)
         {
 
-            var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p =>p.Id == playRecordCommentId);
+            var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p => p.Id == playRecordCommentId);
             if (existingPlayRecordComment == default)
             {
                 throw new DgcException("Can't update Play Record comment. Play Record comment not found.", DgcExceptionType.ResourceNotFound);
@@ -57,46 +65,73 @@ namespace BusinessLogic.Infrastructure
             }
 
             playRecordComment.Adapt(existingPlayRecordComment);
-            
+
             DockerDbContext.SetCreatedByUserId(userId);
             _genericRepository.UpdateRecord(existingPlayRecordComment);
         }
 
         public void Upvote(int playRecordCommentId, string? userId)
         {
-            //TODO: Upvotes and downvotes will need to be separated into their own table for further validations. 
-            // That way a user won't be able to spam upvote/downvote something.
-            var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p => p.Id == playRecordCommentId);
-            if (existingPlayRecordComment == default)
-            {
-                throw new DgcException("Can't find comment to upvote.", DgcExceptionType.ResourceNotFound);
-            }
-
-            if (userId == null)
-            {
-                throw new DgcException("No user found to upvote comment. Ensure you are logged in.", DgcExceptionType.Unauthorized);
-            }
-
-            existingPlayRecordComment.UpvoteCount += 1;
-            _genericRepository.UpdateRecord(existingPlayRecordComment);
-
+            submitUpvoteOrDownvote(true, playRecordCommentId, userId);
         }
 
         public void Downvote(int playRecordCommentId, string? userId)
         {
+            submitUpvoteOrDownvote(false, playRecordCommentId, userId);
+        }
+
+        private void submitUpvoteOrDownvote(bool upvoteFlag, int playRecordCommentId, string? userId)
+        {
+
+            var numericalValue = upvoteFlag ? 1 : -1;
+
             var existingPlayRecordComment = _genericRepository.GetSingleTracked<PlayRecordComments>(p => p.Id == playRecordCommentId);
             if (existingPlayRecordComment == default)
             {
-                throw new DgcException("Can't find comment to upvote.", DgcExceptionType.ResourceNotFound);
+                throw new DgcException("Can't find comment to vote on.", DgcExceptionType.ResourceNotFound);
             }
 
             if (userId == null)
             {
-                throw new DgcException("No user found to upvote comment. Ensure you are logged in.", DgcExceptionType.Unauthorized);
+                throw new DgcException("No user found to vote. Ensure you are logged in.", DgcExceptionType.Unauthorized);
             }
 
-            existingPlayRecordComment.DownvoteCount += 1;
-            _genericRepository.UpdateRecord(existingPlayRecordComment);
+            var existingCommentVote = _genericRepository.GetMany<PlayRecordCommentVote>(p => p.CreatedBy == userId && playRecordCommentId == existingPlayRecordComment.Id).FirstOrDefault();
+
+            if (existingCommentVote != null)
+            {
+                // Already upvoted 1-> upvoted again = 0
+                // Already downvoted -1 -> downvoted again = 0
+                // Already upvoted 1 -> downvoted = -1
+                // Already downvoted -1 -> upvoted = 1
+                if (existingCommentVote.NumericalValue == numericalValue)
+                {
+                    _genericRepository.DeleteRecord(existingCommentVote);
+                }
+                else if (existingCommentVote.NumericalValue == numericalValue * -1)
+                {
+                    existingCommentVote.NumericalValue *= -1;
+                    _genericRepository.UpdateRecord(existingCommentVote);
+
+                }
+                else
+                {
+                    existingCommentVote.NumericalValue = numericalValue;
+                    _genericRepository.UpdateRecord(existingCommentVote);
+                }
+            }
+            else
+            {
+                var newCommentVote = new PlayRecordCommentVote()
+                {
+                    PlayRecordCommentId = existingPlayRecordComment.Id,
+                    NumericalValue = upvoteFlag ? 1 : -1,
+                };
+
+                DockerDbContext.SetCreatedByUserId(userId);
+                _genericRepository.InsertRecord(newCommentVote);
+            }
+
         }
     }
 }

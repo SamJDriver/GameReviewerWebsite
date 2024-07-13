@@ -81,7 +81,7 @@ namespace GameReview
                 });
 
                 var scopes = new Dictionary<string, string>();
-                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-user", "Read access to API");
+                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-user", "User access to API");
                 scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-admin", "Admin access to DGC");
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()

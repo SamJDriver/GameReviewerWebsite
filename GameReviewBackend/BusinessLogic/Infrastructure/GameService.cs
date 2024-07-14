@@ -58,7 +58,7 @@ namespace BusinessLogic.Infrastructure
                     .Skip(pageIndex*pageIndex)
                     .Take(pageSize)
                     .ToListAsync())
-                    .Select(g => new GameDto().Assign(g));
+                    .Adapt<IEnumerable<GameDto>>();
 
             return new PagedResult<GameDto>()
             {

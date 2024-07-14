@@ -28,10 +28,6 @@ namespace DataAccess.Models.DockerDb
         public int PlayRecordId { get; set; }
         [Column("comment_text", TypeName = "mediumtext")]
         public string CommentText { get; set; } = null!;
-        [Column("upvote_count", TypeName = "int(11)")]
-        public int UpvoteCount { get; set; }
-        [Column("downvote_count", TypeName = "int(11)")]
-        public int DownvoteCount { get; set; }
         [Column("created_by")]
         [StringLength(36)]
         public string CreatedBy { get; set; } = null!;

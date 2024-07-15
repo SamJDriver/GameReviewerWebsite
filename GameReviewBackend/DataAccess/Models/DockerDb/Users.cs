@@ -11,11 +11,6 @@ namespace DataAccess.Models.DockerDb
     [Index(nameof(Id), Name = "id", IsUnique = true)]
     public partial class Users : ITrackable
     {
-        public Users()
-        {
-            UserRelationship = new HashSet<UserRelationship>();
-        }
-
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
@@ -41,8 +36,5 @@ namespace DataAccess.Models.DockerDb
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
-
-        [InverseProperty("Friend")]
-        public virtual ICollection<UserRelationship> UserRelationship { get; set; }
     }
 }

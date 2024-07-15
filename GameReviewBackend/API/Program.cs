@@ -35,7 +35,7 @@ namespace GameReview
             else
             {
                 config = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
                     .AddUserSecrets("34a2eb48-f55e-4322-8205-5f51e2572770")
                     .AddJsonFile("appsettings.json", optional: true)
                     .Build();

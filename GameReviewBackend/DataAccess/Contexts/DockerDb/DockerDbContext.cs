@@ -100,6 +100,29 @@ namespace DataAccess.Contexts.DockerDb
                 }
               );
 
+            modelBuilder.Entity<UserRelationshipTypeLookup>()
+                .HasData(
+                new UserRelationshipTypeLookup
+                {
+                    Id = 1,
+                    Name = "Friend",
+                    Code = "FRIEND",
+                    Description = "One directional friend link",
+                    CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                    CreatedDate = DateTime.Now
+                },
+                new GameSelfLinkTypeLookup
+                {
+                    Id = 2,
+                    Name = "Ignore",
+                    Code = "IGNORE",
+                    Description = "One directional ignore.",
+                    CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                    CreatedDate = DateTime.Now
+                }
+              );            
+
+
             modelBuilder.Entity<GamesCompaniesLink>(entity =>
             {
                 entity.HasOne(d => d.Companies)
@@ -174,12 +197,6 @@ namespace DataAccess.Contexts.DockerDb
 
             modelBuilder.Entity<UserRelationship>(entity =>
             {
-                entity.HasOne(d => d.Friend)
-                    .WithMany(p => p.UserRelationship)
-                    .HasForeignKey(d => d.FriendId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("user_relationship_ibfk_2");
-
                 entity.HasOne(d => d.RelationshipTypeLookup)
                     .WithMany(p => p.UserRelationship)
                     .HasForeignKey(d => d.RelationshipTypeLookupId)

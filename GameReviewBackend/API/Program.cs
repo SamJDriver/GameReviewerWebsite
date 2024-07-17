@@ -10,6 +10,8 @@ using Microsoft.OpenApi.Models;
 using MySqlConnector;
 using Repositories;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.Graph;
+using Azure.Identity;
 
 namespace GameReview
 {
@@ -23,7 +25,7 @@ namespace GameReview
             IConfiguration? config = default;
 
             if (containerFlag)
-            {                
+            {
                 config = new ConfigurationBuilder()
                     .AddJsonFile(Environment.GetEnvironmentVariable("IGDB_CLIENT") ?? "", optional: false)
                     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
@@ -53,6 +55,8 @@ namespace GameReview
             //     },
             //     options => { config.Bind("AzureAdB2C", options);
             // });
+
+            //OR
 
             // For local debugging with swagger:
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -132,8 +136,8 @@ namespace GameReview
                 .UseMySql(connectionStringBuilder.ConnectionString, ServerVersion.AutoDetect(connectionStringBuilder.ConnectionString)
            ).EnableDetailedErrors());
 
-            builder.Services.AddHttpClient()
-            ;
+            builder.Services.AddHttpClient();
+            
             //Services
             builder.Services.AddScoped<IIgdbApiService, IgdbApiService>(c => new IgdbApiService(c.GetRequiredService<GenericRepository<DockerDbContext>>(), config));
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
@@ -150,6 +154,19 @@ namespace GameReview
 
             builder.Services.AddMapster();
 
+            //Microsoft Graph            
+            var options = new ClientSecretCredentialOptions
+            {
+                AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
+            };
+
+            var clientSecretCredential = new ClientSecretCredential(
+                config["AzureAd:TenantId"], config["AzureAd:ClientId"], config["AzureAd:ClientSecret"], options);
+
+            builder.Services.AddSingleton<GraphServiceClient>(sp => {
+                return new GraphServiceClient(clientSecretCredential, new[] { "https://graph.microsoft.com/.default" });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -165,7 +182,7 @@ namespace GameReview
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseSwagger();
 
             if (containerFlag)
@@ -194,7 +211,6 @@ namespace GameReview
 
             app.UseCors(
                 options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
-                
             );
 
 

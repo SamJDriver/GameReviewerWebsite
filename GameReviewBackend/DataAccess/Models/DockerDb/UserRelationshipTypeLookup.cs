@@ -34,7 +34,7 @@ namespace DataAccess.Models.DockerDb
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
 
-        [InverseProperty("RelationshipTypeLookup")]
+        [InverseProperty("UserRelationshipTypeLookup")]
         public virtual ICollection<UserRelationship> UserRelationship { get; set; }
     }
 }

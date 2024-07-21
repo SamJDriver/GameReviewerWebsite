@@ -30,5 +30,20 @@
 
 
         }
+
+        public static class MicrosoftGraph
+        {
+            public static string[] GraphUserQueryParams = {"id", "displayName", "givenName", "country", "identities"};
+        }
+        
+        public static class LookupCodes
+        {
+            public static class UserRelationshipTypeLookup
+            {
+                public static string FriendCode = "FRIEND";
+                public static string IgnoreCode = "IGNORE";
+            }
+        }
+    
     }
 }

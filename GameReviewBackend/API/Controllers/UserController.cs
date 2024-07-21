@@ -1,4 +1,5 @@
 using BusinessLogic.Abstractions;
+using Components;
 using Components.Exceptions;
 using Components.Models;
 using GameReview.Models;
@@ -36,7 +37,7 @@ namespace GameReview.Controllers
             
             var result = await _graphServiceClient.Users[userId].GetAsync((requestConfiguration) =>
             {
-                requestConfiguration.QueryParameters.Select = new string[] { "id", "displayName", "givenName", "postalCode", "identities" };
+                requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
             });
 
             if (result is null)
@@ -55,7 +56,7 @@ namespace GameReview.Controllers
 
             var result = await _graphServiceClient.Users.GetAsync((requestConfiguration) =>
             {
-                requestConfiguration.QueryParameters.Select = new string[] { "id", "displayName", "givenName", "country", "identities" };
+                requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
             });
 
             if (result is null)
@@ -63,7 +64,7 @@ namespace GameReview.Controllers
                 throw new DgcException("Could not authenticate user.", DgcExceptionType.Unauthorized);
             }
 
-            var response = result.Adapt<UserDto>();
+            var response = result.Value.Adapt<IEnumerable<UserDto>>();
             return Ok(response);
         }
 

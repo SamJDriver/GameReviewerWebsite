@@ -27,7 +27,7 @@ namespace DataAccess.Contexts.DockerDb
                 {
                     var track = entity as ITrackable;
                     track.CreatedBy = _userId;
-                    track.CreatedDate = DateTime.Now;
+                    track.CreatedDate = DateTime.UtcNow;
                 }
             }
             return base.SaveChanges();
@@ -51,7 +51,7 @@ namespace DataAccess.Contexts.DockerDb
                     {
                         var track = entity as ITrackable;
                         track.CreatedBy = _userId;
-                        track.CreatedDate = DateTime.Now;
+                        track.CreatedDate = DateTime.UtcNow;
                     }
                 }
             });

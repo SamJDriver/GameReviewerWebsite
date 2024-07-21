@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Components.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models.ODataErrors;
 
 namespace API.Middlewares
 {
@@ -59,6 +60,22 @@ namespace API.Middlewares
                 string json = JsonSerializer.Serialize(problemDetails);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(json);
+            }
+            catch (ODataError e)
+            {
+                _logger.LogError(e, e.Message);
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                ProblemDetails problemDetails = new()
+                {
+                    Status = (int)HttpStatusCode.Unauthorized,
+                    Type = "Unauthorized Request",
+                    Title = "Unauthorized Request",
+                    Detail = "Unauthorized Request"
+                };
+
+                string json = JsonSerializer.Serialize(problemDetails);
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(json);                
             }
             catch (Exception e)
             {

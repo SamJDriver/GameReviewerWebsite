@@ -197,11 +197,11 @@ namespace DataAccess.Contexts.DockerDb
 
             modelBuilder.Entity<UserRelationship>(entity =>
             {
-                entity.HasOne(d => d.RelationshipTypeLookup)
+                entity.HasOne(d => d.UserRelationshipTypeLookup)
                     .WithMany(p => p.UserRelationship)
-                    .HasForeignKey(d => d.RelationshipTypeLookupId)
+                    .HasForeignKey(d => d.UserRelationshipTypeLookupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("user_relationship_ibfk_3");
+                    .HasConstraintName("user_relationship_ibfk_1");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -1,9 +1,14 @@
 using BusinessLogic.Abstractions;
+using Components.Exceptions;
 using Components.Models;
 using GameReview.Models;
+using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.Resource;
 
 namespace GameReview.Controllers
 {
@@ -21,31 +26,44 @@ namespace GameReview.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] UserJson userModel)
+        [HttpGet("me")]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public async Task<IActionResult> GetMe()
         {
-            UserDto userDto = new UserDto()
-            {
-                Username = userModel.Username,
-                Email = userModel.Email,
-                Password = userModel.Password
-            };
 
-            var newId = _userService.CreateUser(userDto);
-            return Ok(newId);
+            var userId = User.GetObjectId();
+            
+            var result = await _graphServiceClient.Users[userId].GetAsync((requestConfiguration) =>
+            {
+                requestConfiguration.QueryParameters.Select = new string[] { "id", "displayName", "givenName", "postalCode", "identities" };
+            });
+
+            if (result is null)
+            {
+                throw new DgcException("Could not authenticate user.", DgcExceptionType.Unauthorized);
+            }
+
+            var response = result.Adapt<UserDto>();
+            return Ok(response);
+
         }
 
-        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
 
             var result = await _graphServiceClient.Users.GetAsync((requestConfiguration) =>
             {
-                requestConfiguration.QueryParameters.Select = new string[] { "id", "displayName", "givenName", "postalCode", "identities" };
+                requestConfiguration.QueryParameters.Select = new string[] { "id", "displayName", "givenName", "country", "identities" };
             });
 
-            var response = result.Value.Select(u => new {u.Id, u.DisplayName, u.Photo});
+            if (result is null)
+            {
+                throw new DgcException("Could not authenticate user.", DgcExceptionType.Unauthorized);
+            }
+
+            var response = result.Adapt<UserDto>();
             return Ok(response);
         }
 

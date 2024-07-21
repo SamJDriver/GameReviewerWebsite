@@ -29,13 +29,13 @@ namespace API.Middlewares
                 switch(e.Type)
                 {
                     case DgcExceptionType.ResourceNotFound:
-                        status = 404;
+                        status = (int)HttpStatusCode.NotFound;
                         break;
                     case DgcExceptionType.Unauthorized:
-                        status = 401;
+                        status = (int)HttpStatusCode.Unauthorized;
                         break;
                     case DgcExceptionType.Forbidden:
-                        status = 403;
+                        status = (int)HttpStatusCode.Forbidden;
                         break;
                     case DgcExceptionType.InvalidArgument:
                     case DgcExceptionType.ArgumentNull:
@@ -43,7 +43,7 @@ namespace API.Middlewares
                     case DgcExceptionType.InvalidOperation:
                     case DgcExceptionType.NotSupported:
                     default:
-                        status = 400;
+                        status = (int)HttpStatusCode.BadRequest;
                         break;
                 }
 

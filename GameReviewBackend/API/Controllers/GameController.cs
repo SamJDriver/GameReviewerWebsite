@@ -46,9 +46,9 @@ namespace GameReview.Controllers
         }
 
         [HttpGet("search/{pageIndex}/{pageSize}")]
-        public async Task<IActionResult> SearchGames( string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        public async Task<IActionResult> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
         {
-            var games = await _gameService.SearchGames( searchTerm, genreId, releaseYear, pageIndex, pageSize);
+            var games = await _gameService.SearchGames(searchTerm, genreId, releaseYear, pageIndex, pageSize);
             return Ok(games);
         }
 

@@ -5,6 +5,7 @@ using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
 using Mapster;
+using Microsoft.Graph;
 using Repositories;
 
 namespace BusinessLogic.Infrastructure
@@ -12,10 +13,32 @@ namespace BusinessLogic.Infrastructure
     public class PlayRecordService : IPlayRecordService
     {
         private readonly GenericRepository<DockerDbContext> _genericRepository;
-        public PlayRecordService(GenericRepository<DockerDbContext> genericRepository)
+        private readonly GraphServiceClient _graphServiceClient;
+
+
+        public PlayRecordService(GenericRepository<DockerDbContext> genericRepository, GraphServiceClient graphServiceClient)
         {
             _genericRepository = genericRepository;
+            _graphServiceClient = graphServiceClient;
         }
+
+        public async Task GetPlayRecords(string? userId)
+        {
+
+            if (userId is null)
+                throw new DgcException("Can't create play record. User not found.", DgcExceptionType.Unauthorized);
+
+            var result = await _graphServiceClient.Users[userId].GetAsync((requestConfiguration) =>
+            {
+                requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
+            });
+
+            if (result is null)
+                throw new DgcException("Could not authenticate user.", DgcExceptionType.Unauthorized);         
+
+                        
+        }
+
         public void CreatePlayRecord(CreatePlayRecordDto playRecord, string? userId)
         {
             if (userId == null)

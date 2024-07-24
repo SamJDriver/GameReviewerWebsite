@@ -8,6 +8,8 @@ using Microsoft.Identity.Web.Resource;
 
 namespace GameReview.Controllers
 {
+    [Authorize]
+    [RequiredScope("gamereview-user")]
     [ApiController]
     [Route("api/play-record")]
     public class PlayRecordController : Controller
@@ -19,9 +21,15 @@ namespace GameReview.Controllers
             _playRecordService = playRecordService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetPlayRecords()
+        {
+            var userId = User.GetObjectId();
+            _playRecordService.GetPlayRecords(userId);
+            return Ok();
+        }
+
         [HttpPost]
-        [Authorize]
-        [RequiredScope("gamereview-user")]
         public ActionResult CreatePlayRecord([FromBody]CreatePlayRecordDto playRecord)
         {
             var userId = User.GetObjectId();
@@ -30,8 +38,7 @@ namespace GameReview.Controllers
         }
 
         [HttpPut("{playRecordId}")]
-        [Authorize]
-        [RequiredScope("gamereview-user")]
+
         public ActionResult UpdatePlayRecord(int playRecordId, [FromBody]UpdatePlayRecordDto playRecord)
         {
             _playRecordService.UpdatePlayRecord(playRecordId, playRecord, User.GetObjectId());

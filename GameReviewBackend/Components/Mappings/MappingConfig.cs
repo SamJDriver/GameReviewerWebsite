@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Components.Models;
 using DataAccess.Models.DockerDb;
 using Mapster;
 
 namespace Components.Mappings
 {
-    public class MappingConfig
+    public class MappingConfig : IRegister
     {
-        
-        public void ConfigureMapster()
+        public void Register(TypeAdapterConfig config)
         {
-            // TypeAdapterConfig<Games, GameDto>.NewConfig()
-            //     .Map()
+            config.NewConfig<PlayRecords, PlayRecord_GetSelf_Dto>()
+            .Map(dest => dest.CoverImageUrl, src => src.Game.Cover.SingleOrDefault() != null ? src.Game.Cover.Single().ImageUrl : null);
         }
     }
 }

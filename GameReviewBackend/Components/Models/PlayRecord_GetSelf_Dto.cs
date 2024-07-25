@@ -6,7 +6,8 @@ namespace Components.Models
     {
         public int Id { get; set; }
         public int GameId { get; set; }
-        public string CoverImageUrl { get; set; }
+        public string GameTitle { get; set; } = default!;
+        public string? CoverImageUrl { get; set; }
         public bool? CompletedFlag { get; set; }
         public int? HoursPlayed { get; set; }
         public int? Rating { get; set; }

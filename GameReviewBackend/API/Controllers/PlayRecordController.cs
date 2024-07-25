@@ -25,8 +25,8 @@ namespace GameReview.Controllers
         public async Task<ActionResult> GetPlayRecords()
         {
             var userId = User.GetObjectId();
-            _playRecordService.GetPlayRecords(userId);
-            return Ok();
+            var playRecords = await _playRecordService.GetSelfPlayRecords(userId);
+            return Ok(playRecords);
         }
 
         [HttpPost]

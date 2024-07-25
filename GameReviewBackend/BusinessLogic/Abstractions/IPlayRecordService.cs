@@ -4,7 +4,7 @@ namespace BusinessLogic.Abstractions
 {
     public interface IPlayRecordService
     {
-        public Task GetPlayRecords(string? userId);
+        public Task<IEnumerable<PlayRecord_GetSelf_Dto>> GetSelfPlayRecords(string? userId);
         public void CreatePlayRecord(CreatePlayRecordDto playRecord, string? userId);
         public void UpdatePlayRecord(int playRecordId, UpdatePlayRecordDto playRecord, string? userId);
 

@@ -8,9 +8,8 @@ using DataAccess.Abstractions;
 namespace DataAccess.Models.DockerDb
 {
     [Table("play_records")]
+    [Index(nameof(CreatedBy), Name = "created_by")]
     [Index(nameof(GameId), Name = "game_id")]
-    [Index(nameof(Id), Name = "id", IsUnique = true)]
-    [Index(nameof(UserId), Name = "user_id")]
     public partial class PlayRecords : ITrackable
     {
         public PlayRecords()
@@ -21,9 +20,6 @@ namespace DataAccess.Models.DockerDb
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
-        [Column("user_id")]
-        [StringLength(36)]
-        public string UserId { get; set; }
         [Column("game_id", TypeName = "int(11)")]
         public int GameId { get; set; }
         [Column("completed_flag")]

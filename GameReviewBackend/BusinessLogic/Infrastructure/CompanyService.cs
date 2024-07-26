@@ -1,12 +1,10 @@
 ﻿using BusinessLogic.Abstractions;
-using Components.Utilities;
-using Components.Extensions;
 using Components.Models;
 using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
-using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Components.Exceptions;
+using Mapster;
 
 namespace BusinessLogic.Infrastructure
 {
@@ -25,7 +23,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Company not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            var companyDto = new CompanyDto().Assign(company);
+            var companyDto = company.Adapt<CompanyDto>();
             return companyDto;
         }
     }

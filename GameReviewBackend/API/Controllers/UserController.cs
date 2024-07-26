@@ -17,12 +17,10 @@ namespace GameReview.Controllers
     [Route("api/user")]
     public class UserController : Controller
     {
-        private readonly IUserService _userService;
         private readonly GraphServiceClient _graphServiceClient;
 
-        public UserController(IUserService userService, GraphServiceClient graphServiceClient)
+        public UserController(GraphServiceClient graphServiceClient)
         {
-            _userService = userService;
             _graphServiceClient = graphServiceClient;
         }
 
@@ -34,7 +32,7 @@ namespace GameReview.Controllers
         {
 
             var userId = User.GetObjectId();
-            
+
             var result = await _graphServiceClient.Users[userId].GetAsync((requestConfiguration) =>
             {
                 requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;

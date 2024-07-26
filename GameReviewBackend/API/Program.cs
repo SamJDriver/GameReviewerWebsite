@@ -143,7 +143,6 @@ namespace GameReview
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
             builder.Services.AddScoped<IPlayRecordCommentService, PlayRecordCommentService>();
             builder.Services.AddScoped<IGameService, GameService>();
-            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped<ILookupService, LookupService>();
             builder.Services.AddScoped<IUserRelationshipService, UserRelationshipService>();

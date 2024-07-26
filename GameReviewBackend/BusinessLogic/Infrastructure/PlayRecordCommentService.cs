@@ -94,7 +94,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("No user found to vote. Ensure you are logged in.", DgcExceptionType.Unauthorized);
             }
 
-            var existingCommentVote = _genericRepository.GetMany<PlayRecordCommentVote>(p => p.CreatedBy == userId && playRecordCommentId == existingPlayRecordComment.Id).FirstOrDefault();
+            var existingCommentVote = _genericRepository.GetMany<PlayRecordCommentVote>(p => p.CreatedBy == userId && p.PlayRecordCommentId == existingPlayRecordComment.Id).FirstOrDefault();
 
             if (existingCommentVote != null)
             {

@@ -10,6 +10,11 @@ namespace Components.Mappings
         {
             config.NewConfig<PlayRecords, PlayRecord_GetSelf_Dto>()
             .Map(dest => dest.CoverImageUrl, src => src.Game.Cover.SingleOrDefault() != null ? src.Game.Cover.Single().ImageUrl : null);
+
+            config.NewConfig<PlayRecords, PlayRecord_GetById_Dto>()
+            .Map(dest => dest.CoverImageUrl, src => src.Game.Cover.SingleOrDefault() != null ? src.Game.Cover.Single().ImageUrl : null)
+            .Map(dest => dest.PlayRecordComments, src => src.PlayRecordComments);
+
         }
     }
 }

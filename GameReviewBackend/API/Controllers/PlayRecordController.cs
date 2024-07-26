@@ -8,8 +8,6 @@ using Microsoft.Identity.Web.Resource;
 
 namespace GameReview.Controllers
 {
-    [Authorize]
-    [RequiredScope("gamereview-user")]
     [ApiController]
     [Route("api/play-record")]
     public class PlayRecordController : Controller
@@ -22,6 +20,8 @@ namespace GameReview.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
         public async Task<ActionResult> GetPlayRecords()
         {
             var userId = User.GetObjectId();
@@ -29,8 +29,18 @@ namespace GameReview.Controllers
             return Ok(playRecords);
         }
 
+        [HttpGet("{playRecordId}")]
+        public async Task<ActionResult> GetPlayRecordById(int playRecordId)
+        {
+            var userId = User.GetObjectId();
+            var playRecord = await _playRecordService.GetPlayRecordById(playRecordId, userId);
+            return Ok(playRecord);
+        }
+
         [HttpPost]
-        public ActionResult CreatePlayRecord([FromBody]CreatePlayRecordDto playRecord)
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public ActionResult CreatePlayRecord([FromBody] CreatePlayRecordDto playRecord)
         {
             var userId = User.GetObjectId();
             _playRecordService.CreatePlayRecord(playRecord, userId);
@@ -38,8 +48,10 @@ namespace GameReview.Controllers
         }
 
         [HttpPut("{playRecordId}")]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
 
-        public ActionResult UpdatePlayRecord(int playRecordId, [FromBody]UpdatePlayRecordDto playRecord)
+        public ActionResult UpdatePlayRecord(int playRecordId, [FromBody] UpdatePlayRecordDto playRecord)
         {
             _playRecordService.UpdatePlayRecord(playRecordId, playRecord, User.GetObjectId());
             return Ok();

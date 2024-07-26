@@ -5,7 +5,6 @@ namespace Components.Models
     public class PlayRecordCommentDto
     {
         public int? Id { get; set; }
-        public int UserId { get; set; }
         public int PlayRecordId { get; set; }
         [StringLength(65535)]
         public string CommentText { get; set; } = null!;

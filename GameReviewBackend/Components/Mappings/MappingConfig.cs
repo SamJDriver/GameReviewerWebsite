@@ -15,6 +15,9 @@ namespace Components.Mappings
             .Map(dest => dest.CoverImageUrl, src => src.Game.Cover.SingleOrDefault() != null ? src.Game.Cover.Single().ImageUrl : null)
             .Map(dest => dest.PlayRecordComments, src => src.PlayRecordComments);
 
+            config.NewConfig<PlayRecordComments, PlayRecordCommentDto>()
+            .Map(dest => dest.NumericalValue, src => src.PlayRecordCommentVote.Sum(p => p.NumericalValue));
+
         }
     }
 }

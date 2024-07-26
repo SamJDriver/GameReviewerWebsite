@@ -30,8 +30,6 @@ namespace BusinessLogic.Infrastructure
             }
 
             var newplayRecordCommentEntity = playRecordComment.Adapt<PlayRecordComments>();
-            newplayRecordCommentEntity.UserId = userId;
-
             DockerDbContext.SetCreatedByUserId(userId);
             _genericRepository.InsertRecord(newplayRecordCommentEntity);
 
@@ -53,7 +51,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't update Play Record comment. Play Record comment not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            if (userId == null || existingPlayRecordComment.UserId != userId)
+            if (userId == null || existingPlayRecordComment.CreatedBy != userId)
             {
                 throw new DgcException("Can't update Play Record comment. User not found.", DgcExceptionType.Unauthorized);
             }

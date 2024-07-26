@@ -10,7 +10,7 @@ namespace DataAccess.Models.DockerDb
     [Table("play_record_comments")]
     [Index(nameof(Id), Name = "id", IsUnique = true)]
     [Index(nameof(PlayRecordId), Name = "play_record_id")]
-    [Index(nameof(UserId), Name = "user_id")]
+    [Index(nameof(CreatedBy), Name = "created_by")]
     public partial class PlayRecordComments : ITrackable
     {
         public PlayRecordComments()
@@ -21,9 +21,6 @@ namespace DataAccess.Models.DockerDb
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
-        [Column("user_id")]
-        [StringLength(36)]
-        public string UserId { get; set; } = null!;
         [Column("play_record_id", TypeName = "int(11)")]
         public int PlayRecordId { get; set; }
         [Column("comment_text", TypeName = "mediumtext")]

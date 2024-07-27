@@ -139,7 +139,7 @@ namespace GameReview
             builder.Services.AddHttpClient();
             
             //Services
-            builder.Services.AddScoped<IIgdbApiService, IgdbApiService>(c => new IgdbApiService(c.GetRequiredService<GenericRepository<DockerDbContext>>(), config));
+            builder.Services.AddScoped<IIgdbApiService, IgdbApiService>();
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
             builder.Services.AddScoped<IPlayRecordCommentService, PlayRecordCommentService>();
             builder.Services.AddScoped<IGameService, GameService>();
@@ -148,6 +148,8 @@ namespace GameReview
             builder.Services.AddScoped<IUserRelationshipService, UserRelationshipService>();
 
             //Repositories
+            builder.Services.AddScoped(typeof(UnitOfWork));
+            builder.Services.AddScoped(typeof(GenericDataAccess<>));
             builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddScoped(typeof(GameRepository));
 

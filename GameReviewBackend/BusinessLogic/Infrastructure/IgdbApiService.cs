@@ -44,9 +44,11 @@ namespace BusinessLogic.Infrastructure
         
             DockerDbContext.SetCreatedByUserId("System");
             _unitOfWork.Save();
+            Thread.Sleep(1000);
 
             await insertDlcs();
             await insertExpansions();
+            
             DockerDbContext.SetCreatedByUserId("System");
             _unitOfWork.Save();
 

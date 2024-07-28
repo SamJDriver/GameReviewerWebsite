@@ -148,10 +148,10 @@ namespace GameReview
             builder.Services.AddScoped<IUserRelationshipService, UserRelationshipService>();
 
             //Repositories
-            builder.Services.AddScoped(typeof(UnitOfWork));
-            builder.Services.AddScoped(typeof(GenericDataAccess<>));
-            builder.Services.AddScoped(typeof(GenericRepository<>));
-            builder.Services.AddScoped(typeof(GameRepository));
+            builder.Services.AddTransient(typeof(UnitOfWork));
+            builder.Services.AddTransient(typeof(GenericDataAccess<>));
+            builder.Services.AddTransient(typeof(GenericRepository<>));
+            builder.Services.AddTransient(typeof(GameRepository));
 
             //Middlewares
             builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();

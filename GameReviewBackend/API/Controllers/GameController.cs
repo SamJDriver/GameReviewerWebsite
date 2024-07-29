@@ -45,6 +45,15 @@ namespace GameReview.Controllers
             return Ok(game);
         }
 
+        [HttpGet("friend/{pageIndex}/{pageSize}")]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public async Task<IActionResult> GetGamesPopularWithFriends(int pageIndex, int pageSize)
+        {
+            var pagedGames = await _gameService.GetGamesPopularWithFriends(pageIndex, pageSize, User.GetObjectId());
+            return Ok(pagedGames);
+        }
+
         [HttpGet("search/{pageIndex}/{pageSize}")]
         public async Task<IActionResult> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
         {

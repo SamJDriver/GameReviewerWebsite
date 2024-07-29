@@ -43,5 +43,30 @@ namespace Repositories
 
             return query;
         }
+
+        public IQueryable<Games> GetFriendsGames(string userId)
+        {
+            var query = 
+                from
+                    game in _dbContext.Games.Include(g => g.PlayRecords)
+                join
+                    playRecord in _dbContext.PlayRecords
+                    on game.Id equals playRecord.GameId
+                join
+                    userRelationship in _dbContext.UserRelationship
+                    on playRecord.CreatedBy equals userRelationship.ChildUserId
+                join
+                    userRelationshipTypeLookup in _dbContext.UserRelationshipTypeLookup
+                    on userRelationship.UserRelationshipTypeLookupId equals userRelationshipTypeLookup.Id
+                where
+                    userRelationshipTypeLookup.Code == "FRIEND"
+                orderby
+                    playRecord.CreatedDate descending,
+                    playRecord.Rating descending
+                select
+                    game;
+                
+            return query;
+        }
     }
 }

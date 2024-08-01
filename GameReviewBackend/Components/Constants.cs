@@ -3,8 +3,8 @@
     public static class Constants
     {
 
-        public static int minimumReleaseYear = 1955;
-        public static int maximumReleaseYear = 3000;
+        public static int MinimumReleaseYear = 1955;
+        public static int MaximumReleaseYear = 3000;
 
 
         public static class IgdbApi

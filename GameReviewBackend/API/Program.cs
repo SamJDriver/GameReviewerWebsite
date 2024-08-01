@@ -47,26 +47,26 @@ namespace GameReview
 
             // Adds Microsoft Identity platform (Azure AD B2C) support to protect this Api
             // AzureAdB2C is configured to use the react spa
-            // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //         .AddMicrosoftIdentityWebApi(options =>
-            //     {
-            //         config.Bind("AzureAdB2C", options);
-            //         options.TokenValidationParameters.NameClaimType = "name";
-            //     },
-            //     options => { config.Bind("AzureAdB2C", options);
-            // });
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddMicrosoftIdentityWebApi(options =>
+                {
+                    config.Bind("AzureAdB2C", options);
+                    options.TokenValidationParameters.NameClaimType = "name";
+                },
+                options => { config.Bind("AzureAdB2C", options);
+            });
 
             //OR
 
             // For local debugging with swagger:
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddMicrosoftIdentityWebApi(options =>
-                {
-                    config.Bind("AzureAd", options);
-                    options.TokenValidationParameters.NameClaimType = "name";
-                },
-                options => { config.Bind("AzureAd", options);
-            });
+            // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //         .AddMicrosoftIdentityWebApi(options =>
+            //     {
+            //         config.Bind("AzureAd", options);
+            //         options.TokenValidationParameters.NameClaimType = "name";
+            //     },
+            //     options => { config.Bind("AzureAd", options);
+            // });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

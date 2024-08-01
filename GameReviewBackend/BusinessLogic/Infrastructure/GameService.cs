@@ -29,7 +29,7 @@ namespace BusinessLogic.Infrastructure
         {
             if (!game.ReleaseDate.ValidateDateOnly())
             {
-                throw new DgcException($"Invalid game release date. Ensure release date is between {Components.Constants.minimumReleaseYear} and {DateTime.Now}", DgcExceptionType.ArgumentOutOfRange);
+                throw new DgcException($"Invalid game release date. Ensure release date is between {Components.Constants.MinimumReleaseYear} and {new DateTime(Components.Constants.MaximumReleaseYear, 1, 1)}", DgcExceptionType.ArgumentOutOfRange);
             }
 
             if (userId == null)
@@ -57,7 +57,7 @@ namespace BusinessLogic.Infrastructure
                     (await query
                     // .OrderBy(g => g.Title)
                     // .Where(g => g.Cover.Count > 0)
-                    .Where(g => g.Title.Contains("League of Legends"))
+                    .Where(g => g.Title.Contains("Halo"))
                     .Skip(pageIndex * pageIndex)
                     .Take(pageSize)
                     .ToListAsync())
@@ -125,7 +125,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Genre not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            if (releaseYear != null && releaseYear < Components.Constants.minimumReleaseYear || releaseYear > Components.Constants.maximumReleaseYear)
+            if (releaseYear != null && releaseYear < Components.Constants.MinimumReleaseYear || releaseYear > Components.Constants.MaximumReleaseYear)
             {
                 throw new DgcException("Invalid release year provided.", DgcExceptionType.ArgumentOutOfRange);
             }

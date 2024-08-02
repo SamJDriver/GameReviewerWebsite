@@ -14,11 +14,11 @@ namespace BusinessLogic.Infrastructure
 {
     public class GameService : IGameService
     {
-        private readonly GenericRepository<DockerDbContext> _genericRepository;
-        private readonly GameRepository _gameRepository;
+        private readonly IGenericRepository<DockerDbContext> _genericRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly GraphServiceClient _graphServiceClient;
 
-        public GameService(GenericRepository<DockerDbContext> genericRepository, GameRepository gameRepository, GraphServiceClient graphServiceClient)
+        public GameService(IGenericRepository<DockerDbContext> genericRepository, IGameRepository gameRepository, GraphServiceClient graphServiceClient)
         {
             _genericRepository = genericRepository;
             _gameRepository = gameRepository;
@@ -40,11 +40,11 @@ namespace BusinessLogic.Infrastructure
             var gameEntity = game.Adapt<Games>();
 
             DockerDbContext.SetCreatedByUserId(userId);
-            int numberOfEntriesWritten = await _genericRepository.InsertRecordAsync(gameEntity);
+            var createdGameCount = await _genericRepository.InsertRecordAsync(gameEntity);
 
-            if (numberOfEntriesWritten < 1)
+            if (createdGameCount < 1)
             {
-                throw new DgcException("The game could not be added.", DgcExceptionType.InvalidOperation);
+                throw new DgcException("Can't create game. Game not created.", DgcExceptionType.InvalidOperation);
             }
 
             return gameEntity.Id;
@@ -57,7 +57,7 @@ namespace BusinessLogic.Infrastructure
                     (await query
                     // .OrderBy(g => g.Title)
                     // .Where(g => g.Cover.Count > 0)
-                    .Where(g => g.Title.Contains("Halo"))
+                    // .Where(g => g.Title.Contains("Halo"))
                     .Skip(pageIndex * pageIndex)
                     .Take(pageSize)
                     .ToListAsync())

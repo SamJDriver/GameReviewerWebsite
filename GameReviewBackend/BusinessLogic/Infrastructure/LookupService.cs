@@ -9,9 +9,9 @@ namespace BusinessLogic.Infrastructure
 {
     public class LookupService : ILookupService
     {
-        private readonly GenericRepository<DockerDbContext> _genericRepository;
+        private readonly IGenericRepository<DockerDbContext> _genericRepository;
 
-        public LookupService(GenericRepository<DockerDbContext> genericRepository)
+        public LookupService(IGenericRepository<DockerDbContext> genericRepository)
         {
             _genericRepository = genericRepository;
         }

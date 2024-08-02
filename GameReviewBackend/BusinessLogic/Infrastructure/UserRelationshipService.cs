@@ -15,10 +15,10 @@ namespace BusinessLogic.Infrastructure
     {
 
         private readonly GraphServiceClient _graphServiceClient;
-        private readonly GenericRepository<DockerDbContext> _genericRepository;
+        private readonly IGenericRepository<DockerDbContext> _genericRepository;
 
 
-        public UserRelationshipService(GraphServiceClient graphServiceClient, GenericRepository<DockerDbContext> genericRepository)
+        public UserRelationshipService(GraphServiceClient graphServiceClient, IGenericRepository<DockerDbContext> genericRepository)
         {
             _graphServiceClient = graphServiceClient;
             _genericRepository = genericRepository;

@@ -10,8 +10,8 @@ namespace BusinessLogic.Infrastructure
 {
     public class PlayRecordCommentService : IPlayRecordCommentService
     {
-        private readonly GenericRepository<DockerDbContext> _genericRepository;
-        public PlayRecordCommentService(GenericRepository<DockerDbContext> genericRepository)
+        private readonly IGenericRepository<DockerDbContext> _genericRepository;
+        public PlayRecordCommentService(IGenericRepository<DockerDbContext> genericRepository)
         {
             _genericRepository = genericRepository;
         }

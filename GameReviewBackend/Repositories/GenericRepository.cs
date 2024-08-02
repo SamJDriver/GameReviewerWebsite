@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class GenericRepository<TContext> where TContext : DbContext
+    public class GenericRepository<TContext> where TContext : DbContext, IGenericRepository<TContext>
     {
         protected readonly TContext _dbContext;
 
@@ -13,7 +13,7 @@ namespace Repositories
         }
 
         #region Reads
-        public TEntityType GetById<TEntityType>(int id) where TEntityType : class
+        public virtual TEntityType GetById<TEntityType>(int id) where TEntityType : class
         {
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
             TEntityType entityObject = dbSet.Find(id);

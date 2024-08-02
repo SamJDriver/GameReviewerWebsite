@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
-    public class GameRepository
+    public class GameRepository : IGameRepository
     {
 
         private readonly DockerDbContext _dbContext;

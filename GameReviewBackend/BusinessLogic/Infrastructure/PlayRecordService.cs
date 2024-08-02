@@ -11,11 +11,11 @@ namespace BusinessLogic.Infrastructure
 {
     public class PlayRecordService : IPlayRecordService
     {
-        private readonly GenericRepository<DockerDbContext> _genericRepository;
+        private readonly IGenericRepository<DockerDbContext> _genericRepository;
         private readonly GraphServiceClient _graphServiceClient;
 
 
-        public PlayRecordService(GenericRepository<DockerDbContext> genericRepository, GraphServiceClient graphServiceClient)
+        public PlayRecordService(IGenericRepository<DockerDbContext> genericRepository, GraphServiceClient graphServiceClient)
         {
             _genericRepository = genericRepository;
             _graphServiceClient = graphServiceClient;

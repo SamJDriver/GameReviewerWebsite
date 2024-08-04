@@ -86,10 +86,12 @@ namespace BusinessLogic.Infrastructure
                     .ToListAsync())
                     .Adapt<Game_GetList_Dto[]>();
 
-            var requestBody = new GetByIdsPostRequestBody { 
+            var requestBody = new GetByIdsPostRequestBody()
+            { 
                 Ids = data.Select(d => d.ReviewerId).ToList<string>(),
                 Types = new List<string> { "user" }
             };
+            
             var result = (await _graphServiceClient.DirectoryObjects.GetByIds.PostAsGetByIdsPostResponseAsync(requestBody))?.Value;
             
             return new PagedResult<Game_GetList_Dto>()

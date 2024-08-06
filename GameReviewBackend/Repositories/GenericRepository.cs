@@ -13,7 +13,7 @@ namespace Repositories
         }
 
         #region Reads
-        public virtual TEntityType GetById<TEntityType>(int id) where TEntityType : class
+        public TEntityType GetById<TEntityType>(int id) where TEntityType : class
         {
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
             TEntityType entityObject = dbSet.Find(id);

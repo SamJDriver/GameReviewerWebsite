@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class GenericRepository<TContext> where TContext : DbContext, IGenericRepository<TContext>
+    public class GenericRepository<TContext> : IGenericRepository<TContext> where TContext : DbContext
     {
         protected readonly TContext _dbContext;
 
@@ -135,6 +135,11 @@ namespace Repositories
                 _dbContext.SaveChanges();
                 dbContextTransaction.Commit();
             }
+        }
+
+        public DbSet<TEntityType> Set<TEntityType>() where TEntityType : class
+        {
+            throw new NotImplementedException();
         }
         #endregion Create/Update/Delete
     }

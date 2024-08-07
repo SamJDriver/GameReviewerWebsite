@@ -84,7 +84,7 @@ public class SearchGamesTest : BaseTest
 
         var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
 
-        // Assert
+        // Act & Assert
         using (new AssertionScope())
         {
             await Assert.ThrowsAsync<DgcException>(() => subjectUnderTest.SearchGames("Halo", genreId, releaseYear, 0, 10));

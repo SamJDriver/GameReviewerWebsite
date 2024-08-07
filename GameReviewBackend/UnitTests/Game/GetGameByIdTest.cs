@@ -13,7 +13,7 @@ namespace UnitTests.Game;
 public class GetGameByIdTest : BaseTest
 {    
     [Fact]
-    public void Can_Get_GameById()
+    public void Can_GetGameById()
     {
         //Arrange
         var gameEntity = TestObjectFactory.GetMockGameEntity();

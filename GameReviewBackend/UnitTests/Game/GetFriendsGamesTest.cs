@@ -10,6 +10,8 @@ using DataAccess.Models.DockerDb;
 using Components.Utilities;
 using Microsoft.Extensions.Configuration;
 using Azure.Identity;
+using Microsoft.Kiota.Abstractions.Authentication;
+using Components.Exceptions;
 
 
 namespace UnitTests.Game;
@@ -25,7 +27,7 @@ public class GetFriendsGamesTest : BaseTest
     }
 
     [Fact]
-    public async void Can_Get_Friends_Games()
+    public async void Can_Get_GetGamesPopularWithFriends()
     {
         //Arrange
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
@@ -61,6 +63,24 @@ public class GetFriendsGamesTest : BaseTest
             retrievedGames!.Data.Count().Should().Be(pageSize);
             retrievedGames!.Data.First().Title.Should().Be(games.First().Title);
             retrievedGames!.Data.First().ReviewerId.Should().Be(games.First().PlayRecords.First().CreatedBy);
+        }
+    }
+
+    [Fact]
+    public async void Error_NullUser_GetGamesPopularWithFriends()
+    {
+        // Arrange
+        Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
+        Mock<IGameRepository> mockGameRepository = new();
+        var graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
+
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        
+        // Act & Assert
+        using (new AssertionScope())
+        {
+            DgcException exception = await Assert.ThrowsAsync<DgcException>(() => subjectUnderTest.GetGamesPopularWithFriends(0, 10, (string)null));
+            exception.Message.Should().Be("Can't view friend's games. No user logged in.");
         }
     }
 }

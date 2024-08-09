@@ -24,24 +24,41 @@ namespace BusinessLogic.Infrastructure
             _genericRepository = genericRepository;
         }
 
-        public async Task AddUserRelationship(string parentUserId, string childUserId, int UserRelationshipTypeLookupId)
+        public async Task CreateUserRelationship(string parentUserId, string childUserId, int UserRelationshipTypeLookupId)
         {
 
             if (parentUserId == childUserId)
                 throw new DgcException("Cannot add yourself.", DgcExceptionType.InvalidArgument);
-            
-            var parentGraphResult = await _graphServiceClient.Users[parentUserId].GetAsync((requestConfiguration) =>
+
+            Microsoft.Graph.Models.User? parentGraphResult = default;
+            try
             {
-                requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
-            });
+                parentGraphResult = await _graphServiceClient.Users[parentUserId].GetAsync((requestConfiguration) =>
+                {
+                    requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new DgcException("Could not authenticate requesting user.", DgcExceptionType.Unauthorized);
+            }
 
             if (parentGraphResult is null)
                 throw new DgcException("Could not authenticate requesting user.", DgcExceptionType.Unauthorized);
 
-            var childGraphResult = await _graphServiceClient.Users[childUserId].GetAsync((requestConfiguration) =>
+            Microsoft.Graph.Models.User? childGraphResult = default;
+            try
             {
-                requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
-            });
+                childGraphResult = await _graphServiceClient.Users[childUserId].GetAsync((requestConfiguration) =>
+                {
+                    requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new DgcException("Could not authenticate user to add.", DgcExceptionType.Unauthorized);
+            }
+
 
             if (childGraphResult is null)
                 throw new DgcException("Could not authenticate user to add.", DgcExceptionType.Unauthorized);
@@ -62,7 +79,7 @@ namespace BusinessLogic.Infrastructure
                 // If the child user is already on requesting user's friends list and they get added to requesting user's ignore list. Remove them from friends list
                 // If the child user is already on requesting user's ignore list and they get added to requesting user's friend list. Remove them from ignore list
                 var existingUserRelationShipTypeLookup = existingRelationshipRecord.UserRelationshipTypeLookup;
-                if ((existingUserRelationShipTypeLookup.Code == Components.Constants.LookupCodes.UserRelationshipTypeLookup.FriendCode && incomingUserRelationshipTypeLookup.Code == Components.Constants.LookupCodes.UserRelationshipTypeLookup.IgnoreCode) 
+                if ((existingUserRelationShipTypeLookup.Code == Components.Constants.LookupCodes.UserRelationshipTypeLookup.FriendCode && incomingUserRelationshipTypeLookup.Code == Components.Constants.LookupCodes.UserRelationshipTypeLookup.IgnoreCode)
                 || (existingUserRelationShipTypeLookup.Code == Components.Constants.LookupCodes.UserRelationshipTypeLookup.IgnoreCode && incomingUserRelationshipTypeLookup.Code == Components.Constants.LookupCodes.UserRelationshipTypeLookup.FriendCode))
                 {
                     existingRelationshipRecord.UserRelationshipTypeLookupId = incomingUserRelationshipTypeLookup.Id;

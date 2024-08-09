@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
+using Bogus.DataSets;
 using Components.Models;
 using DataAccess.Models.DockerDb;
 
@@ -12,7 +13,7 @@ namespace UnitTests
     {
         protected static readonly Faker _faker = new Faker();
 
-        internal static Games GetMockGameEntity()
+        internal static Games GetMockGameEntity(IEnumerable<Cover>? covers = default)
         {
             GamesGenresLookupLink genre = new()
             {
@@ -29,7 +30,8 @@ namespace UnitTests
                 ReleaseDate = DateOnly.FromDateTime(_faker.Date.Between(new DateTime(Components.Constants.MinimumReleaseYear, 1, 1), new DateTime(Components.Constants.MaximumReleaseYear, 1, 1))),
                 Description = _faker.Random.String(0, 65535),
                 GamesGenresLookupLink = [genre],
-                CreatedBy = Guid.NewGuid().ToString()
+                CreatedBy = Guid.NewGuid().ToString(),
+                Cover = covers?.ToList()
             };
 
             return gameEntity;
@@ -55,6 +57,40 @@ namespace UnitTests
             };
 
             return gameEntity;
+        }
+
+        internal static CreatePlayRecordDto GetMockCreatePlayRecordDto(
+            int? gameId = default,
+            bool? completeFlag = default,
+            int? hoursPlayed = default,
+            int? rating = default,
+            string? playDescription = default
+        )
+        {
+            return new CreatePlayRecordDto
+            {
+                GameId = gameId ?? _faker.Random.Number(1, 500000),
+                CompletedFlag = completeFlag ?? _faker.Random.Bool(),
+                HoursPlayed = hoursPlayed ?? _faker.Random.Number(1, 100),
+                Rating = rating ?? _faker.Random.Number(0, 100),
+                PlayDescription = playDescription ?? _faker.Random.String(0, 65535),
+            };
+        }
+
+        internal static UpdatePlayRecordDto GetMockUpdatePlayRecordDto(
+            bool? completeFlag = default,
+            int? hoursPlayed = default,
+            int? rating = default,
+            string? playDescription = default
+        )
+        {
+            return new UpdatePlayRecordDto
+            {
+                CompletedFlag = completeFlag ?? _faker.Random.Bool(),
+                HoursPlayed = hoursPlayed ?? _faker.Random.Number(1, 100),
+                Rating = rating ?? _faker.Random.Number(0, 100),
+                PlayDescription = playDescription ?? _faker.Random.String(0, 65535),
+            };
         }
 
         internal static Games GetMockFriendsGameEntity(string userId, string friendId)
@@ -143,6 +179,48 @@ namespace UnitTests
                 CreatedDate = DateTime.Now
             };
             return genre;
+        }
+
+        internal static PlayRecords GetMockPlayRecord(
+            int? id = default,
+            int? gameId = default, 
+            int? rating = default, 
+            string? createdBy = default, 
+            DateTime? createdDate = default,
+            Games? game = default,
+            IEnumerable<PlayRecordComments>? playRecordComments = default)
+        {
+            PlayRecords playRecord = new()
+            {
+                Id = id ?? _faker.Random.Number(1, 500000),
+                GameId = game != null ? game.Id : gameId ?? _faker.Random.Number(1, 500000),
+                HoursPlayed = _faker.Random.Number(1, 1000),
+                PlayDescription = _faker.Random.String(0, 65535),
+                CompletedFlag = _faker.Random.Bool(),
+                Rating = rating ?? _faker.Random.Number(1, 100),
+                CreatedBy = createdBy ?? Guid.NewGuid().ToString(),
+                CreatedDate = createdDate ?? _faker.Date.Between(DateTime.Now, new DateTime(3000, 1, 1)),
+                Game = game,
+                PlayRecordComments = playRecordComments?.ToList()
+            };
+            return playRecord;
+        }
+
+        internal static Cover GetMockCover()
+        {
+            Cover cover = new()
+            {
+                Id = _faker.Random.Number(1, 500000),
+                GameId = _faker.Random.Number(1, 500000),
+                AlphaChannelFlag = _faker.Random.Bool(),
+                AnimatedFlag = _faker.Random.Bool(),
+                Height = _faker.Random.Number(1, 5000),
+                Width = _faker.Random.Number(1, 5000),
+                ImageUrl = _faker.Random.String(0, 255),
+                CreatedBy = "System",
+                CreatedDate = DateTime.Now
+            };
+            return cover;
         }
     
     }

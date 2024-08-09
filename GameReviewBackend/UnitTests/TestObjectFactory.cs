@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Bogus;
-using Bogus.DataSets;
 using Components.Models;
 using DataAccess.Models.DockerDb;
 
@@ -108,7 +103,7 @@ namespace UnitTests
                 CreatedDate = DateTime.Now
             };
 
-            UserRelationship userRelationship = new()
+            DataAccess.Models.DockerDb.UserRelationship userRelationship = new()
             {
                 Id = _faker.Random.Number(1, 500000),
                 ChildUserId = friendId,
@@ -149,6 +144,48 @@ namespace UnitTests
             };
 
             return gameEntity;
+        }
+
+        internal static DataAccess.Models.DockerDb.UserRelationship GetMockUserRelationship(
+            int? id = default,
+            string? childUserId = default,
+            int? userRelationshipTypeLookupId = default,
+            string? createdBy = default,
+            DateTime? createdDate = default,
+            UserRelationshipTypeLookup? userRelationshipTypeLookup = default
+        )
+        {
+            DataAccess.Models.DockerDb.UserRelationship userRelationship = new()
+            {
+                Id = id ?? _faker.Random.Number(1, 100),
+                ChildUserId = childUserId ?? _faker.Random.Guid().ToString(),
+                UserRelationshipTypeLookupId = userRelationshipTypeLookupId ?? _faker.Random.Number(1, 100),
+                CreatedBy = createdBy ?? _faker.Random.Guid().ToString(),
+                CreatedDate = createdDate ?? DateTime.Now,
+                UserRelationshipTypeLookup = userRelationshipTypeLookup ?? GetMockUserRelationshipTypeLookup()
+            };
+            return userRelationship;
+        }
+
+        internal static UserRelationshipTypeLookup GetMockUserRelationshipTypeLookup(
+            int? id = default,
+            string? name = default,
+            string? code = default,
+            string? description = default,
+            string? createdBy = default,
+            DateTime? createdDate = default
+        )
+        {
+            UserRelationshipTypeLookup userRelationshipType = new()
+            {
+                Id = id ?? _faker.Random.Number(1, 100),
+                Name = name ?? _faker.Random.String(0, 255),
+                Code = code ?? _faker.Random.String(0, 8),
+                Description = description ?? _faker.Random.String(0, 255),
+                CreatedBy = createdBy ?? _faker.Random.Guid().ToString(),
+                CreatedDate = createdDate ?? DateTime.Now
+            };
+            return userRelationshipType;
         }
 
         internal static Game_GetList_Dto GetMockGameGetListDto()

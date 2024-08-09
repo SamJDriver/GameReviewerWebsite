@@ -31,7 +31,7 @@ namespace BusinessLogic.Infrastructure
             return selfPlayrecords;
         }
 
-        public async Task<PlayRecord_GetById_Dto> GetPlayRecordById(int playRecordId, string? userId)
+        public async Task<PlayRecord_GetById_Dto> GetPlayRecordById(int playRecordId)
         {
             var playRecord = _genericRepository.GetById<PlayRecords>(playRecordId).Adapt<PlayRecord_GetById_Dto>();
             return playRecord;

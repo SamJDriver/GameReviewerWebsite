@@ -299,6 +299,27 @@ namespace UnitTests
             };
             return review;
         }
+
+        internal static PlayRecordCommentVote GetMockPlayRecordCommentVote(
+            int? id = default,
+            int? playRecordCommentId = default,
+            int? numericalValue = default,
+            string? emojiValue = default,
+            string? createdBy = default,
+            DateTime? createdDate = default
+        )
+        {
+            PlayRecordCommentVote vote = new()
+            {
+                Id = id ?? _faker.Random.Number(1, 500000),
+                PlayRecordCommentId = playRecordCommentId ?? _faker.Random.Number(1, 500000),
+                NumericalValue = numericalValue ?? _faker.Random.Int(-1, 1),
+                EmojiValue = emojiValue ?? _faker.Random.String(0, 255),
+                CreatedBy = createdBy ?? _faker.Random.Guid().ToString(),
+                CreatedDate = createdDate ?? DateTime.Now
+            };
+            return vote;
+        }
     
     }
 }

@@ -259,6 +259,46 @@ namespace UnitTests
             };
             return cover;
         }
+
+        internal static PlayRecordComments GetMockPlayRecordComment(
+            int? id = default,
+            int? playRecordId = default,
+            string? commentText = default,
+            string? createdBy = default,
+            DateTime? createdDate = default
+        )
+        {
+            PlayRecordComments review = new()
+            {
+                Id = id ?? _faker.Random.Number(1, 500000),
+                PlayRecordId = playRecordId ?? _faker.Random.Number(1, 500000),
+                CommentText = commentText ?? _faker.Random.String(0, 65535),
+                CreatedBy = createdBy ?? _faker.Random.Guid().ToString(),
+                CreatedDate = createdDate ?? DateTime.Now
+            };
+            return review;
+        }
+
+        internal static CreatePlayRecordCommentDto GetMockCreatePlayRecordCommentDto()
+        {
+            CreatePlayRecordCommentDto review = new()
+            {
+                PlayRecordId = _faker.Random.Number(1, 500000),
+                CommentText = _faker.Random.String(0, 65535),
+            };
+            return review;
+        }
+
+        internal static UpdatePlayRecordCommentDto GetMockUpdatePlayRecordCommentDto(
+            string? commentText = default
+        )
+        {
+            UpdatePlayRecordCommentDto review = new()
+            {
+                CommentText = commentText ?? _faker.Random.String(0, 65535)
+            };
+            return review;
+        }
     
     }
 }

@@ -320,6 +320,48 @@ namespace UnitTests
             };
             return vote;
         }
+
+        internal static GenresLookup GetMockGenresLookupDto(
+            int? id = default,
+            string? name = default,
+            string? code = default,
+            string? description = default
+        )
+        {
+            GenresLookup genre = new()
+            {
+                Id = id ?? _faker.Random.Number(1, 100),
+                Name = name ?? _faker.Random.String(0, 255),
+                Code = code ?? _faker.Random.String(0, 8),
+                Description = description ?? _faker.Random.String(0, 255)
+            };
+            return genre;
+        }
+
+        internal static Companies GetMockCompany(
+            int? id = default,
+            string? name = default,
+            DateOnly? foundedDate = default,
+            string? imageFilePath = default,
+            bool? developerFlag = default,
+            bool? publisherFlag = default,
+            string? createdBy = default,
+            DateTime? createdDate = default
+        )
+        {
+            Companies company = new()
+            {
+                Id = id ?? _faker.Random.Number(1, 500000),
+                Name = name ?? _faker.Random.String(0, 255),
+                FoundedDate = foundedDate ?? _faker.Date.RecentDateOnly(100),
+                ImageFilePath = imageFilePath ?? _faker.Random.String(0, 255),
+                DeveloperFlag = developerFlag ?? _faker.Random.Bool(),
+                PublisherFlag = publisherFlag ?? _faker.Random.Bool(),
+                CreatedBy = createdBy ?? _faker.Random.Guid().ToString(),
+                CreatedDate = createdDate ?? DateTime.Now
+            };
+            return company;
+        }
     
     }
 }

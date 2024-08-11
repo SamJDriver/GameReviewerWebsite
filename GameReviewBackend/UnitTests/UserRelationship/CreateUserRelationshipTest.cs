@@ -45,9 +45,9 @@ public class CreateUserRelationshipTest : BaseTest
 
         mockRequestAdapter.Setup(adapter => adapter.SendAsync(
             It.Is<RequestInformation>(info => info.HttpMethod == Method.GET),
-            Microsoft.Graph.Models.User.CreateFromDiscriminatorValue,
+            User.CreateFromDiscriminatorValue,
             It.IsAny<Dictionary<string, ParsableFactory<IParsable>>>(), It.IsAny<CancellationToken>())
-        ).ReturnsAsync(new Microsoft.Graph.Models.User { DisplayName = "Test User",});
+        ).ReturnsAsync(new User { DisplayName = "Test User", });
 
         var mockIncomingUserRelationshipTypeLookup = TestObjectFactory.GetMockUserRelationshipTypeLookup(id: 1, code: Components.Constants.LookupCodes.UserRelationshipTypeLookup.FriendCode);
 
@@ -84,7 +84,7 @@ public class CreateUserRelationshipTest : BaseTest
             It.Is<RequestInformation>(info => info.HttpMethod == Method.GET),
             Microsoft.Graph.Models.User.CreateFromDiscriminatorValue,
             It.IsAny<Dictionary<string, ParsableFactory<IParsable>>>(), It.IsAny<CancellationToken>())
-        ).ReturnsAsync(new Microsoft.Graph.Models.User { DisplayName = "Test User",});
+        ).ReturnsAsync(new Microsoft.Graph.Models.User { DisplayName = "Test User", });
 
         var mockIncomingUserRelationshipTypeLookup = TestObjectFactory.GetMockUserRelationshipTypeLookup(id: 1, code: Components.Constants.LookupCodes.UserRelationshipTypeLookup.FriendCode);
         var mockExistingUserRelationshipTypeLookup = TestObjectFactory.GetMockUserRelationshipTypeLookup(id: 2, code: Components.Constants.LookupCodes.UserRelationshipTypeLookup.IgnoreCode);
@@ -200,9 +200,9 @@ public class CreateUserRelationshipTest : BaseTest
 
         mockRequestAdapter.Setup(adapter => adapter.SendAsync(
             It.Is<RequestInformation>(info => info.HttpMethod == Method.GET),
-            Microsoft.Graph.Models.User.CreateFromDiscriminatorValue,
+            User.CreateFromDiscriminatorValue,
             It.IsAny<Dictionary<string, ParsableFactory<IParsable>>>(), It.IsAny<CancellationToken>())
-        ).ReturnsAsync(new Microsoft.Graph.Models.User { DisplayName = "Test User",});
+        ).ReturnsAsync(new User { DisplayName = "Test User", });
 
         var mockIncomingUserRelationshipTypeLookup = TestObjectFactory.GetMockUserRelationshipTypeLookup(id: 1, name: "Test User Relationship Type");
         var mockExistingUserRelationship = TestObjectFactory.GetMockUserRelationship(userRelationshipTypeLookupId: 1, userRelationshipTypeLookup: mockIncomingUserRelationshipTypeLookup);

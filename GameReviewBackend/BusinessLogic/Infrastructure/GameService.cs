@@ -14,11 +14,11 @@ namespace BusinessLogic.Infrastructure
 {
     public class GameService : IGameService
     {
-        private readonly GenericRepository<DockerDbContext> _genericRepository;
-        private readonly GameRepository _gameRepository;
+        private readonly IGenericRepository<DockerDbContext> _genericRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly GraphServiceClient _graphServiceClient;
 
-        public GameService(GenericRepository<DockerDbContext> genericRepository, GameRepository gameRepository, GraphServiceClient graphServiceClient)
+        public GameService(IGenericRepository<DockerDbContext> genericRepository, IGameRepository gameRepository, GraphServiceClient graphServiceClient)
         {
             _genericRepository = genericRepository;
             _gameRepository = gameRepository;
@@ -29,7 +29,7 @@ namespace BusinessLogic.Infrastructure
         {
             if (!game.ReleaseDate.ValidateDateOnly())
             {
-                throw new DgcException($"Invalid game release date. Ensure release date is between {Components.Constants.minimumReleaseYear} and {DateTime.Now}", DgcExceptionType.ArgumentOutOfRange);
+                throw new DgcException($"Invalid game release date. Ensure release date is between {Components.Constants.MinimumReleaseYear} and {new DateTime(Components.Constants.MaximumReleaseYear, 1, 1)}", DgcExceptionType.ArgumentOutOfRange);
             }
 
             if (userId == null)
@@ -40,11 +40,11 @@ namespace BusinessLogic.Infrastructure
             var gameEntity = game.Adapt<Games>();
 
             DockerDbContext.SetCreatedByUserId(userId);
-            int numberOfEntriesWritten = await _genericRepository.InsertRecordAsync(gameEntity);
+            var createdGameCount = await _genericRepository.InsertRecordAsync(gameEntity);
 
-            if (numberOfEntriesWritten < 1)
+            if (createdGameCount < 1)
             {
-                throw new DgcException("The game could not be added.", DgcExceptionType.InvalidOperation);
+                throw new DgcException("Can't create game. Game not created.", DgcExceptionType.InvalidOperation);
             }
 
             return gameEntity.Id;
@@ -57,7 +57,7 @@ namespace BusinessLogic.Infrastructure
                     (await query
                     // .OrderBy(g => g.Title)
                     // .Where(g => g.Cover.Count > 0)
-                    .Where(g => g.Title.Contains("League of Legends"))
+                    // .Where(g => g.Title.Contains("Halo"))
                     .Skip(pageIndex * pageIndex)
                     .Take(pageSize)
                     .ToListAsync())
@@ -86,10 +86,12 @@ namespace BusinessLogic.Infrastructure
                     .ToListAsync())
                     .Adapt<Game_GetList_Dto[]>();
 
-            var requestBody = new GetByIdsPostRequestBody { 
+            var requestBody = new GetByIdsPostRequestBody()
+            { 
                 Ids = data.Select(d => d.ReviewerId).ToList<string>(),
                 Types = new List<string> { "user" }
             };
+            
             var result = (await _graphServiceClient.DirectoryObjects.GetByIds.PostAsGetByIdsPostResponseAsync(requestBody))?.Value;
             
             return new PagedResult<Game_GetList_Dto>()
@@ -125,7 +127,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Genre not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            if (releaseYear != null && releaseYear < Components.Constants.minimumReleaseYear || releaseYear > Components.Constants.maximumReleaseYear)
+            if (releaseYear != null && releaseYear < Components.Constants.MinimumReleaseYear || releaseYear > Components.Constants.MaximumReleaseYear)
             {
                 throw new DgcException("Invalid release year provided.", DgcExceptionType.ArgumentOutOfRange);
             }

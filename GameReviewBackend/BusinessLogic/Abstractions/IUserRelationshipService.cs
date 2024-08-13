@@ -7,6 +7,6 @@ namespace BusinessLogic.Abstractions
 {
     public interface IUserRelationshipService
     {
-        public Task AddUserRelationship(string parentUserId, string childUserId, int UserRelationshipTypeLookupId);
+        public Task CreateUserRelationship(string parentUserId, string childUserId, int UserRelationshipTypeLookupId);
     }
 }

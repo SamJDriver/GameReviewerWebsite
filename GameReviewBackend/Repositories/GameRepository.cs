@@ -1,11 +1,12 @@
-﻿using DataAccess.Contexts.DockerDb;
+﻿using System.ComponentModel;
+using DataAccess.Contexts.DockerDb;
 using DataAccess.Models.DockerDb;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace Repositories
 {
-    public class GameRepository
+    public class GameRepository : IGameRepository
     {
 
         private readonly DockerDbContext _dbContext;
@@ -59,7 +60,7 @@ namespace Repositories
                     userRelationshipTypeLookup in _dbContext.UserRelationshipTypeLookup
                     on userRelationship.UserRelationshipTypeLookupId equals userRelationshipTypeLookup.Id
                 where
-                    userRelationshipTypeLookup.Code == "FRIEND"
+                    userRelationshipTypeLookup.Code == Components.Constants.LookupCodes.UserRelationshipTypeLookup.FriendCode
                 orderby
                     playRecord.CreatedDate descending,
                     playRecord.Rating descending

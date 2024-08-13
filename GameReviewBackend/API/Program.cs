@@ -150,8 +150,8 @@ namespace GameReview
             //Repositories
             builder.Services.AddTransient(typeof(UnitOfWork));
             builder.Services.AddTransient(typeof(GenericDataAccess<>));
-            builder.Services.AddTransient(typeof(GenericRepository<>));
-            builder.Services.AddTransient(typeof(GameRepository));
+            builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddTransient(typeof(IGameRepository) ,typeof(GameRepository));
 
             //Middlewares
             builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();

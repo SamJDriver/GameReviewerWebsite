@@ -32,8 +32,7 @@ namespace GameReview.Controllers
         [HttpGet("{playRecordId}")]
         public async Task<ActionResult> GetPlayRecordById(int playRecordId)
         {
-            var userId = User.GetObjectId();
-            var playRecord = await _playRecordService.GetPlayRecordById(playRecordId, userId);
+            var playRecord = await _playRecordService.GetPlayRecordById(playRecordId);
             return Ok(playRecord);
         }
 

@@ -26,7 +26,7 @@ namespace GameReview.Controllers
         public async Task<IActionResult> AddUserRelationship([FromBody] UserRelationship_Create_Dto userRelationshipCreateDto)
         {
             var requestorUserId = User.GetObjectId();
-            await _userRelationshipService.AddUserRelationship(requestorUserId, userRelationshipCreateDto.ChildUserId, userRelationshipCreateDto.UserRelationshipTypeLookupId);
+            await _userRelationshipService.CreateUserRelationship(requestorUserId, userRelationshipCreateDto.ChildUserId, userRelationshipCreateDto.UserRelationshipTypeLookupId);
             return Ok();
         }
     }

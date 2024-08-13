@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class GenericRepository<TContext> where TContext : DbContext
+    public class GenericRepository<TContext> : IGenericRepository<TContext> where TContext : DbContext
     {
         protected readonly TContext _dbContext;
 
@@ -50,19 +50,20 @@ namespace Repositories
         #endregion Reads
 
         #region Create/Update/Delete
-        public void InsertRecord<TEntityType>(TEntityType itemToInsert) where TEntityType : class
+        public int InsertRecord<TEntityType>(TEntityType itemToInsert) where TEntityType : class
         {
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
             dbSet.Add(itemToInsert);
-            _dbContext.SaveChanges();
+            var entriesWritten = _dbContext.SaveChanges();
+            return entriesWritten;
         }
 
         public async Task<int> InsertRecordAsync<TEntityType>(TEntityType itemToInsert) where TEntityType : class
         {
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
             await dbSet.AddAsync(itemToInsert);
-            int id = await _dbContext.SaveChangesAsync();
-            return id;
+            int entriesWritten = await _dbContext.SaveChangesAsync();
+            return entriesWritten;
         }
 
         public void InsertRecordList<TEntityType>(IEnumerable<TEntityType> listToInsert) where TEntityType : class
@@ -134,6 +135,11 @@ namespace Repositories
                 _dbContext.SaveChanges();
                 dbContextTransaction.Commit();
             }
+        }
+
+        public DbSet<TEntityType> Set<TEntityType>() where TEntityType : class
+        {
+            throw new NotImplementedException();
         }
         #endregion Create/Update/Delete
     }

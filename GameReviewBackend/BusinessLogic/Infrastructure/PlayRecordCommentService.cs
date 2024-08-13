@@ -10,8 +10,8 @@ namespace BusinessLogic.Infrastructure
 {
     public class PlayRecordCommentService : IPlayRecordCommentService
     {
-        private readonly GenericRepository<DockerDbContext> _genericRepository;
-        public PlayRecordCommentService(GenericRepository<DockerDbContext> genericRepository)
+        private readonly IGenericRepository<DockerDbContext> _genericRepository;
+        public PlayRecordCommentService(IGenericRepository<DockerDbContext> genericRepository)
         {
             _genericRepository = genericRepository;
         }
@@ -69,15 +69,15 @@ namespace BusinessLogic.Infrastructure
 
         public void Upvote(int playRecordCommentId, string? userId)
         {
-            submitUpvoteOrDownvote(true, playRecordCommentId, userId);
+            submitPlayRecordVote(true, playRecordCommentId, userId);
         }
 
         public void Downvote(int playRecordCommentId, string? userId)
         {
-            submitUpvoteOrDownvote(false, playRecordCommentId, userId);
+            submitPlayRecordVote(false, playRecordCommentId, userId);
         }
 
-        private void submitUpvoteOrDownvote(bool upvoteFlag, int playRecordCommentId, string? userId)
+        private void submitPlayRecordVote(bool upvoteFlag, int playRecordCommentId, string? userId)
         {
 
             var numericalValue = upvoteFlag ? 1 : -1;
@@ -93,7 +93,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("No user found to vote. Ensure you are logged in.", DgcExceptionType.Unauthorized);
             }
 
-            var existingCommentVote = _genericRepository.GetMany<PlayRecordCommentVote>(p => p.CreatedBy == userId && p.PlayRecordCommentId == existingPlayRecordComment.Id).FirstOrDefault();
+            var existingCommentVote = _genericRepository.GetSingleTracked<PlayRecordCommentVote>(p => p.CreatedBy == userId && p.PlayRecordCommentId == existingPlayRecordComment.Id);
 
             if (existingCommentVote != null)
             {

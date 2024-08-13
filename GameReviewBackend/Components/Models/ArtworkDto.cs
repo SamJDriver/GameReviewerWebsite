@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccess.Models.DockerDb;
 
 namespace Components.Models
 {
@@ -21,9 +22,5 @@ namespace Components.Models
         public int Width { get; set; }
 
         public string ImageUrl { get; set; } = null!;
-
-        [StringLength(25)]
-        public string CreatedBy { get; set; } = null!;
-        public DateTime CreatedDate { get; set; }
     }
 }

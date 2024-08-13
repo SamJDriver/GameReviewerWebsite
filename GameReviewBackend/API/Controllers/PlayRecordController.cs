@@ -1,7 +1,9 @@
-using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.Resource;
 
 
 namespace GameReview.Controllers
@@ -17,36 +19,41 @@ namespace GameReview.Controllers
             _playRecordService = playRecordService;
         }
 
-        [HttpPost]
-        public ActionResult CreatePlayRecord([FromBody]CreatePlayRecordJson playRecord)
+        [HttpGet]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public async Task<ActionResult> GetPlayRecords()
         {
-            var dto = new PlayRecordDto()
-            {
-                UserId = playRecord.UserId,
-                GameId = playRecord.GameId,
-                CompletedFlag = playRecord.CompletedFlag,
-                HoursPlayed = playRecord.HoursPlayed,
-                Rating = playRecord.Rating,
-                PlayDescription = playRecord.PlayDescription
-            };
+            var userId = User.GetObjectId();
+            var playRecords = await _playRecordService.GetSelfPlayRecords(userId);
+            return Ok(playRecords);
+        }
 
-            _playRecordService.CreatePlayRecord(dto);
+        [HttpGet("{playRecordId}")]
+        public async Task<ActionResult> GetPlayRecordById(int playRecordId)
+        {
+            var userId = User.GetObjectId();
+            var playRecord = await _playRecordService.GetPlayRecordById(playRecordId, userId);
+            return Ok(playRecord);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public ActionResult CreatePlayRecord([FromBody] CreatePlayRecordDto playRecord)
+        {
+            var userId = User.GetObjectId();
+            _playRecordService.CreatePlayRecord(playRecord, userId);
             return Ok();
         }
 
         [HttpPut("{playRecordId}")]
-        public ActionResult UpdatePlayRecord(int playRecordId, [FromBody]UpdatePlayRecordJson playRecord)
-        {
-            var dto = new PlayRecordDto()
-            {
-                Id = playRecordId,
-                CompletedFlag = playRecord.CompletedFlag,
-                HoursPlayed = playRecord.HoursPlayed,
-                Rating = playRecord.Rating,
-                PlayDescription = playRecord.PlayDescription
-            };
+        [Authorize]
+        [RequiredScope("gamereview-user")]
 
-            _playRecordService.UpdatePlayRecord(dto);
+        public ActionResult UpdatePlayRecord(int playRecordId, [FromBody] UpdatePlayRecordDto playRecord)
+        {
+            _playRecordService.UpdatePlayRecord(playRecordId, playRecord, User.GetObjectId());
             return Ok();
         }
     }

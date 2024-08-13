@@ -39,10 +39,10 @@ services:
   db: #docker exec -it mariadb mariadb -u user -p
     image: mariadb:latest
     environment:
-      MYSQL_ROOT_PASSWORD: /run/secrets/db_root_password
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: mydatabase
       MYSQL_USER: user
-      MYSQL_PASSWORD: /run/secrets/db_password
+      MYSQL_PASSWORD: password
     volumes:
       - mariadbvolume:/var/lib/mysql
     expose:

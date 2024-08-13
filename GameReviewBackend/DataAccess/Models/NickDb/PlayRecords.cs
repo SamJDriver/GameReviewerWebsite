@@ -18,8 +18,8 @@ public partial class PlayRecords
     [Column("id", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("user_id", TypeName = "int(11)")]
-    public int UserId { get; set; }
+    [Column("user_id", TypeName = "char(16)")]
+    public string UserId { get; set; }
 
     [Column("game_id", TypeName = "int(11)")]
     public int GameId { get; set; }
@@ -42,19 +42,6 @@ public partial class PlayRecords
 
     [Column("created_date", TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
-
-    [Column("modified_by")]
-    [StringLength(25)]
-    public string? ModifiedBy { get; set; }
-
-    [Column("modified_date")]
-    public DateOnly? ModifiedDate { get; set; }
-
-    [Column("obsolete_flag")]
-    public bool ObsoleteFlag { get; set; }
-
-    [Column("obsolete_date")]
-    public DateOnly? ObsoleteDate { get; set; }
 
     [ForeignKey("GameId")]
     [InverseProperty("PlayRecords")]

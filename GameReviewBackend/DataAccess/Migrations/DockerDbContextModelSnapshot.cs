@@ -17,7 +17,7 @@ namespace DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseCollation("utf8mb4_general_ci")
+                .UseCollation("utf8mb4_uca1400_ai_ci")
                 .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
@@ -43,8 +43,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -90,8 +90,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -149,8 +149,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -187,6 +187,107 @@ namespace DataAccess.Migrations
                     b.ToTable("cover");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.DockerDb.GameSelfLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int(11)")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChildGameId")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("child_game_id");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_date");
+
+                    b.Property<int>("GameSelfLinkTypeLookupId")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("game_self_link_type_lookup_id");
+
+                    b.Property<int>("ParentGameId")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("parent_game_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "GameSelfLinkTypeLookupId" }, "game_self_link_game_self_link_type_lookup_link_ibfk_1");
+
+                    b.HasIndex(new[] { "ParentGameId" }, "game_self_link_games_link_ibfk_1");
+
+                    b.HasIndex(new[] { "ChildGameId" }, "game_self_link_games_link_ibfk_2");
+
+                    b.ToTable("game_self_link");
+                });
+
+            modelBuilder.Entity("DataAccess.Models.DockerDb.GameSelfLinkTypeLookup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int(11)")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(8)
+                        .HasColumnType("varchar(8)")
+                        .HasColumnName("code");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("game_self_link_type_lookup");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "DLC",
+                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7790),
+                            Description = "Downloadable Content",
+                            Name = "DLC"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "EXPANS",
+                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7840),
+                            Description = "Expansion",
+                            Name = "Expansion"
+                        });
+                });
+
             modelBuilder.Entity("DataAccess.Models.DockerDb.Games", b =>
                 {
                     b.Property<int>("Id")
@@ -198,8 +299,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -210,6 +311,10 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<int?>("ParentGameId")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("parent_game_id");
 
                     b.Property<DateOnly>("ReleaseDate")
                         .HasColumnType("date")
@@ -245,8 +350,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -297,8 +402,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -338,8 +443,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -388,8 +493,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -425,8 +530,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -458,6 +563,47 @@ namespace DataAccess.Migrations
                     b.ToTable("platforms");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.DockerDb.PlayRecordCommentVote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int(11)")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("EmojiValue")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("emoji_value");
+
+                    b.Property<int?>("NumericalValue")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("numerical_value");
+
+                    b.Property<int>("PlayRecordCommentId")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("play_record_comment_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CreatedBy" }, "created_by");
+
+                    b.HasIndex(new[] { "PlayRecordCommentId" }, "play_record_comment_id");
+
+                    b.ToTable("play_record_comment_vote");
+                });
+
             modelBuilder.Entity("DataAccess.Models.DockerDb.PlayRecordComments", b =>
                 {
                     b.Property<int>("Id")
@@ -474,39 +620,28 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime")
                         .HasColumnName("created_date");
 
-                    b.Property<int>("DownvoteCount")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("downvote_count");
-
                     b.Property<int>("PlayRecordId")
                         .HasColumnType("int(11)")
                         .HasColumnName("play_record_id");
 
-                    b.Property<int>("UpvoteCount")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("upvote_count");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("user_id");
-
                     b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CreatedBy" }, "created_by")
+                        .HasDatabaseName("created_by1");
 
                     b.HasIndex(new[] { "Id" }, "id")
                         .IsUnique()
                         .HasDatabaseName("id9");
 
                     b.HasIndex(new[] { "PlayRecordId" }, "play_record_id");
-
-                    b.HasIndex(new[] { "UserId" }, "user_id");
 
                     b.ToTable("play_record_comments");
                 });
@@ -526,8 +661,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -550,21 +685,13 @@ namespace DataAccess.Migrations
                         .HasColumnType("int(11)")
                         .HasColumnName("rating");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("user_id");
-
                     b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CreatedBy" }, "created_by")
+                        .HasDatabaseName("created_by2");
 
                     b.HasIndex(new[] { "GameId" }, "game_id")
                         .HasDatabaseName("game_id4");
-
-                    b.HasIndex(new[] { "Id" }, "id")
-                        .IsUnique()
-                        .HasDatabaseName("id10");
-
-                    b.HasIndex(new[] { "UserId" }, "user_id")
-                        .HasDatabaseName("user_id1");
 
                     b.ToTable("play_records");
                 });
@@ -578,40 +705,29 @@ namespace DataAccess.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ChildUserId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("child_user_id");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime")
                         .HasColumnName("created_date");
 
-                    b.Property<int>("FriendId")
+                    b.Property<int>("UserRelationshipTypeLookupId")
                         .HasColumnType("int(11)")
-                        .HasColumnName("friend_id");
-
-                    b.Property<int>("RelationshipTypeLookupId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("relationship_type_lookup_id");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("user_id");
+                        .HasColumnName("user_relationship_type_lookup_id");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "FriendId" }, "friend_id");
-
-                    b.HasIndex(new[] { "Id" }, "id")
-                        .IsUnique()
-                        .HasDatabaseName("id11");
-
-                    b.HasIndex(new[] { "RelationshipTypeLookupId" }, "relationship_type_lookup_id");
-
-                    b.HasIndex(new[] { "UserId" }, "user_id")
-                        .HasDatabaseName("user_id2");
+                    b.HasIndex(new[] { "UserRelationshipTypeLookupId" }, "user_relationship_ibfk_1");
 
                     b.ToTable("user_relationship");
                 });
@@ -633,8 +749,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -657,9 +773,29 @@ namespace DataAccess.Migrations
 
                     b.HasIndex(new[] { "Id" }, "id")
                         .IsUnique()
-                        .HasDatabaseName("id12");
+                        .HasDatabaseName("id10");
 
                     b.ToTable("user_relationship_type_lookup");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "FRIEND",
+                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7910),
+                            Description = "One directional friend link",
+                            Name = "Friend"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "IGNORE",
+                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7920),
+                            Description = "One directional ignore.",
+                            Name = "Ignore"
+                        });
                 });
 
             modelBuilder.Entity("DataAccess.Models.DockerDb.Users", b =>
@@ -677,8 +813,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
@@ -717,7 +853,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex(new[] { "Id" }, "id")
                         .IsUnique()
-                        .HasDatabaseName("id13");
+                        .HasDatabaseName("id11");
 
                     b.ToTable("users");
                 });
@@ -742,6 +878,33 @@ namespace DataAccess.Migrations
                         .HasConstraintName("cover_games_ibfk_1");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("DataAccess.Models.DockerDb.GameSelfLink", b =>
+                {
+                    b.HasOne("DataAccess.Models.DockerDb.Games", "ChildGame")
+                        .WithMany("GameSelfLinkChildGame")
+                        .HasForeignKey("ChildGameId")
+                        .IsRequired()
+                        .HasConstraintName("game_self_link_games_link_ibfk_2");
+
+                    b.HasOne("DataAccess.Models.DockerDb.GameSelfLinkTypeLookup", "GameSelfLinkTypeLookup")
+                        .WithMany("GameSelfLink")
+                        .HasForeignKey("GameSelfLinkTypeLookupId")
+                        .IsRequired()
+                        .HasConstraintName("game_self_link_game_self_link_type_lookup_link_ibfk_1");
+
+                    b.HasOne("DataAccess.Models.DockerDb.Games", "ParentGame")
+                        .WithMany("GameSelfLinkParentGame")
+                        .HasForeignKey("ParentGameId")
+                        .IsRequired()
+                        .HasConstraintName("game_self_link_games_link_ibfk_1");
+
+                    b.Navigation("ChildGame");
+
+                    b.Navigation("GameSelfLinkTypeLookup");
+
+                    b.Navigation("ParentGame");
                 });
 
             modelBuilder.Entity("DataAccess.Models.DockerDb.GamesCompaniesLink", b =>
@@ -801,6 +964,17 @@ namespace DataAccess.Migrations
                     b.Navigation("Platform");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.DockerDb.PlayRecordCommentVote", b =>
+                {
+                    b.HasOne("DataAccess.Models.DockerDb.PlayRecordComments", "PlayRecordComment")
+                        .WithMany("PlayRecordCommentVote")
+                        .HasForeignKey("PlayRecordCommentId")
+                        .IsRequired()
+                        .HasConstraintName("play_record_comment_vote_ibfk_1");
+
+                    b.Navigation("PlayRecordComment");
+                });
+
             modelBuilder.Entity("DataAccess.Models.DockerDb.PlayRecordComments", b =>
                 {
                     b.HasOne("DataAccess.Models.DockerDb.PlayRecords", "PlayRecord")
@@ -809,15 +983,7 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasConstraintName("play_record_comments_ibfk_2");
 
-                    b.HasOne("DataAccess.Models.DockerDb.Users", "User")
-                        .WithMany("PlayRecordComments")
-                        .HasForeignKey("UserId")
-                        .IsRequired()
-                        .HasConstraintName("play_record_comments_ibfk_1");
-
                     b.Navigation("PlayRecord");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DataAccess.Models.DockerDb.PlayRecords", b =>
@@ -828,42 +994,18 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasConstraintName("play_records_ibfk_2");
 
-                    b.HasOne("DataAccess.Models.DockerDb.Users", "User")
-                        .WithMany("PlayRecords")
-                        .HasForeignKey("UserId")
-                        .IsRequired()
-                        .HasConstraintName("play_records_ibfk_1");
-
                     b.Navigation("Game");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DataAccess.Models.DockerDb.UserRelationship", b =>
                 {
-                    b.HasOne("DataAccess.Models.DockerDb.Users", "Friend")
-                        .WithMany("UserRelationshipFriend")
-                        .HasForeignKey("FriendId")
-                        .IsRequired()
-                        .HasConstraintName("user_relationship_ibfk_2");
-
-                    b.HasOne("DataAccess.Models.DockerDb.UserRelationshipTypeLookup", "RelationshipTypeLookup")
+                    b.HasOne("DataAccess.Models.DockerDb.UserRelationshipTypeLookup", "UserRelationshipTypeLookup")
                         .WithMany("UserRelationship")
-                        .HasForeignKey("RelationshipTypeLookupId")
-                        .IsRequired()
-                        .HasConstraintName("user_relationship_ibfk_3");
-
-                    b.HasOne("DataAccess.Models.DockerDb.Users", "User")
-                        .WithMany("UserRelationshipUser")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserRelationshipTypeLookupId")
                         .IsRequired()
                         .HasConstraintName("user_relationship_ibfk_1");
 
-                    b.Navigation("Friend");
-
-                    b.Navigation("RelationshipTypeLookup");
-
-                    b.Navigation("User");
+                    b.Navigation("UserRelationshipTypeLookup");
                 });
 
             modelBuilder.Entity("DataAccess.Models.DockerDb.Companies", b =>
@@ -871,11 +1013,20 @@ namespace DataAccess.Migrations
                     b.Navigation("GamesCompaniesLink");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.DockerDb.GameSelfLinkTypeLookup", b =>
+                {
+                    b.Navigation("GameSelfLink");
+                });
+
             modelBuilder.Entity("DataAccess.Models.DockerDb.Games", b =>
                 {
                     b.Navigation("Artwork");
 
                     b.Navigation("Cover");
+
+                    b.Navigation("GameSelfLinkChildGame");
+
+                    b.Navigation("GameSelfLinkParentGame");
 
                     b.Navigation("GamesCompaniesLink");
 
@@ -896,6 +1047,11 @@ namespace DataAccess.Migrations
                     b.Navigation("GamesPlatformsLink");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.DockerDb.PlayRecordComments", b =>
+                {
+                    b.Navigation("PlayRecordCommentVote");
+                });
+
             modelBuilder.Entity("DataAccess.Models.DockerDb.PlayRecords", b =>
                 {
                     b.Navigation("PlayRecordComments");
@@ -904,17 +1060,6 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Models.DockerDb.UserRelationshipTypeLookup", b =>
                 {
                     b.Navigation("UserRelationship");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.DockerDb.Users", b =>
-                {
-                    b.Navigation("PlayRecordComments");
-
-                    b.Navigation("PlayRecords");
-
-                    b.Navigation("UserRelationshipFriend");
-
-                    b.Navigation("UserRelationshipUser");
                 });
 #pragma warning restore 612, 618
         }

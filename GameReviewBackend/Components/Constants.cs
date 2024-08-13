@@ -4,6 +4,7 @@
     {
 
         public static int minimumReleaseYear = 1955;
+        public static int maximumReleaseYear = 3000;
 
 
         public static class IgdbApi
@@ -29,5 +30,20 @@
 
 
         }
+
+        public static class MicrosoftGraph
+        {
+            public static string[] GraphUserQueryParams = {"id", "displayName", "givenName", "country", "identities"};
+        }
+        
+        public static class LookupCodes
+        {
+            public static class UserRelationshipTypeLookup
+            {
+                public static string FriendCode = "FRIEND";
+                public static string IgnoreCode = "IGNORE";
+            }
+        }
+    
     }
 }

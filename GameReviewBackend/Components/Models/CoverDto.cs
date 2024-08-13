@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using DataAccess.Models.DockerDb;
 
 namespace Components.Models
 {
-    public class CoverDto
+    public class CoverDto : BaseDto<CoverDto, Cover>
     {
         public int? Id { get; set; }
 
@@ -17,9 +18,5 @@ namespace Components.Models
         public int Width { get; set; }
 
         public string ImageUrl { get; set; } = null!;
-
-        [StringLength(25)]
-        public string CreatedBy { get; set; } = null!;
-        public DateTime CreatedDate { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Components.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models.ODataErrors;
 
 namespace API.Middlewares
 {
@@ -29,13 +30,13 @@ namespace API.Middlewares
                 switch(e.Type)
                 {
                     case DgcExceptionType.ResourceNotFound:
-                        status = 404;
+                        status = (int)HttpStatusCode.NotFound;
                         break;
                     case DgcExceptionType.Unauthorized:
-                        status = 401;
+                        status = (int)HttpStatusCode.Unauthorized;
                         break;
                     case DgcExceptionType.Forbidden:
-                        status = 403;
+                        status = (int)HttpStatusCode.Forbidden;
                         break;
                     case DgcExceptionType.InvalidArgument:
                     case DgcExceptionType.ArgumentNull:
@@ -43,7 +44,7 @@ namespace API.Middlewares
                     case DgcExceptionType.InvalidOperation:
                     case DgcExceptionType.NotSupported:
                     default:
-                        status = 400;
+                        status = (int)HttpStatusCode.BadRequest;
                         break;
                 }
 
@@ -59,6 +60,22 @@ namespace API.Middlewares
                 string json = JsonSerializer.Serialize(problemDetails);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(json);
+            }
+            catch (ODataError e)
+            {
+                _logger.LogError(e, e.Message);
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                ProblemDetails problemDetails = new()
+                {
+                    Status = (int)HttpStatusCode.Unauthorized,
+                    Type = "Unauthorized Request",
+                    Title = "Unauthorized Request",
+                    Detail = "Unauthorized Request"
+                };
+
+                string json = JsonSerializer.Serialize(problemDetails);
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(json);                
             }
             catch (Exception e)
             {

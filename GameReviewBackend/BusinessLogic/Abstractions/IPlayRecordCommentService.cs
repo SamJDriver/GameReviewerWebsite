@@ -4,8 +4,11 @@ namespace BusinessLogic.Abstractions
 {
     public interface IPlayRecordCommentService
     {
-        public void CreatePlayRecordComment(PlayRecordCommentDto playRecordComment);
-        public void UpdatePlayRecordComment(PlayRecordCommentDto playRecordComment);
+        public void CreatePlayRecordComment(CreatePlayRecordCommentDto playRecordComment, string? userId);
+        public void UpdatePlayRecordComment(int playRecordCommentId, UpdatePlayRecordCommentDto playRecordComment, string? userId);
+        public void Upvote(int playRecordCommentId, string? userId);
+        public void Downvote(int playRecordCommentId, string? userId);
+
 
     }
 }

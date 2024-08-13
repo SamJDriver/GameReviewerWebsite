@@ -57,6 +57,14 @@ namespace Repositories
             _dbContext.SaveChanges();
         }
 
+        public async Task<int> InsertRecordAsync<TEntityType>(TEntityType itemToInsert) where TEntityType : class
+        {
+            DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
+            await dbSet.AddAsync(itemToInsert);
+            int id = await _dbContext.SaveChangesAsync();
+            return id;
+        }
+
         public void InsertRecordList<TEntityType>(IEnumerable<TEntityType> listToInsert) where TEntityType : class
         {
             DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
@@ -65,6 +73,16 @@ namespace Repositories
                 dbSet.Add(listItem);
             }
             _dbContext.SaveChanges();
+        }
+
+        public async Task InsertRecordListAsync<TEntityType>(IEnumerable<TEntityType> listToInsert) where TEntityType : class
+        {
+            DbSet<TEntityType> dbSet = _dbContext.Set<TEntityType>();
+            foreach (TEntityType listItem in listToInsert)
+            {
+                dbSet.Add(listItem);
+            }
+            await _dbContext.SaveChangesAsync();
         }
 
         public void UpdateRecord<TEntityType>(TEntityType itemToUpdate) where TEntityType : class

@@ -34,19 +34,6 @@ public partial class Publishers
     [Column("created_date", TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column("modified_by")]
-    [StringLength(25)]
-    public string? ModifiedBy { get; set; }
-
-    [Column("modified_date")]
-    public DateOnly? ModifiedDate { get; set; }
-
-    [Column("obsolete_flag")]
-    public bool ObsoleteFlag { get; set; }
-
-    [Column("obsolete_date", TypeName = "datetime")]
-    public DateTime? ObsoleteDate { get; set; }
-
     [InverseProperty("Publisher")]
     public virtual ICollection<GamesPublishersLink> GamesPublishersLink { get; set; } = new List<GamesPublishersLink>();
 }

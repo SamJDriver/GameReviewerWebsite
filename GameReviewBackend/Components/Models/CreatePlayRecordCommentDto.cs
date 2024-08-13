@@ -1,14 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using DataAccess.Models.DockerDb;
 
-namespace API.Models
+namespace Components.Models
 {
-    public class CreatePlayRecordCommentJson
+    public class CreatePlayRecordCommentDto : BaseDto<CreatePlayRecordCommentDto, PlayRecords>
     {
         public int PlayRecordId { get; set; }
+
         [StringLength(65535)]
         public string CommentText { get; set; } = null!;
-        public int UpvoteCount { get; set; } = 0;
-        public int DownvoteCount { get; set; } = 0;
-      
     }
 }

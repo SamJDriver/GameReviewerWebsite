@@ -1,13 +1,17 @@
+using API.Middlewares;
+using API.Webframework;
 using BusinessLogic.Abstractions;
 using BusinessLogic.Infrastructure;
 using DataAccess.Contexts.DockerDb;
-using Microsoft.EntityFrameworkCore;
-using Repositories;
-using API.Middlewares;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
-using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.OpenApi.Models;
+using MySqlConnector;
+using Repositories;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.Graph;
+using Azure.Identity;
 
 namespace GameReview
 {
@@ -21,7 +25,7 @@ namespace GameReview
             IConfiguration? config = default;
 
             if (containerFlag)
-            {                
+            {
                 config = new ConfigurationBuilder()
                     .AddJsonFile(Environment.GetEnvironmentVariable("IGDB_CLIENT") ?? "", optional: false)
                     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
@@ -33,7 +37,7 @@ namespace GameReview
             else
             {
                 config = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
                     .AddUserSecrets("34a2eb48-f55e-4322-8205-5f51e2572770")
                     .AddJsonFile("appsettings.json", optional: true)
                     .Build();
@@ -42,25 +46,27 @@ namespace GameReview
             
 
             // Adds Microsoft Identity platform (Azure AD B2C) support to protect this Api
-            //AzureAdB2C is configured to use the react spa
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddMicrosoftIdentityWebApi(options =>
-                {
-                    config.Bind("AzureAdB2C", options);
-                    options.TokenValidationParameters.NameClaimType = "name";
-                },
-                options => { config.Bind("AzureAdB2C", options);
-            });
-
-            // For local debugging with swagger:
+            // AzureAdB2C is configured to use the react spa
             // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //         .AddMicrosoftIdentityWebApi(options =>
             //     {
-            //         config.Bind("AzureAd", options);
+            //         config.Bind("AzureAdB2C", options);
             //         options.TokenValidationParameters.NameClaimType = "name";
             //     },
-            //     options => { config.Bind("AzureAd", options);
+            //     options => { config.Bind("AzureAdB2C", options);
             // });
+
+            //OR
+
+            // For local debugging with swagger:
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddMicrosoftIdentityWebApi(options =>
+                {
+                    config.Bind("AzureAd", options);
+                    options.TokenValidationParameters.NameClaimType = "name";
+                },
+                options => { config.Bind("AzureAd", options);
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -79,7 +85,8 @@ namespace GameReview
                 });
 
                 var scopes = new Dictionary<string, string>();
-                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-read", "Read access to API");
+                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-user", "User access to API");
+                scopes.Add("https://dominiongamingcompany.onmicrosoft.com/919d8d18-f64a-4a6a-8ee4-91b599eac5e2/gamereview-admin", "Admin access to DGC");
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
@@ -118,25 +125,52 @@ namespace GameReview
             });
             var connectionString = config.GetConnectionString("DockerDb");
 
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString)
+            {
+                GuidFormat = MySqlGuidFormat.Char32
+            };
+
             builder.Services.AddDbContext<DockerDbContext>(
                 options => options
                 .UseLazyLoadingProxies()
-                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)
+                .UseMySql(connectionStringBuilder.ConnectionString, ServerVersion.AutoDetect(connectionStringBuilder.ConnectionString)
            ).EnableDetailedErrors());
 
-            builder.Services.AddHttpClient()
-            ;
+            builder.Services.AddHttpClient();
+            
             //Services
-            builder.Services.AddScoped<IIgdbApiService, IgdbApiService>(c => new IgdbApiService(c.GetRequiredService<GenericRepository<DockerDbContext>>(), config));
+            builder.Services.AddScoped<IIgdbApiService, IgdbApiService>();
             builder.Services.AddScoped<IPlayRecordService, PlayRecordService>();
             builder.Services.AddScoped<IPlayRecordCommentService, PlayRecordCommentService>();
             builder.Services.AddScoped<IGameService, GameService>();
-            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICompanyService, CompanyService>();
-            builder.Services.AddScoped(typeof(GenericRepository<>));
+            builder.Services.AddScoped<ILookupService, LookupService>();
+            builder.Services.AddScoped<IUserRelationshipService, UserRelationshipService>();
 
+            //Repositories
+            builder.Services.AddTransient(typeof(UnitOfWork));
+            builder.Services.AddTransient(typeof(GenericDataAccess<>));
+            builder.Services.AddTransient(typeof(GenericRepository<>));
+            builder.Services.AddTransient(typeof(GameRepository));
+
+            //Middlewares
             builder.Services.AddTransient<DevelopmentExceptionHandlingMiddleware>();
             builder.Services.AddTransient<ProductionExceptionHandlingMiddleware>();
+
+            builder.Services.AddMapster();
+
+            //Microsoft Graph            
+            var options = new ClientSecretCredentialOptions
+            {
+                AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
+            };
+
+            var clientSecretCredential = new ClientSecretCredential(
+                config["AzureAd:TenantId"], config["AzureAd:ClientId"], config["AzureAd:ClientSecret"], options);
+
+            builder.Services.AddSingleton<GraphServiceClient>(sp => {
+                return new GraphServiceClient(clientSecretCredential, new[] { "https://graph.microsoft.com/.default" });
+            });
 
             var app = builder.Build();
 
@@ -153,7 +187,7 @@ namespace GameReview
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseSwagger();
 
             if (containerFlag)
@@ -182,7 +216,6 @@ namespace GameReview
 
             app.UseCors(
                 options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
-                
             );
 
 

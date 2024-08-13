@@ -1,19 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DataAccess.Models.DockerDb;
 
 namespace Components.Models
 {
-    public class PlayRecordDto
+    public class CreatePlayRecordDto : BaseDto<CreatePlayRecordDto, PlayRecords>
     {
-        public int? Id { get; set; }
-        public int UserId { get; set; }
         public int GameId { get; set; }
         public bool? CompletedFlag { get; set; }
         public int? HoursPlayed { get; set; }
         public int? Rating { get; set; }
-        [StringLength(255)]
+        [StringLength(255, ErrorMessage = "The {0} value cannot exceed {1} characters.")]
         public string? PlayDescription { get; set; }
-        [StringLength(25)]
-        public string CreatedBy { get; set; } = default!;
-        public DateTime CreatedDate { get; set; } = default;
+
+        //TODO:
+        //PrivateFlag
+        //Start/EndDate
     }
 }

@@ -15,31 +15,43 @@ namespace BusinessLogic.Infrastructure
     //https://api-docs.igdb.com/?java#game-video
     public class IgdbApiService : IIgdbApiService
     {
-        GenericRepository<DockerDbContext> _genericRepository;
+        // GenericRepository<DockerDbContext> _genericRepository;
         private readonly IConfiguration _config;
         private JObject? _accessToken = null;
+        private List<int[]> _childDlcGameIds;
+        private List<int[]> _childExpansionGameIds;
+        private UnitOfWork _unitOfWork;
 
-        public IgdbApiService(GenericRepository<DockerDbContext> genericRepository, IConfiguration config)
+        public IgdbApiService(IConfiguration config, UnitOfWork unitOfWork)
         {
-            _genericRepository = genericRepository;
+            // _genericRepository = genericRepository;
+            _unitOfWork = unitOfWork;
             _config = config;
+            _childDlcGameIds = new List<int[]>();
+            _childExpansionGameIds = new List<int[]>();
         }
 
         public async Task QueryApi()
         {
-
             await insertGenres();
             await insertCompanies();
-            await insertGames();
-            
             await insertPlatforms();
-
-
+            await insertGames();
             await insertGamePlatformLinks();
             await insertGameCompaniesLinks();
-
             await insertArtworks();
             await insertCovers();
+        
+            DockerDbContext.SetCreatedByUserId("System");
+            _unitOfWork.Save();
+            Thread.Sleep(1000);
+
+            await insertDlcs();
+            await insertExpansions();
+            
+            DockerDbContext.SetCreatedByUserId("System");
+            _unitOfWork.Save();
+
         }
 
         public async Task<string> GetOneGame()
@@ -80,10 +92,10 @@ namespace BusinessLogic.Infrastructure
                     Code = code,
                     Description = genre["slug"].ToString()
                 };
-                genres.Add(genresLookup);
+                _unitOfWork.GenresLookupRepository.Insert(genresLookup);
+                Debug.WriteLine("Wrote Genres");
             }
 
-            _genericRepository.InsertRecordList(genres);
         }
         private async Task insertCompanies()
         {
@@ -126,9 +138,9 @@ namespace BusinessLogic.Infrastructure
                     // ModifiedBy = null,
                     // ModifiedDate = null
                 };
-                companies.Add(companyEntity);
+                _unitOfWork.CompaniesRepository.Insert(companyEntity);
+                Debug.WriteLine("Wrote Companies");
             }
-            _genericRepository.InsertRecordList(companies);
         }
         private async Task insertGames()
         {
@@ -158,6 +170,24 @@ namespace BusinessLogic.Infrastructure
             foreach (var gameJToken in totalList)
             {
                 var genreIds = gameJToken["genres"] != null ? ((JArray)gameJToken["genres"]).ToObject<int[]>() : null;
+                var dlcGameIds = gameJToken["dlcs"] != null ? ((JArray)gameJToken["dlcs"]).ToObject<int[]>() : null;
+                var expansionGameIds = gameJToken["expansions"] != null ? ((JArray)gameJToken["expansions"]).ToObject<int[]>() : null;
+
+                if (dlcGameIds != null)
+                {
+                    foreach (int dlcGameId in dlcGameIds)
+                    {
+                        _childDlcGameIds.Add([gameJToken["id"]?.ToObject<int>() ?? 0, dlcGameId]);
+                    }
+                }
+
+                if (expansionGameIds != null)
+                {
+                    foreach (int expansionGameId in expansionGameIds)
+                    {
+                        _childExpansionGameIds.Add([gameJToken["id"]?.ToObject<int>() ?? 0, expansionGameId]);
+                    }
+                }
 
                 Games gameEntity = new Games()
                 {
@@ -165,12 +195,13 @@ namespace BusinessLogic.Infrastructure
                     Title = gameJToken["name"].ToString() ?? "",
                     ReleaseDate = UnixTimeStampToDateTime(gameJToken["first_release_date"]?.ToObject<long>()), //get enum value here
                     Description = gameJToken["summary"]?.ToString() ?? "PLACEHOLDER",
+                    ParentGameId = gameJToken["parent_game"]?.ToObject<int>() ?? null
                 };
 
-                List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
                 //If the game has associated genres, add the links to the game
                 if (genreIds != null)
                 {
+                    List<GamesGenresLookupLink> genreLinks = new List<GamesGenresLookupLink>();
                     foreach (var genreId in genreIds)
                     {
                         GamesGenresLookupLink linkEntity = new GamesGenresLookupLink()
@@ -186,8 +217,8 @@ namespace BusinessLogic.Infrastructure
             }
 
             games = games.DistinctBy(g => g.Id).ToList();
-            _genericRepository.InsertRecordList(games);
-
+            _unitOfWork.GamesRepository.InsertList(games);
+            Debug.WriteLine("Wrote Games");
         }
 
         private async Task insertCovers()
@@ -210,7 +241,7 @@ namespace BusinessLogic.Infrastructure
             while (coverCountOnPage == limit);
 
             var count = totalList.Count();
-            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+            var gameIdInDbList = _unitOfWork.GamesRepository.Get().Select(g => g.Id).ToList();
 
             List<Cover> covers = new List<Cover>();
             var now = DateTime.Now;
@@ -235,7 +266,9 @@ namespace BusinessLogic.Infrastructure
                 }
             }
             covers = covers.DistinctBy(a => a.Id).ToList();
-            _genericRepository.InsertRecordList(covers);
+            _unitOfWork.CoverRepository.InsertList(covers);
+            Debug.WriteLine("Wrote Covers");
+
         }
 
         private async Task insertArtworks()
@@ -258,7 +291,7 @@ namespace BusinessLogic.Infrastructure
             while (artworkCountOnPage == limit);
 
             var count = totalList.Count();
-            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+            var gameIdInDbList = _unitOfWork.GamesRepository.Get().Select(g => g.Id).ToList();
 
             List<Artwork> artworks = new List<Artwork>();
             var now = DateTime.Now;
@@ -283,7 +316,8 @@ namespace BusinessLogic.Infrastructure
                 }
             }
             artworks = artworks.DistinctBy(a => a.Id).ToList();
-            _genericRepository.InsertRecordList(artworks);
+            _unitOfWork.ArtworkRepository.InsertList(artworks);
+            Debug.WriteLine("Wrote Artworks");
         }
         private async Task insertPlatforms()
         {
@@ -301,17 +335,65 @@ namespace BusinessLogic.Infrastructure
                     ReleaseDate = default,
                     ImageFilePath = "PLACEHOLDER"
                 };
-                platforms.Add(platformEntity);
-            }
-            try
-            {
-                _genericRepository.InsertRecordList(platforms);
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
+
+                _unitOfWork.PlatformsRepository.Insert(platformEntity);
+                Debug.WriteLine("Wrote Platforms");
             }
         }
+
+        private async Task insertDlcs()
+        {
+            if (_childDlcGameIds != null)
+            {
+                var gameIds = _unitOfWork.GamesRepository.Get().Select(g => g.Id).ToList();
+                var dlcLookupId = _unitOfWork.GameSelfLinkTypeLookupRepository.Get(g => g.Code == "DLC").SingleOrDefault().Id;
+
+                List<GameSelfLink> gameSelfLinks = new List<GameSelfLink>();
+                foreach (int[] dlcGamePair in _childDlcGameIds)
+                {
+                    if (gameIds.Contains(dlcGamePair[0]) && gameIds.Contains(dlcGamePair[1]))
+                    {
+
+                        GameSelfLink linkEntity = new GameSelfLink()
+                        {
+                            ParentGameId = dlcGamePair[0],
+                            ChildGameId = dlcGamePair[1],
+                            GameSelfLinkTypeLookupId = dlcLookupId
+                        };
+                        _unitOfWork.GameSelfLinkRepository.Insert(linkEntity);
+                        Debug.WriteLine("Wrote DLCs");
+                    }
+                }
+            }
+        }
+
+
+        private async Task insertExpansions()
+        {
+            if (_childExpansionGameIds != null)
+            {
+                var gameIds = _unitOfWork.GamesRepository.Get().Select(g => g.Id).ToList();
+                var expansionLookupId = _unitOfWork.GameSelfLinkTypeLookupRepository.Get(g => g.Code == "EXPANS").SingleOrDefault().Id;
+
+                List<GameSelfLink> gameSelfLinks = new List<GameSelfLink>();
+                foreach (int[] expansionGamePair in _childExpansionGameIds)
+                {
+                    if (gameIds.Contains(expansionGamePair[0]) && gameIds.Contains(expansionGamePair[1]))
+                    {
+
+                        GameSelfLink linkEntity = new GameSelfLink()
+                        {
+                            ParentGameId = expansionGamePair[0],
+                            ChildGameId = expansionGamePair[1],
+                            GameSelfLinkTypeLookupId = expansionLookupId
+                        };
+                        _unitOfWork.GameSelfLinkRepository.Insert(linkEntity);
+                        Debug.WriteLine("Wrote Expansions");
+                    }
+                }
+            }
+        }
+
         private async Task insertGamePlatformLinks()
         {
             var offset = 0;
@@ -336,8 +418,9 @@ namespace BusinessLogic.Infrastructure
 
             var now = DateTime.Now;
             List<GamesPlatformsLink> gamesPlatformsLinks = new List<GamesPlatformsLink>();
-            var platformIdInDbList = _genericRepository.GetAll<Platforms>().Select(p => p.Id).ToList();
-            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+
+            var platformIdInDbList = _unitOfWork.PlatformsRepository.Get().Select(g => g.Id).ToList();
+            var gameIdInDbList = _unitOfWork.GamesRepository.Get().Select(g => g.Id).ToList();
 
             foreach (var gameJToken in totalList)
             {
@@ -357,21 +440,12 @@ namespace BusinessLogic.Infrastructure
                                 PlatformId = platformId,
                                 ReleaseDate = null
                             };
-                            gamesPlatformsLinks.Add(linkEntity);
+                            _unitOfWork.GamesPlatformsLinkRepository.Insert(linkEntity);
                         }
 
                     }
+                    Debug.WriteLine("Wrote Games Platforms Link");
                 }
-            }
-
-            try
-            {
-                _genericRepository.InsertRecordList(gamesPlatformsLinks);
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
-
             }
         }
         private async Task insertGameCompaniesLinks()
@@ -400,8 +474,8 @@ namespace BusinessLogic.Infrastructure
             var now = DateTime.Now;
             List<GamesCompaniesLink> gamesCompaniesLinks = new List<GamesCompaniesLink>();
 
-            var companiesIdInDbList = _genericRepository.GetAll<Companies>().Select(c => c.Id).ToList();
-            var gameIdInDbList = _genericRepository.GetAll<Games>().Select(g => g.Id).ToList();
+            var companiesIdInDbList = _unitOfWork.CompaniesRepository.Get().Select(g => g.Id).ToList();
+            var gameIdInDbList = _unitOfWork.GamesRepository.Get().Select(g => g.Id).ToList();
 
             foreach (var jToken in totalList)
             {
@@ -425,18 +499,10 @@ namespace BusinessLogic.Infrastructure
                         PortingFlag = portingFlag,
                         SupportingFlag = supportingFlag
                     };
-                    gamesCompaniesLinks.Add(linkEntity);
+                    _unitOfWork.GamesCompaniesLinkRepository.Insert(linkEntity);
                 }
             }
-            try
-            {
-                _genericRepository.InsertRecordList(gamesCompaniesLinks);
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
-
-            }
+            Debug.WriteLine("Wrote Games Companies Links");
         }
 
         public static DateOnly UnixTimeStampToDateTime(long? unixTimeStamp)
@@ -459,7 +525,6 @@ namespace BusinessLogic.Infrastructure
             dateTime = DateTimeOffset.FromUnixTimeSeconds(unixTimeStamp.Value).UtcDateTime;
             return DateOnly.FromDateTime(dateTime);
         }
-
         private static readonly Regex sWhitespace = new Regex(@"\s+");
         public static string ReplaceWhitespace(string input, string replacement)
         {

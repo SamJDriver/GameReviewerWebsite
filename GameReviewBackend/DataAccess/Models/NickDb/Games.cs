@@ -30,25 +30,15 @@ public partial class Games
     [Column("description", TypeName = "mediumtext")]
     public string Description { get; set; } = null!;
 
+    [Column("parent_game_id", TypeName = "int(11)")]
+    public int? ParentGameId { get; set; }
+
     [Column("created_by")]
     [StringLength(25)]
     public string CreatedBy { get; set; } = null!;
 
     [Column("created_date", TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
-
-    [Column("modified_by")]
-    [StringLength(25)]
-    public string? ModifiedBy { get; set; }
-
-    [Column("modified_date", TypeName = "datetime")]
-    public DateTime? ModifiedDate { get; set; }
-
-    [Column("obsolete_flag")]
-    public bool ObsoleteFlag { get; set; }
-
-    [Column("obsolete_date", TypeName = "datetime")]
-    public DateTime? ObsoleteDate { get; set; }
 
     [InverseProperty("Game")]
     public virtual ICollection<GamesDevelopersLink> GamesDevelopersLink { get; set; } = new List<GamesDevelopersLink>();

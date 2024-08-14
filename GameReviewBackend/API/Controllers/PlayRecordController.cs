@@ -55,5 +55,14 @@ namespace GameReview.Controllers
             _playRecordService.UpdatePlayRecord(playRecordId, playRecord, User.GetObjectId());
             return Ok();
         }
+
+        [HttpDelete("{playRecordId}")]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public ActionResult DeletePlayRecord(int playRecordId)
+        {
+            _playRecordService.DeletePlayRecord(playRecordId, User.GetObjectId());
+            return Ok();
+        }
     }
 }

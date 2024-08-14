@@ -8,6 +8,7 @@ namespace BusinessLogic.Abstractions
         public Task<PlayRecord_GetById_Dto> GetPlayRecordById(int playRecordId);
         public void CreatePlayRecord(CreatePlayRecordDto playRecord, string? userId);
         public void UpdatePlayRecord(int playRecordId, UpdatePlayRecordDto playRecord, string? userId);
+        public void DeletePlayRecord(int playRecordId, string? userId);
 
     }
 }

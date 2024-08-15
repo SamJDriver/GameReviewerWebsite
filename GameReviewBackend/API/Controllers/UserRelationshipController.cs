@@ -22,11 +22,23 @@ namespace GameReview.Controllers
             _userRelationshipService = userRelationshipService;
         }
 
+        [Authorize]
+        [RequiredScope("gamereview-user")]
         [HttpPut]
         public async Task<IActionResult> AddUserRelationship([FromBody] UserRelationship_Create_Dto userRelationshipCreateDto)
         {
             var requestorUserId = User.GetObjectId();
             await _userRelationshipService.CreateUserRelationship(requestorUserId, userRelationshipCreateDto.ChildUserId, userRelationshipCreateDto.UserRelationshipTypeLookupId);
+            return Ok();
+        }
+
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        [HttpDelete("{userRelationshipId}")]
+        public IActionResult DeleteUserRelationship(int userRelationshipId)
+        {
+            var requestorUserId = User.GetObjectId();
+            _userRelationshipService.DeleteUserRelationship(userRelationshipId, requestorUserId);
             return Ok();
         }
     }

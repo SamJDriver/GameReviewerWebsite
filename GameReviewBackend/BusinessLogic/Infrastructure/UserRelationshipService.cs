@@ -101,5 +101,26 @@ namespace BusinessLogic.Infrastructure
             }
 
         }
+
+        public void DeleteUserRelationship(int userRelationshipId, string? userId)
+        {
+            if (userId == null)
+            {
+                throw new DgcException("Can't remove user, no user logged in.", DgcExceptionType.Unauthorized);
+            }
+
+            var existingUserRelationship = _genericRepository.GetById<UserRelationship>(userRelationshipId);
+            if (existingUserRelationship == null)
+            {
+                throw new DgcException("Relationship not found.", DgcExceptionType.ResourceNotFound);
+            }
+
+            if (existingUserRelationship.CreatedBy != userId)
+            {
+                throw new DgcException("Mismatched users.", DgcExceptionType.Forbidden);
+            }
+
+            _genericRepository.DeleteRecordById<UserRelationship>(userRelationshipId);
+        }
     }
 }

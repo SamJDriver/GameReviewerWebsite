@@ -265,7 +265,8 @@ namespace UnitTests
             int? playRecordId = default,
             string? commentText = default,
             string? createdBy = default,
-            DateTime? createdDate = default
+            DateTime? createdDate = default,
+            PlayRecords? playRecord = default
         )
         {
             PlayRecordComments review = new()
@@ -274,7 +275,8 @@ namespace UnitTests
                 PlayRecordId = playRecordId ?? _faker.Random.Number(1, 500000),
                 CommentText = commentText ?? _faker.Random.String(0, 65535),
                 CreatedBy = createdBy ?? _faker.Random.Guid().ToString(),
-                CreatedDate = createdDate ?? DateTime.Now
+                CreatedDate = createdDate ?? DateTime.Now,
+                PlayRecord = playRecord 
             };
             return review;
         }

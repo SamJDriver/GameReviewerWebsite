@@ -16,7 +16,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ListGroup from './components/ListGroup';
 import Alert from './components/Alert';
 import { callApi } from './utils/ApiCall';
-import { useData } from './utils/useData';
+import { useApi } from './utils/useApi';
 
 //test
 
@@ -75,44 +75,33 @@ const ProfileContent = () => {
     );
 };
 
-// export const useData = (url) => {
-//     const [state, setState] = useState();
-//   
-//     useEffect(() => {
-//       const dataFetch = async () => {
-//         const data = await (await fetch(url)).json();
-//   
-//         setState(data);
-//       };
-//   
-//       dataFetch();
-//     }, [url]);
-//
-//     return { data: state };
-//   };
 
 /**
  * If a user is authenticated the ProfileContent component above is rendered. Otherwise a message indicating a user is not authenticated is rendered.
  */
 const MainContent = () => {
-    const [friendGames, setFriendGames] = useData(BASE_URL, 'games/friend/0/10') 
-    const [popularGames, setPopularGames] = useData(BASE_URL, 'games/0/10')
-     
-    // DOCKER
-    // const { data } = useData('https://localhost:7272/api/game/0/10');
-    // if (!data) return 'loading';
+    // const [friendGames, setFriendGames] = useApi(BASE_URL, 'games/friend/0/10') 
+    const { data, loading, error } = useApi(BASE_URL + '/game/0/10')
+
+    if (loading){
+        return <div>Loading...</div>
+    }
+
+    if(error){
+        return(<div>error:&nbsp;{error.message} </div>)
+    }
 
     return (
         <div className="App">
             <AuthenticatedTemplate>
-                <ListGroup items={ popularGames } heading="Popular" />
-                <ListGroup items={ friendGames } heading="New Reviews From Friends" />
+                <ListGroup items={ data.data } heading="Popular" />
+                {/* <ListGroup items={ friendGames } heading="New Reviews From Friends" /> */}
                 <ProfileContent />
             </AuthenticatedTemplate>
 
             <UnauthenticatedTemplate>
                 <Alert>Please sign-in to see your profile information.</Alert>
-                <ListGroup items={ popularGames } heading="Popular" />
+                <ListGroup items={ data.data } heading="Popular" />
             </UnauthenticatedTemplate>
         </div>
     );

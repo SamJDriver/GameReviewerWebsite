@@ -23,7 +23,7 @@ namespace DataAccess.Models.DockerDb
         [Column("release_date")]
         public DateOnly? ReleaseDate { get; set; }
         [Column("created_by")]
-        [StringLength(36)]
+        [StringLength(60)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

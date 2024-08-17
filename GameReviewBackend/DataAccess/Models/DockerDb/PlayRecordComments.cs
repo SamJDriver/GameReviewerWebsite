@@ -26,7 +26,7 @@ namespace DataAccess.Models.DockerDb
         [Column("comment_text", TypeName = "mediumtext")]
         public string CommentText { get; set; } = null!;
         [Column("created_by")]
-        [StringLength(36)]
+        [StringLength(60)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

@@ -86,6 +86,11 @@ namespace BusinessLogic.Infrastructure
                     .ToListAsync())
                     .Adapt<Game_GetList_Dto[]>();
 
+            if (data.Length == 0)
+            {
+                return null;
+            }
+
             var requestBody = new GetByIdsPostRequestBody()
             { 
                 Ids = data.Select(d => d.ReviewerId).ToList<string>(),

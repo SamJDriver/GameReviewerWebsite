@@ -15,12 +15,12 @@ namespace DataAccess.Models.DockerDb
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
         [Column("child_user_id")]
-        [StringLength(60)]
+        [StringLength(36)]
         public string ChildUserId { get; set; } = null!;
         [Column("user_relationship_type_lookup_id", TypeName = "int(11)")]
         public int UserRelationshipTypeLookupId { get; set; }
         [Column("created_by")]
-        [StringLength(60)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

@@ -5,7 +5,7 @@ namespace Components.Models
 {
     public class UserRelationship_Create_Dto
     {
-        [StringLength(60)]
+        [StringLength(36)]
         public string ChildUserId { get; set; } = null!;
         public int UserRelationshipTypeLookupId { get; set; }
     }

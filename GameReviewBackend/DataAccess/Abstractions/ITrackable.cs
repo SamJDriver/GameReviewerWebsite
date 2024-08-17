@@ -6,7 +6,7 @@ namespace DataAccess.Abstractions
     {
         public int Id { get; set; }
 
-        [StringLength(60)]
+        [StringLength(36)]
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set;}
     }

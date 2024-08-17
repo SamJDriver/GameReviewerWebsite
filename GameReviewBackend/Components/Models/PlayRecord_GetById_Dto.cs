@@ -24,7 +24,7 @@ namespace Components.Models
         
         public string? PlayDescription { get; set; }
 
-        [StringLength(36)]
+        [StringLength(60)]
         public string CreatedBy { get; set; } = default!;
         
         public DateTime CreatedDate { get; set; } = default;

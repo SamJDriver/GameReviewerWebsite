@@ -21,7 +21,7 @@ namespace Components.Models
         [StringLength(255)]
         public string? ReviewerName { get; set; } = default!;
 
-        [StringLength(36)]
+        [StringLength(60)]
         public string ReviewerId { get; set; } = default!;
 
         public DateTime ReviewDate { get; set; }

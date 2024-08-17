@@ -8,7 +8,7 @@ namespace Components.Models
         public int PlayRecordId { get; set; }
         [StringLength(65535)]
         public string CommentText { get; set; } = null!;
-        [StringLength(36)]
+        [StringLength(60)]
         public string CreatedBy { get; set; } = default!;
         public DateTime CreatedDate { get; set; } = default;
 

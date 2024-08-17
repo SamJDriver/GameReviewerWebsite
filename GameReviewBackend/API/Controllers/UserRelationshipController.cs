@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using BusinessLogic.Abstractions;
 using Components.Models;
 using Microsoft.AspNetCore.Authorization;

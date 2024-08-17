@@ -9,7 +9,7 @@ namespace DataAccess.Contexts.DockerDb
         // This method is called by the runtime.
         // Use the following commands to perform the following:
         // release: dotnet ef migrations script --idempotent --context DockerDbContext
-        // create a migration: e.g. -> dotnet ef migrations add InitialCreate --context DockerDbContext
+        // create a migration: e.g. -> dotnet ef migrations add <your migration name> --context DockerDbContext
         // update your local database with migrations: dotnet ef database update --context DockerDbContext
         // update your local database with a generated script: dotnet ef migrations script --idempotent --context DockerDbContext
 

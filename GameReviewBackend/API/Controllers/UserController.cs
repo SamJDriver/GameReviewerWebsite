@@ -1,15 +1,12 @@
-using BusinessLogic.Abstractions;
-using Components;
 using Components.Exceptions;
 using Components.Models;
-using GameReview.Models;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.Graph;
-using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
+using Microsoft.AspNet.Identity;
+using Microsoft.Identity.Web;
 
 namespace GameReview.Controllers
 {
@@ -32,7 +29,6 @@ namespace GameReview.Controllers
         {
 
             var userId = User.GetObjectId();
-
             var result = await _graphServiceClient.Users[userId].GetAsync((requestConfiguration) =>
             {
                 requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
@@ -51,7 +47,6 @@ namespace GameReview.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-
             var result = await _graphServiceClient.Users.GetAsync((requestConfiguration) =>
             {
                 requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;

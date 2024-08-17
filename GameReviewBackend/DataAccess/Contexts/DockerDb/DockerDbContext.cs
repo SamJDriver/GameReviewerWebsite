@@ -85,7 +85,7 @@ public partial class DockerDbContext : DbContext, IDockerDbContext
                 Name = "DLC",
                 Code = "DLC",
                 Description = "Downloadable Content",
-                CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                CreatedBy = "System",
                 CreatedDate = DateTime.Now
             },
             new GameSelfLinkTypeLookup
@@ -94,7 +94,7 @@ public partial class DockerDbContext : DbContext, IDockerDbContext
                 Name = "Expansion",
                 Code = "EXPANS",
                 Description = "Expansion",
-                CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                CreatedBy = "System",
                 CreatedDate = DateTime.Now
             }
           );
@@ -107,7 +107,7 @@ public partial class DockerDbContext : DbContext, IDockerDbContext
                 Name = "Friend",
                 Code = "FRIEND",
                 Description = "One directional friend link",
-                CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                CreatedBy = "System",
                 CreatedDate = DateTime.Now
             },
             new GameSelfLinkTypeLookup
@@ -116,7 +116,7 @@ public partial class DockerDbContext : DbContext, IDockerDbContext
                 Name = "Ignore",
                 Code = "IGNORE",
                 Description = "One directional ignore.",
-                CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
+                CreatedBy = "System",
                 CreatedDate = DateTime.Now
             }
           );

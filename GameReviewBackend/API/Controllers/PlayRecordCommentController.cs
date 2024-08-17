@@ -2,9 +2,8 @@ using BusinessLogic.Abstractions;
 using Components.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
-
+using Microsoft.Identity.Web;
 
 namespace GameReview.Controllers
 {

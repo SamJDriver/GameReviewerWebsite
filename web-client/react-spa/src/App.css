@@ -78,6 +78,10 @@
 .gameListItem {
   margin: 5px;
   border-radius: 5px;
+  display: flex;
+  align-items: flex-start;
+  height: 323px;
+  width: 194px;
 }
 
 .gameCover {

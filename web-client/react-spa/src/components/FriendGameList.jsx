@@ -9,12 +9,10 @@ function FriendGameList({ heading }) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [data, setData] = useState(null);
   const { token } = useToken(null);
-  console.log("got here");
 
   useEffect(() => {
     if (token)
       {
-      console.log('in friends', token);
         const headers = { 'Authorization': 'Bearer ' + token };
         fetch(BASE_URL + '/game/friend/0/10', { headers })
             .then(response => response.json())
@@ -33,9 +31,8 @@ function FriendGameList({ heading }) {
       {items.length === 0 && <p>No items found.</p>}
 
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
-
         {items.map((item, index) => (
-          <li key={item.id} className={selectedIndex === index ? 'gameListItem active flex-fill' : 'gameListItem flex-fill'} onClick={() => { setSelectedIndex(index); }}>
+          <li key={item.id} className={'gameListItem'} onClick={() => { setSelectedIndex(index); }}>
             <div>
                    <img 
                    className='gameCover'

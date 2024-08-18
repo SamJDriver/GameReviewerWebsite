@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from "react-router-dom";
-import Axios, { AxiosInstance, AxiosResponse } from "axios"; // AxiosRequestConfig
-import { EventType } from "@azure/msal-browser";
 
 import { PageLayout } from './components/PageLayout';
-import { loginRequest, msalConfig, b2cPolicies } from './authConfig';
+import { loginRequest } from './authConfig';
 import { callMsGraph } from './graph';
 import { ProfileData } from './components/ProfileData';
 
@@ -17,6 +14,7 @@ import ListGroup from './components/ListGroup';
 import Alert from './components/Alert';
 import { callApi } from './utils/ApiCall';
 import { useApi } from './utils/useApi';
+import FriendGameList from './components/FriendGameList';
 
 //test
 
@@ -81,7 +79,7 @@ const ProfileContent = () => {
  */
 const MainContent = () => {
     // const [friendGames, setFriendGames] = useApi(BASE_URL, 'games/friend/0/10') 
-    const { data, loading, error } = useApi(BASE_URL + '/game/0/10')
+    const { data, loading, error } = useApi(BASE_URL + '/game/0/10') 
 
     if (loading){
         return <div>Loading...</div>
@@ -96,6 +94,7 @@ const MainContent = () => {
             <AuthenticatedTemplate>
                 <ListGroup items={ data.data } heading="Popular" />
                 {/* <ListGroup items={ friendGames } heading="New Reviews From Friends" /> */}
+                <FriendGameList heading="New Reviews From Friends" />
                 <ProfileContent />
             </AuthenticatedTemplate>
 

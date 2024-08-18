@@ -9,7 +9,6 @@ export function useApi(url){
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setdata(data);
         setloading(false);
         seterror(data.error);

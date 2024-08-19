@@ -18,6 +18,5 @@ export function useToken() {
           setToken(response.accessToken);
       });
   }, []);
-  console.log('returning token', token);
   return { token: token };
 }

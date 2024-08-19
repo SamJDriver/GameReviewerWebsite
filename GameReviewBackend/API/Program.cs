@@ -67,7 +67,7 @@ namespace GameReview
             //     },
             //     options => { config.Bind("AzureAd", options);
             // });
-            //
+            
             
             // Add services to the container.
             builder.Services.AddControllersWithViews();

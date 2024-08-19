@@ -7,7 +7,7 @@ function ListGroup({ items, heading, onSelectItem }) {
 
   return (
     <>
-      <div className="list-group-heading">{heading}</div>
+      <div className="list-group-heading gameListHeader">{heading}</div>
       {items.length === 0 && <p>No items found.</p>}
 
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
@@ -22,7 +22,7 @@ function ListGroup({ items, heading, onSelectItem }) {
                    height='100%'
                    width='100%'
                    />
-                  <p style={{ height: "50%", width: "100%", textAlign: "center" }}>{item.title}</p>
+                  <span className="gameListMainText"> {item.title} </span>
             </div>
           </li>
         ))}

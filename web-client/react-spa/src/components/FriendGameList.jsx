@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../utils/useApi';
 import { useToken } from '../utils/useToken';
+import { format } from 'date-fns'
 
 const BASE_URL = 'https://localhost:7272/api';
 
@@ -25,14 +26,15 @@ function FriendGameList({ heading }) {
   }
 
   const items = data.data;
+  console.log(items);
   return (
     <>
-      <div className="list-group-heading">{heading}</div>
+      <div className="list-group-heading gameListHeader">{heading}</div>
       {items.length === 0 && <p>No items found.</p>}
 
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
         {items.map((item, index) => (
-          <li key={item.id} className={'gameListItem'} onClick={() => { setSelectedIndex(index); }}>
+          <li key={item.playRecordId} className={'gameListItem'} onClick={() => { setSelectedIndex(index); }}>
             <div>
                    <img 
                    className='gameCover'
@@ -41,7 +43,9 @@ function FriendGameList({ heading }) {
                    height='100%'
                    width='100%'
                    />
-                  <p style={{ height: "50%", width: "100%", textAlign: "center" }}>{item.title}</p>
+                  <span className="gameListMainText"> {item.title} </span>
+                  <br/>
+                  <span className="gameListSupplementalText"> {item.reviewerName} {item.rating}% <br/> {format(item.reviewDate, 'yyyy-MM-dd')} </span>
             </div>
           </li>
         ))}

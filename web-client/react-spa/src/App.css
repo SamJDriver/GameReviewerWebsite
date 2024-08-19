@@ -84,6 +84,27 @@
   width: 194px;
 }
 
+.gameListMainText {
+  height: "50%";
+  width: "100%";
+  font-weight: bold;
+  font-size: medium;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.gameListSupplementalText {
+  color:#8181817e;
+  font-size: small;
+}
+
+.gameListHeader {
+  white-space: nowrap;
+}
+
 .gameCover {
-  border-radius: 5px;
+  border-radius: 25px;
+}
+
+br {
+  margin-top: 1px 0;
 }

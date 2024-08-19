@@ -6,11 +6,11 @@ namespace DataAccess.Contexts.DockerDb
     public partial class DockerDbContext : DbContext
     {
 
-        private static string _username { get; set; } = "System";
+        private static string _userId { get; set; }
 
-        public static void SetUsername(string username)
+        public static void SetCreatedByUserId(string userId)
         {
-            _username = username;
+            _userId = userId;
         }
         public override int SaveChanges()
         {
@@ -26,11 +26,38 @@ namespace DataAccess.Contexts.DockerDb
                 if (entity is ITrackable)
                 {
                     var track = entity as ITrackable;
-                    track.CreatedBy = _username;
-                    track.CreatedDate = DateTime.Now;
+                    track.CreatedBy = _userId;
+                    track.CreatedDate = DateTime.UtcNow;
                 }
             }
             return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+
+            await Task.Run(() =>
+            {
+                ChangeTracker.DetectChanges();
+
+                var added = this.ChangeTracker.Entries()
+                    .Where(e => e.State == EntityState.Added)
+                    .Select(e => e.Entity)
+                    .ToArray();
+
+                foreach (var entity in added)
+                {
+                    if (entity is ITrackable)
+                    {
+                        var track = entity as ITrackable;
+                        track.CreatedBy = _userId;
+                        track.CreatedDate = DateTime.UtcNow;
+                    }
+                }
+            });
+
+            return await base.SaveChangesAsync();
+
         }
     }
 }

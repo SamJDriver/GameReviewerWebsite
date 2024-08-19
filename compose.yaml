@@ -1,0 +1,98 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services: 
+  game-api-server:
+    build:
+      target: final
+      context: GameReviewBackend
+      dockerfile: Dockerfile
+    ports:
+      - 80:8080
+    networks:
+      - game-review-network
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      MYSQL_SERVICE_NAME: db
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: /run/secrets/db_password
+      MYSQL_PORT: 3306
+      AZURE_AD: /run/secrets/azure_ad
+      RUNNING_IN_CONTAINER_FLAG: true
+      DB_CONNECTION_STRING: /run/secrets/db_connection_string
+      IGDB_CLIENT: /run/secrets/igdb
+    secrets:
+       - db_password
+       - azure_ad
+       - db_connection_string
+       - igdb
+  db: #docker exec -it mariadb mariadb -u user -p
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mariadbvolume:/var/lib/mysql
+    expose:
+      - 3306
+    networks:
+      - game-review-network
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      start_period: 1m
+      start_interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 3
+    secrets:
+       - db_root_password
+       - db_password
+  react-web-app:
+    build:
+      target: Development
+      context: web-client/react-spa
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+    networks:
+      - game-review-network
+
+volumes:
+  mariadbvolume:
+
+networks:
+  game-review-network:
+  
+secrets:
+  db_password:
+    file: GameReviewBackend/secrets/db_password.txt
+  db_root_password:
+    file: GameReviewBackend/secrets/db_root_password.txt
+
+  # use with swagger
+  azure_ad: 
+    file: GameReviewBackend/secrets/azure_ad.json
+
+  # use with react client
+  # azure_ad:
+  #   file: GameReviewBackend/secrets/azure_ad_b2c.json
+
+  db_connection_string:
+    file: GameReviewBackend/secrets/db_connection_string.json
+  igdb:
+    file: GameReviewBackend/secrets/igdb.json
+

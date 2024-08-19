@@ -8,9 +8,8 @@ using DataAccess.Abstractions;
 namespace DataAccess.Models.DockerDb
 {
     [Table("play_records")]
+    [Index(nameof(CreatedBy), Name = "created_by")]
     [Index(nameof(GameId), Name = "game_id")]
-    [Index(nameof(Id), Name = "id", IsUnique = true)]
-    [Index(nameof(UserId), Name = "user_id")]
     public partial class PlayRecords : ITrackable
     {
         public PlayRecords()
@@ -21,8 +20,6 @@ namespace DataAccess.Models.DockerDb
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
-        [Column("user_id", TypeName = "int(11)")]
-        public int UserId { get; set; }
         [Column("game_id", TypeName = "int(11)")]
         public int GameId { get; set; }
         [Column("completed_flag")]
@@ -34,7 +31,7 @@ namespace DataAccess.Models.DockerDb
         [Column("play_description", TypeName = "mediumtext")]
         public string? PlayDescription { get; set; }
         [Column("created_by")]
-        [StringLength(25)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
@@ -42,9 +39,6 @@ namespace DataAccess.Models.DockerDb
         [ForeignKey(nameof(GameId))]
         [InverseProperty(nameof(Games.PlayRecords))]
         public virtual Games Game { get; set; } = null!;
-        [ForeignKey(nameof(UserId))]
-        [InverseProperty(nameof(Users.PlayRecords))]
-        public virtual Users User { get; set; } = null!;
         [InverseProperty("PlayRecord")]
         public virtual ICollection<PlayRecordComments> PlayRecordComments { get; set; }
     }

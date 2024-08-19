@@ -1,8 +1,9 @@
-using API.Models;
 using BusinessLogic.Abstractions;
 using Components.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.Resource;
 
 namespace GameReview.Controllers
 {
@@ -10,34 +11,27 @@ namespace GameReview.Controllers
     [Route("api/game")]
     public class GameController : Controller
     {
-        private IGameService _gameService;
-        private IIgdbApiService _igdbApiService;
+        private readonly IGameService _gameService;
+        private readonly ILookupService _lookupService;
 
-        public GameController(IGameService gameService, IIgdbApiService igdbApiService)
+        public GameController(IGameService gameService, ILookupService lookupService)
         {
             _gameService = gameService;
-            _igdbApiService = igdbApiService;
+            _lookupService = lookupService;
         }
 
         //Probably admin only
         [HttpPost]
-        public IActionResult CreateGame([FromBody] CreateGameJson gameJson)
+        [Authorize]
+        [RequiredScope("gamereview-admin")]
+        public async Task<IActionResult> CreateGame([FromBody] GameDto gameJson)
         {
-            //TODO implement file blob
-            GameDto gameDto = new GameDto()
-            {
-                Title = gameJson.Title,
-                ReleaseDate = gameJson.ReleaseDate,
-                ImageFilePath = "PLACEHOLDER",
-                Description = gameJson.Description
-            };
-
-            int newId = _gameService.CreateGame(gameDto);
+            var userId = User.GetObjectId();
+            int newId = await _gameService.CreateGame(gameJson, userId);
             return Ok(newId);
         }
 
-
-        [HttpGet]
+        [HttpGet("{pageIndex}/{pageSize}")]
         public async Task<IActionResult> GetAllGames(int pageIndex, int pageSize)
         {
             var pagedGames = await _gameService.GetAllGames(pageIndex, pageSize);
@@ -49,6 +43,29 @@ namespace GameReview.Controllers
         {
             var game = _gameService.GetGameById(gameId);
             return Ok(game);
+        }
+
+        [HttpGet("friend/{pageIndex}/{pageSize}")]
+        [Authorize]
+        [RequiredScope("gamereview-user")]
+        public async Task<IActionResult> GetGamesPopularWithFriends(int pageIndex, int pageSize)
+        {
+            var pagedGames = await _gameService.GetGamesPopularWithFriends(pageIndex, pageSize, User.GetObjectId());
+            return Ok(pagedGames);
+        }
+
+        [HttpGet("search/{pageIndex}/{pageSize}")]
+        public async Task<IActionResult> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        {
+            var games = await _gameService.SearchGames(searchTerm, genreId, releaseYear, pageIndex, pageSize);
+            return Ok(games);
+        }
+
+        [HttpGet("genres")]
+        public IActionResult GetGenres()
+        {
+            var genres = _lookupService.GetGenreLookups();
+            return Ok(genres);
         }
     }
 }

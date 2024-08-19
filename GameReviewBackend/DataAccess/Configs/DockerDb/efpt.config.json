@@ -15,7 +15,23 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "artwork",
+         "ObjectType": 0
+      },
+      {
          "Name": "companies",
+         "ObjectType": 0
+      },
+      {
+         "Name": "cover",
+         "ObjectType": 0
+      },
+      {
+         "Name": "game_self_link",
+         "ObjectType": 0
+      },
+      {
+         "Name": "game_self_link_type_lookup",
          "ObjectType": 0
       },
       {
@@ -40,6 +56,10 @@
       },
       {
          "Name": "platforms",
+         "ObjectType": 0
+      },
+      {
+         "Name": "play_record_comment_vote",
          "ObjectType": 0
       },
       {

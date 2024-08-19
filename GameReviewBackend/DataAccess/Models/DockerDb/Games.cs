@@ -13,6 +13,10 @@ namespace DataAccess.Models.DockerDb
     {
         public Games()
         {
+            Artwork = new HashSet<Artwork>();
+            Cover = new HashSet<Cover>();
+            GameSelfLinkChildGame = new HashSet<GameSelfLink>();
+            GameSelfLinkParentGame = new HashSet<GameSelfLink>();
             GamesCompaniesLink = new HashSet<GamesCompaniesLink>();
             GamesGenresLookupLink = new HashSet<GamesGenresLookupLink>();
             GamesPlatformsLink = new HashSet<GamesPlatformsLink>();
@@ -27,17 +31,24 @@ namespace DataAccess.Models.DockerDb
         public string Title { get; set; } = null!;
         [Column("release_date")]
         public DateOnly ReleaseDate { get; set; }
-        [Column("image_file_path")]
-        [StringLength(255)]
-        public string ImageFilePath { get; set; } = null!;
         [Column("description", TypeName = "text")]
         public string Description { get; set; } = null!;
         [Column("created_by")]
-        [StringLength(25)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
+        [Column("parent_game_id", TypeName = "int(11)")]
+        public int? ParentGameId { get; set; }
 
+        [InverseProperty("Game")]
+        public virtual ICollection<Artwork> Artwork { get; set; }
+        [InverseProperty("Game")]
+        public virtual ICollection<Cover> Cover { get; set; }
+        [InverseProperty(nameof(GameSelfLink.ChildGame))]
+        public virtual ICollection<GameSelfLink> GameSelfLinkChildGame { get; set; }
+        [InverseProperty(nameof(GameSelfLink.ParentGame))]
+        public virtual ICollection<GameSelfLink> GameSelfLinkParentGame { get; set; }
         [InverseProperty("Games")]
         public virtual ICollection<GamesCompaniesLink> GamesCompaniesLink { get; set; }
         [InverseProperty("Game")]

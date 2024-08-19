@@ -35,19 +35,6 @@ public partial class UserRelationship
     [Column("created_date", TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column("modified_by")]
-    [StringLength(25)]
-    public string? ModifiedBy { get; set; }
-
-    [Column("modified_date", TypeName = "datetime")]
-    public DateTime? ModifiedDate { get; set; }
-
-    [Column("obsolete_flag")]
-    public bool ObsoleteFlag { get; set; }
-
-    [Column("obsolete_date", TypeName = "datetime")]
-    public DateTime? ObsoleteDate { get; set; }
-
     [ForeignKey("FriendId")]
     [InverseProperty("UserRelationshipFriend")]
     public virtual Users Friend { get; set; } = null!;

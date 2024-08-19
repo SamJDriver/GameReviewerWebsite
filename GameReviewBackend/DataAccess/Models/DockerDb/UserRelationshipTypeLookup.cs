@@ -29,12 +29,12 @@ namespace DataAccess.Models.DockerDb
         [StringLength(255)]
         public string Description { get; set; } = null!;
         [Column("created_by")]
-        [StringLength(25)]
+        [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
 
-        [InverseProperty("RelationshipTypeLookup")]
+        [InverseProperty("UserRelationshipTypeLookup")]
         public virtual ICollection<UserRelationship> UserRelationship { get; set; }
     }
 }

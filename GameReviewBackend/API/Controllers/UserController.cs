@@ -1,9 +1,12 @@
-using BusinessLogic.Abstractions;
+using Components.Exceptions;
 using Components.Models;
-using GameReview.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
+using Microsoft.Identity.Web.Resource;
+using Microsoft.AspNet.Identity;
+using Microsoft.Identity.Web;
 
 namespace GameReview.Controllers
 {
@@ -11,41 +14,51 @@ namespace GameReview.Controllers
     [Route("api/user")]
     public class UserController : Controller
     {
-        private readonly IUserService _userService;
+        private readonly GraphServiceClient _graphServiceClient;
 
-        public UserController(IUserService userService)
+        public UserController(GraphServiceClient graphServiceClient)
         {
-            _userService = userService;
+            _graphServiceClient = graphServiceClient;
         }
 
-        
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] UserJson userModel)
-        {
-            UserDto userDto = new UserDto() 
-            { 
-                Username = userModel.Username,
-                Email = userModel.Email,
-                Password = userModel.Password
-            };
 
-            var newId = _userService.CreateUser(userDto);
-            return Ok(newId) ;
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login()
-        {
-
-            return Ok();
-        }
-
-        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("me")]
         [Authorize]
-        [HttpGet]
-        public IActionResult GetUsers()
+        [RequiredScope("gamereview-user")]
+        public async Task<IActionResult> GetMe()
         {
-            return Ok();
+
+            var userId = User.GetObjectId();
+            var result = await _graphServiceClient.Users[userId].GetAsync((requestConfiguration) =>
+            {
+                requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
+            });
+
+            if (result is null)
+            {
+                throw new DgcException("Could not authenticate user.", DgcExceptionType.Unauthorized);
+            }
+
+            var response = result.Adapt<UserDto>();
+            return Ok(response);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var result = await _graphServiceClient.Users.GetAsync((requestConfiguration) =>
+            {
+                requestConfiguration.QueryParameters.Select = Components.Constants.MicrosoftGraph.GraphUserQueryParams;
+            });
+
+            if (result is null)
+            {
+                throw new DgcException("Could not authenticate user.", DgcExceptionType.Unauthorized);
+            }
+
+            var response = result.Value.Adapt<IEnumerable<UserDto>>();
+            return Ok(response);
         }
 
 

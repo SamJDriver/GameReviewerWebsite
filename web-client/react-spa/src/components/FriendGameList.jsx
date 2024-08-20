@@ -7,7 +7,7 @@ const BASE_URL = 'https://localhost:7272/api';
 
 function FriendGameList({ heading }) {
   // Hook
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [selectedPlayRecordId, setSelectedPlayRecordId] = useState(-1);
   const [data, setData] = useState(null);
   const { token } = useToken(null);
 
@@ -26,7 +26,6 @@ function FriendGameList({ heading }) {
   }
 
   const items = data.data;
-  console.log(items);
   return (
     <>
       <div className="list-group-heading gameListHeader">{heading}</div>
@@ -34,8 +33,9 @@ function FriendGameList({ heading }) {
 
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
         {items.map((item, index) => (
-          <li key={item.playRecordId} className={'gameListItem'} onClick={() => { setSelectedIndex(index); }}>
+          <li key={item.playRecordId} className={'gameListItem'} onClick={() => { setSelectedPlayRecordId(item.playRecordId) }}>
             <div>
+              
                    <img 
                    className='gameCover'
                    src={item.coverImageUrl}
@@ -43,9 +43,10 @@ function FriendGameList({ heading }) {
                    height='100%'
                    width='100%'
                    />
+
                   <span className="gameListMainText"> {item.title} </span>
                   <br/>
-                  <span className="gameListSupplementalText"> {item.reviewerName} {item.rating}% <br/> {format(item.reviewDate, 'yyyy-MM-dd')} </span>
+                  <p className="gameListSupplementalText"> {item.reviewerName} {item.rating}% <br/> {format(item.reviewDate, 'yyyy-MM-dd')} </p>
             </div>
           </li>
         ))}

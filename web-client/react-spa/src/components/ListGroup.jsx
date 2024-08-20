@@ -13,7 +13,7 @@ function ListGroup({ items, heading, onSelectItem }) {
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
 
         {items.map((item, index) => (
-          <li key={item.id} className={selectedIndex === index ? 'gameListItem active flex-fill' : 'gameListItem flex-fill'} onClick={() => { setSelectedIndex(index); }}>
+          <li key={item.id} className={'gameListItem'} onClick={() => { setSelectedIndex(index); }}>
             <div>
                    <img 
                    className='gameCover'

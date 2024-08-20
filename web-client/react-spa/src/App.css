@@ -4,6 +4,8 @@
 :root {
   --main-color-background: #2A3440;
   --main-font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  --main-list-item-width: 12.125em;
+  --main-list-item-height: 12.125em;
 }
 
 
@@ -78,23 +80,36 @@
 .gameListItem {
   margin: 5px;
   border-radius: 5px;
-  display: flex;
-  align-items: flex-start;
-  height: 323px;
-  width: 194px;
+  /* display: flex; */
+  /* align-items: flex-start; */
+  height: 20.25em;
+  width: 12.125em;
+
 }
 
 .gameListMainText {
-  height: "50%";
   width: "100%";
   font-weight: bold;
-  font-size: medium;
-  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family:'Gill Sans', 'Gill Sans MT';
+  max-width: 12.125em;
+  min-width: 12.125em;
 }
 
 .gameListSupplementalText {
   color:#8181817e;
-  font-size: small;
+  font-size: 0.8em;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: Arial, Helvetica, sans-serif;
+  min-width: 12.125em;
+  max-width: 12.125em;
 }
 
 .gameListHeader {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useApi } from '../utils/useApi';
 import { useToken } from '../utils/useToken';
 import { format } from 'date-fns'
+import { Link, useNavigate } from 'react-router-dom';
 
 const BASE_URL = 'https://localhost:7272/api';
 
@@ -9,7 +10,8 @@ function FriendGameList({ heading }) {
   // Hook
   const [selectedPlayRecordId, setSelectedPlayRecordId] = useState(-1);
   const [data, setData] = useState(null);
-  const { token } = useToken(null);
+  const { token } = useToken();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token)
@@ -35,18 +37,21 @@ function FriendGameList({ heading }) {
         {items.map((item, index) => (
           <li key={item.playRecordId} className={'gameListItem'} onClick={() => { setSelectedPlayRecordId(item.playRecordId) }}>
             <div>
-              
-                   <img 
+              <Link to='Game/{}'>
+                <img 
                    className='gameCover'
                    src={item.coverImageUrl}
                    alt={item.title}
                    height='100%'
                    width='100%'
-                   />
+                />
+              </Link>
 
-                  <span className="gameListMainText"> {item.title} </span>
-                  <br/>
-                  <p className="gameListSupplementalText"> {item.reviewerName} {item.rating}% <br/> {format(item.reviewDate, 'yyyy-MM-dd')} </p>
+
+                            
+              <span className="gameListMainText"> {item.title} </span>
+              <br/>
+              <p className="gameListSupplementalText"> {item.reviewerName} {item.rating}% <br/> {format(item.reviewDate, 'MM-dd-yyyy')} </p>
             </div>
           </li>
         ))}

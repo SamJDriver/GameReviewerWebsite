@@ -4,7 +4,7 @@ import { loginRequest } from '../authConfig';
 
 export function useToken() {
   const { instance, accounts } = useMsal();
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState<string | null>(null);
 
   const currentAccount = accounts[0];
 

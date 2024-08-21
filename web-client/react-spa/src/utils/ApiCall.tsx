@@ -1,7 +1,7 @@
 import { loginRequest, apiConfig } from "../authConfig";
 import { msalInstance } from "../index";
 
-export async function callApi(accessToken) {
+export async function callApi(accessToken: string | null) {
     if (!accessToken) {
         const account = msalInstance.getActiveAccount();
         if (!account) {

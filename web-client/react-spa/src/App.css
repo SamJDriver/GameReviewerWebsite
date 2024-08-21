@@ -84,7 +84,6 @@
   /* align-items: flex-start; */
   height: 20.25em;
   width: 12.125em;
-
 }
 
 .gameListMainText {
@@ -118,6 +117,7 @@
 
 .gameCover {
   border-radius: 25px;
+  cursor: pointer;
 }
 
 br {

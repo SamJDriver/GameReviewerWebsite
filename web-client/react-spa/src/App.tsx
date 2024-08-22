@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Routes  } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import Game from './pages/Game';
@@ -11,7 +11,7 @@ export default function App() {
               <BrowserRouter>
                 <Routes>                
                   <Route index element={<Home/>}></Route>
-                  <Route path='/Game' element={<Game/>}></Route>
+                  <Route path='/game/:gameId' Component={Game}></Route>
                 </Routes>
               </BrowserRouter>
        </div>

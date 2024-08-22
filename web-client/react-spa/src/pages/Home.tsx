@@ -27,7 +27,7 @@ const Home = () => {
               <AuthenticatedTemplate>
                   <ListGroup items={ data.data } heading="Popular" />
                   {/* <ListGroup items={ friendGames } heading="New Reviews From Friends" /> */}
-                  <FriendGameList heading="New Reviews From Friends" />
+                  <FriendGameList heading="Recently played by friends" />
                   <ProfileContent />
               </AuthenticatedTemplate>
 

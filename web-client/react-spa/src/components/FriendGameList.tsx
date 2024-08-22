@@ -34,10 +34,10 @@ function FriendGameList({ heading }) {
       {items.length === 0 && <p>No items found.</p>}
 
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
-        {items.map((item, index) => (
+        {items.map((item) => (
           <li key={item.playRecordId} className={'gameListItem'} onClick={() => { setSelectedPlayRecordId(item.playRecordId) }}>
             <div>
-              <Link to='Game/{}'>
+              <Link to={'game/' + item.gameId}>
                 <img 
                    className='gameCover'
                    src={item.coverImageUrl}

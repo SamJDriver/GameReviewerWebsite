@@ -112,7 +112,7 @@ namespace BusinessLogic.Infrastructure
             };
         }
 
-        public GameDto GetGameById(int gameId)
+        public Game_Get_ById_Dto GetGameById(int gameId)
         {
             var game = _genericRepository.GetById<Games>(gameId);
             if (game == null)
@@ -120,7 +120,7 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't retrieve game. Id not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            var gameDto = game.Adapt<GameDto>();
+            var gameDto = game.Adapt<Game_Get_ById_Dto>();
             return gameDto;
         }
 

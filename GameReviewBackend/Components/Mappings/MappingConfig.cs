@@ -9,6 +9,21 @@ namespace Components.Mappings
     {
         public void Register(TypeAdapterConfig config)
         {
+            config.NewConfig<Games, Game_Get_ById_Dto>()
+            .Map(dest => dest.ArtworkUrls, src => src.Artwork != null ? src.Artwork.Select(a => a.ImageUrl) : null)
+            .Map(dest => dest.CoverImageUrl, src => src.Cover.FirstOrDefault() != null ? src.Cover.First().ImageUrl : null)
+            .Map(dest => dest.Genres, src => src.GamesGenresLookupLink.Select(g => g.GenreLookupId))
+            .Map(dest => dest.Companies, src => src.GamesCompaniesLink);
+
+            config.NewConfig<GamesCompaniesLink, Game_Get_ById_CompanyLink_Dto>()
+            .Map(dest => dest.CompanyId, src => src.CompaniesId)
+            .Map(dest => dest.CompanyName, src => src.Companies.Name)
+            .Map(dest => dest.CompanyImageFilePath, src => src.Companies.ImageFilePath)
+            .Map(dest => dest.DeveloperFlag, src => src.DeveloperFlag)
+            .Map(dest => dest.PublisherFlag, src => src.PublisherFlag)
+            .Map(dest => dest.PortingFlag, src => src.PortingFlag)
+            .Map(dest => dest.SupportingFlag, src => src.SupportingFlag);
+
             config.NewConfig<PlayRecords, PlayRecord_GetSelf_Dto>()
             .Map(dest => dest.CoverImageUrl, src => src.Game.Cover.SingleOrDefault() != null ? src.Game.Cover.Single().ImageUrl : null);
 

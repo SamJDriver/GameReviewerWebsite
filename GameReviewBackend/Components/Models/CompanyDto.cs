@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Components.Exceptions;
 
 namespace Components.Models
 {
@@ -14,13 +13,10 @@ namespace Components.Models
     
         [StringLength(255)]
         public string? ImageFilePath { get; set; }
-    
-        public bool DeveloperFlag { get; set; }
-    
-        public bool PublisherFlag { get; set; }
         
         [StringLength(25)]
         public string CreatedBy { get; set; } = default!;
+
         public DateTime CreatedDate { get; set; } = default;
     }
 }

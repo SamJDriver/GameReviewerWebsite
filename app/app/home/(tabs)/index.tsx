@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, router, useNavigation } from "expo-router";
-import { Image, StyleSheet, Platform, TouchableOpacity, FlatList, StatusBar, View } from 'react-native';
+import { Image, StyleSheet, Platform, TouchableOpacity,  StatusBar, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { PaperProvider, TextInput, Button, Text, MD3DarkTheme, FAB } from 'react-native-paper';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -9,6 +10,7 @@ import { ThemedView } from '@/components/ThemedView';
 import TopAppBar from '@/components/TopAppBar';
 import { Drawer } from 'expo-router/drawer';
 
+// TODO: hard code some links to photos in here
 const NEW_FROM_FRIENDS = [
   {
     id: 1,
@@ -36,6 +38,26 @@ const NEW_FROM_FRIENDS = [
   },
   {
     id: 7,
+    title: 'Seventh Item',
+  },
+  
+  {
+    id: 8,
+    title: 'Seventh Item',
+  },
+  
+  {
+    id: 9,
+    title: 'Seventh Item',
+  },
+  
+  {
+    id: 10,
+    title: 'Seventh Item',
+  },
+  
+  {
+    id: 11,
     title: 'Seventh Item',
   },
 ];
@@ -107,6 +129,7 @@ type ItemProps = { title: string };
 const Item = ({ title }: ItemProps) => (
   <View style={styles.gameStyle}>
     <Text style={styles.title}>{title}</Text>
+    {/* TODO: game covers */}
   </View>
 );
 
@@ -117,29 +140,30 @@ export default function Dashboard() {
     <View style={{flex:1}}>
       <TopAppBar></TopAppBar>
       <View style={styles.container}>
-        <View style={{ flex: 4, backgroundColor: 'green' }}>
+        <View style={{ flex: 1, backgroundColor: 'green' }}>
           <Text>New from friends</Text>
           <FlatList
             data={NEW_FROM_FRIENDS}
-            renderItem={({ item }) => <Item title={item.title} />}
+            renderItem={({ item }) => (<View style={{flex:1}}><Item title={item.title} /></View>)} // the item seems to need to be wrapped in a view with flex:1 or else it will not scroll
             keyExtractor={item => item.id}
             horizontal={true}
+            
           />
         </View>
-        <View style={{ flex: 4, backgroundColor: 'blue' }}>
+        <View style={{ flex: 1, backgroundColor: 'blue' }}>
           <Text>Popular games</Text>
           <FlatList
             data={POPULAR_GAMES}
-            renderItem={({ item }) => <Item title={item.title} />}
+            renderItem={({ item }) => (<View style={{flex:1}}><Item title={item.title} /></View>)} // the item seems to need to be wrapped in a view with flex:1 or else it will not scroll
             keyExtractor={item => item.id}
             horizontal={true}
           />
         </View>
-        <View style={{ flex: 4, backgroundColor: 'orange' }}>
+        <View style={{ flex: 1, backgroundColor: 'orange' }}>
           <Text>Popular reviews</Text>
           <FlatList
             data={POPULAR_REVIEWS}
-            renderItem={({ item }) => <Item title={item.title} />}
+            renderItem={({ item }) => (<View style={{flex:1}}><Item title={item.title} /></View>)} // the item seems to need to be wrapped in a view with flex:1 or else it will not scroll
             keyExtractor={item => item.id}
             horizontal={true}
           />
@@ -193,7 +217,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#101316'
+    backgroundColor: '#101316',
   },
   gameStyle: {
     backgroundColor: '#f9c2ff',

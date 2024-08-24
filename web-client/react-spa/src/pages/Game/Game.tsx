@@ -21,8 +21,7 @@ const Game = () => {
 
   if (gameArtworkItems)
   {
-    const middleIndex: number = Math.floor(gameArtworkItems.length/2);
-    gameArtworkItems.splice(middleIndex, 0, {imageSourceUrl: game.coverImageUrl, focusedItemFlag: true });
+    gameArtworkItems.splice(0, 0, {imageSourceUrl: game.coverImageUrl, focusedItemFlag: true });
     gameArtworkItems.join();
   }
 

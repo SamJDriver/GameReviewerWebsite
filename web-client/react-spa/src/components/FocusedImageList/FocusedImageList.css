@@ -1,7 +1,7 @@
 .focused-image-list--container {
-  width: 80%;
-  background: rgba(25, 25, 25, 0.5);
-  overflow: hidden;
+  width: 40%;
+  overflow: scroll;
+  min-width: 50em;
 }
 
 .focused-image-list--selected-artwork {
@@ -14,6 +14,10 @@
   border: 5px solid #555;
 }
 
+li {
+  border-radius: 15px;
+}
+
 .focused-image-list--unselected-artwork {
   border-radius: 15px;
   width: 11em;
@@ -21,4 +25,17 @@
   max-width: 11em;
   max-height: 11em;
   padding: 0.5em;
+}
+
+.focused-image-list--main-artwork-container {
+  width: 40%;
+  margin-bottom: 1em;
+}
+
+.focused-image-list--main-artwork {
+  margin-left: auto;
+  margin-right: auto;
+  height: 30em;
+  width: auto;
+  display: block;
 }

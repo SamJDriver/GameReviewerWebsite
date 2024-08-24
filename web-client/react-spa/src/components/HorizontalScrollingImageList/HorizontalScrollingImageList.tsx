@@ -21,13 +21,7 @@ class HorizontalScrollingImageList extends React.Component<Props, State> {
   render(): React.ReactNode {
     return (
       <>
-        <div className="horizontal-scrolling-image-list--main-artwork-container">
-          <img
-            className="horizontal-scrolling-image-list--main-artwork"
-            src = {this.state.itemList.find( (i: IImageScrollItem) => i.focusedItemFlag === true )?.imageSourceUrl }
-          />
-        </div>
-
+        
         <FocusedImageList itemList={this.state.itemList}/>
         <button onClick={() => this.leftScrollClick(this.state.itemList)}>left</button>
         <button onClick={() => this.rightScrollClick(this.state.itemList)}>right</button>
@@ -43,7 +37,7 @@ class HorizontalScrollingImageList extends React.Component<Props, State> {
     items[focusedItemIndex].focusedItemFlag = false;
 
     // Shift focus to item to the left, meaning slide items to the right.
-    items.unshift.apply(items, items.splice(items.length-1, 1));
+    // items.unshift.apply(items, items.splice(items.length-1, 1));
 
     this.setState({itemList: items});
   }
@@ -56,7 +50,7 @@ class HorizontalScrollingImageList extends React.Component<Props, State> {
     items[focusedItemIndex].focusedItemFlag = false;
 
     // Shift focus to item to the right, meaning slide items to the left.
-    items.push.apply(items, items.splice(0, 1));
+    // items.push.apply(items, items.splice(0, 1));
 
     this.setState({itemList: items});
   }

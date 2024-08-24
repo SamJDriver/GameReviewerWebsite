@@ -4,6 +4,7 @@ import { BASE_URL } from "../../UrlProvider";
 import HorizontalScrollingImageList from "../../components/HorizontalScrollingImageList/HorizontalScrollingImageList";
 import IImageScrollItem from "../../interfaces/IImageScrollItem";
 import './Game.css';
+import { PageLayout } from "../../components/PageLayout";
 
 const Game = () => {
   const gameId = useParams().gameId;
@@ -28,8 +29,10 @@ const Game = () => {
 
   return (
     <>
-      <h1>{game.title}</h1>
-      <HorizontalScrollingImageList initialItemList={gameArtworkItems} /> 
+      <PageLayout>
+        <h1>{game.title}</h1>
+        <HorizontalScrollingImageList initialItemList={gameArtworkItems} /> 
+      </PageLayout>
     </>
   )
 }

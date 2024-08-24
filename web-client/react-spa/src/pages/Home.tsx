@@ -1,8 +1,8 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import { useApi } from "../utils/useApi";
 import Alert from "../components/Alert";
-import ListGroup from "../components/ListGroup";
-import FriendGameList from "../components/FriendGameList";
+import ListGroup from "../components/ListGroup/ListGroup";
+import FriendGameList from "../components/FriendGameList/FriendGameList";
 import { ProfileContent } from "../pages/ProfileContent";
 import { PageLayout } from "../components/PageLayout";
 

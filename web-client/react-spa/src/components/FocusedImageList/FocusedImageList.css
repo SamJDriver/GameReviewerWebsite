@@ -1,0 +1,24 @@
+.focused-image-list--container {
+  width: 80%;
+  background: rgba(25, 25, 25, 0.5);
+  overflow: hidden;
+}
+
+.focused-image-list--selected-artwork {
+  border-radius: 15px;
+  padding: 0.5em;
+  max-width: 11em;
+  max-height: 11em;
+  width: 11em;
+  height: 11em;
+  border: 5px solid #555;
+}
+
+.focused-image-list--unselected-artwork {
+  border-radius: 15px;
+  width: 11em;
+  height: 11em;
+  max-width: 11em;
+  max-height: 11em;
+  padding: 0.5em;
+}

@@ -14,7 +14,7 @@ function ListGroup({ items, heading }) {
               <Link to={'game/' + item.id}>
                    <img 
                    className='game-list--cover'
-                   src={item.cover[0].imageUrl}
+                   src={item.coverImageUrl}
                    alt={item.title}
                    height='100%'
                    width='100%'

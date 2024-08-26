@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import IApiResponse from "../interfaces/IApiResponse";
 
-export function useApi(url){
+export function useApi<T>(url: string): IApiResponse<T>{
   const [data, setdata] = useState(null);
   const [loading, setloading] = useState(true);
   const [error, seterror] = useState("");

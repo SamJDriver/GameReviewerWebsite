@@ -25,7 +25,8 @@ function FriendGameList({ heading }) {
     return <p>Loading...</p>;
   }
 
-  const items = data.data;
+  const items = data.items;
+  
   return (
     <>
       <div className="list-group-heading game-list--header">{heading}</div>

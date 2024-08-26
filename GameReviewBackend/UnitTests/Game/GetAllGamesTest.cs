@@ -21,6 +21,8 @@ public class GetAllGamesTest : BaseTest
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
         Mock<IGameRepository> mockGameRepository = new();
         GraphServiceClient graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
+        MapsterTestConfiguration.GetMapper();
+
 
         var game1 = TestObjectFactory.GetMockGameEntity();
         var game2 = TestObjectFactory.GetMockGameEntity();
@@ -30,13 +32,13 @@ public class GetAllGamesTest : BaseTest
         var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
 
         //Act
-        PagedResult<GameDto>? retrievedGames = await subjectUnderTest.GetAllGames(0, 10);
+        PagedResult<Game_Get_VanillaGame_Dto>? retrievedGames = await subjectUnderTest.GetAllGames(0, 10);
 
         //Assert
         using (new AssertionScope())
         {
             mockGenericRepository.Verify(m => m.GetAll<Games>(), Times.Once);
-            retrievedGames!.Data.Count().Should().Be(3);
+            retrievedGames.Data.Count().Should().Be(3);
         }
     }
 }

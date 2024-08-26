@@ -49,21 +49,18 @@ namespace BusinessLogic.Infrastructure
 
             return gameEntity.Id;
         }
-        public async Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize)
+        public async Task<PagedResult<Game_Get_VanillaGame_Dto>?> GetAllGames(int pageIndex, int pageSize)
         {
             var query = _genericRepository.GetAll<Games>();
 
             var data =
                     (await query
-                    // .OrderBy(g => g.Title)
-                    // .Where(g => g.Cover.Count > 0)
-                    // .Where(g => g.Title.Contains("Halo"))
-                    .Skip(pageIndex * pageIndex)
+                   .Skip(pageIndex * pageIndex)
                     .Take(pageSize)
                     .ToListAsync())
-                    .Adapt<IEnumerable<GameDto>>();
+                    .Adapt<IEnumerable<Game_Get_VanillaGame_Dto>>();
 
-            return new PagedResult<GameDto>()
+            return new PagedResult<Game_Get_VanillaGame_Dto>()
             {
                 Data = data,
                 TotalRowCount = query.Count(),

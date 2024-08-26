@@ -21,7 +21,6 @@ class HorizontalScrollingImageList extends React.Component<Props, State> {
   render(): React.ReactNode {
     return (
       <>
-        
         <FocusedImageList itemList={this.state.itemList}/>
         <button onClick={() => this.leftScrollClick(this.state.itemList)}>left</button>
         <button onClick={() => this.rightScrollClick(this.state.itemList)}>right</button>

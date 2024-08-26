@@ -24,6 +24,7 @@ class FocusedImageList extends React.Component<Props, State> {
           <img
             className="focused-image-list--main-artwork"
             src = {this.state.itemList.find( (i: IImageScrollItem) => i.focusedItemFlag === true )?.imageSourceUrl }
+            alt = "main artwork"
           />
         </div>
 
@@ -31,7 +32,7 @@ class FocusedImageList extends React.Component<Props, State> {
           <ul className="list-group list-group-horizontal" >
             {this.state.itemList.map( (item: IImageScrollItem, index: number) => (
               <li key={index}>
-                <button onClick={() => this.focusImageClickEvent(index, this.state.itemList.findIndex( (i: IImageScrollItem) => i.focusedItemFlag === true))}>
+                <button className='focused-image-list--artwork-selection-button' onClick={() => this.focusImageClickEvent(index, this.state.itemList.findIndex( (i: IImageScrollItem) => i.focusedItemFlag === true))}>
                   <img 
                     className= {item.focusedItemFlag === true ? 'focused-image-list--selected-artwork' : 'focused-image-list--unselected-artwork'}
                     src={item.imageSourceUrl}

@@ -10,7 +10,6 @@ function FriendGameList({ heading }) {
   const [selectedPlayRecordId, setSelectedPlayRecordId] = useState(-1);
   const [data, setData] = useState(null);
   const { token } = useToken();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (token)

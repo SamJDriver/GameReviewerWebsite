@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Components.Exceptions;
 using DataAccess.Models.DockerDb;
 
 namespace Components.Models
@@ -21,9 +20,12 @@ namespace Components.Models
 
         public IEnumerable<int>? ChildGameIds { get; set; }
 
-        public IEnumerable<GenresLookup> Genres { get; set; } = default!;
+        public IEnumerable<GenreLookupDto> Genres { get; set; } = default!;
 
         public IEnumerable<Game_Get_ById_CompanyLink_Dto> Companies { get; set; } = default!;
+
+        public IEnumerable<PlatformDto> Platforms { get; set; } = default!;
+
         [StringLength(65535)]
         public string Description { get; set; } = null!;
     }

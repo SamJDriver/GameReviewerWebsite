@@ -1,0 +1,12 @@
+.game--cover-image-and-description-container {
+  width: 40%;
+  float: left;
+}
+.game--description-text {
+  background-color: red;
+  float: left;
+}
+
+.game--description-container {
+}
+

@@ -12,7 +12,8 @@ namespace Components.Mappings
             config.NewConfig<Games, Game_Get_ById_Dto>()
             .Map(dest => dest.ArtworkUrls, src => src.Artwork != null ? src.Artwork.Select(a => a.ImageUrl) : null)
             .Map(dest => dest.CoverImageUrl, src => src.Cover.FirstOrDefault() != null ? src.Cover.First().ImageUrl : null)
-            .Map(dest => dest.Genres, src => src.GamesGenresLookupLink.Select(g => g.GenreLookupId))
+            .Map(dest => dest.Genres, src => src.GamesGenresLookupLink.Select(g => g.GenreLookup))
+            .Map(dest => dest.Platforms, src => src.GamesPlatformsLink.Select(g => g.Platform))
             .Map(dest => dest.Companies, src => src.GamesCompaniesLink);
 
             config.NewConfig<GamesCompaniesLink, Game_Get_ById_CompanyLink_Dto>()

@@ -38,7 +38,7 @@ public class GetAllGamesTest : BaseTest
         using (new AssertionScope())
         {
             mockGenericRepository.Verify(m => m.GetAll<Games>(), Times.Once);
-            retrievedGames.Data.Count().Should().Be(3);
+            retrievedGames.Items.Count().Should().Be(3);
         }
     }
 }

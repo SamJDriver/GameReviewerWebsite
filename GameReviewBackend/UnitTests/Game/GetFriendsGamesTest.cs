@@ -60,9 +60,9 @@ public class GetFriendsGamesTest : BaseTest
         using (new AssertionScope())
         {
             mockGameRepository.Verify(m => m.GetFriendsGames(It.IsAny<string>()), Times.Once);
-            retrievedGames!.Data.Count().Should().Be(pageSize);
-            retrievedGames!.Data.First().Title.Should().Be(games.First().Title);
-            retrievedGames!.Data.First().ReviewerId.Should().Be(games.First().PlayRecords.First().CreatedBy);
+            retrievedGames!.Items.Count().Should().Be(pageSize);
+            retrievedGames!.Items.First().Title.Should().Be(games.First().Title);
+            retrievedGames!.Items.First().ReviewerId.Should().Be(games.First().PlayRecords.First().CreatedBy);
         }
     }
 

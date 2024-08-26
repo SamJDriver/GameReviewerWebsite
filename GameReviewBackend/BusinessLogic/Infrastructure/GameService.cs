@@ -62,7 +62,7 @@ namespace BusinessLogic.Infrastructure
 
             return new PagedResult<Game_Get_VanillaGame_Dto>()
             {
-                Data = data,
+                Items = data,
                 TotalRowCount = query.Count(),
                 PageIndex = pageIndex,
                 PageSize = pageSize,
@@ -98,7 +98,7 @@ namespace BusinessLogic.Infrastructure
             
             return new PagedResult<Game_GetList_Dto>()
             {
-                Data = data.Select(d =>  { 
+                Items = data.Select(d =>  { 
 
                     d.ReviewerName = (result?.FirstOrDefault(r => r.Id == d.ReviewerId) as Microsoft.Graph.Models.User)?.DisplayName;
                     return d; 
@@ -144,7 +144,7 @@ namespace BusinessLogic.Infrastructure
 
             return new PagedResult<GameDto>()
             {
-                Data = games,
+                Items = games,
                 TotalRowCount = query.Count(),
                 PageIndex = pageIndex,
                 PageSize = pageSize,

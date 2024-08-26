@@ -41,7 +41,7 @@ public class SearchGamesTest : BaseTest
         // Assert
         using (new AssertionScope())
         {
-            searchGames!.Data.Count().Should().Be(pageSize);
+            searchGames!.Items.Count().Should().Be(pageSize);
             mockGameRepository.Verify(m => m.SearchGames(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
             searchGames!.TotalRowCount.Should().Be(games.Count());
         }

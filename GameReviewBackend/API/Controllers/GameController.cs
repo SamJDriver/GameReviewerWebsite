@@ -60,12 +60,5 @@ namespace GameReview.Controllers
             var games = await _gameService.SearchGames(searchTerm, genreId, releaseYear, pageIndex, pageSize);
             return Ok(games);
         }
-
-        [HttpGet("genres")]
-        public IActionResult GetGenres()
-        {
-            var genres = _lookupService.GetGenreLookups();
-            return Ok(genres);
-        }
     }
 }

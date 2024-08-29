@@ -6,6 +6,7 @@ import { SignInButton } from ".././SignInButton";
 import { SignOutButton } from ".././SignOutButton";
 import './PageLayout.css';
 import { BsSearch } from "react-icons/bs";
+import { Link } from "react-router-dom";
  
 /**
  * Renders the navbar component with a sign-in or sign-out button depending on whether or not a user is authenticated
@@ -24,21 +25,14 @@ export const PageLayout = (props: PropsWithChildren) => {
                   DGC
                 </a>
 
-                <div className="container-fluid collapse navbar-collapse">
                     <ul className="navbar-nav page-layout--search-container">
 
-                        
-                        <li className="nav-item page-layout--nav-buttons">
-                            <div className="input-group mb-3">
-                              <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    <BsSearch />
-                                </span>
-                              </div>
-                              <input type="text" className="form-control" aria-label="Amount (to the nearest dollar)" />
-                            </div>
+                         <li className="nav-item page-layout--nav-buttons">
+                            <Link className="nav-link" to={'search'}>
+                                <b>Search</b>
+                            </Link> 
                         </li>
-
+                      
                         <li className="nav-item page-layout--nav-buttons">
                             <a className="nav-link" href="#"><b>My List</b></a>
                         </li>
@@ -51,14 +45,7 @@ export const PageLayout = (props: PropsWithChildren) => {
                             <a className="nav-link" href="#"><b>Social</b></a>
                         </li>
 
-                        {isAuthenticated ? 
-                            <li className="nav-item page-layout--nav-buttons">
-                                <a className="nav-link" href="#"><b>Profile</b></a>
-                            </li>
-                         : null}
-
                     </ul>
-                </div>
 
 
                 <div>

@@ -2,8 +2,6 @@ import { useMsal } from "@azure/msal-react";
 import { useState } from "react";
 import { callMsGraph } from '../graph';
 import { loginRequest } from '../authConfig';
-import { ProfileData } from '../components/ProfileData';
-import Button from 'react-bootstrap/Button';
 
 export const ProfileContent = () => {
     const { instance, accounts } = useMsal();
@@ -24,13 +22,6 @@ export const ProfileContent = () => {
     return (
         <>
             <h5 className="profileContent">Welcome {accounts[0].name}</h5>
-            {graphData ? (
-                <ProfileData graphData={graphData} />
-            ) : (
-                <Button variant="secondary" onClick={RequestProfileData}>
-                    Request Profile
-                </Button>
-            )}
         </>
     );
 };

@@ -71,12 +71,6 @@
   --bs-btn-active-border-color: #{shade-color($bd-violet, 20%)};
 }
 
-
-.topNavButtons {
-  margin-left: 100px;
-  margin-right: 100px;
-}
-
 .game-list--item {
   margin: 5px;
   border-radius: 5px;

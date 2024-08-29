@@ -1,5 +1,5 @@
 export default interface IApiResponse<T> {
-  data: T[] | null,
+  data: T | null,
   loading: boolean,
   error: string
 }

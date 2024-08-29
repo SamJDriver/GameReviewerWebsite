@@ -10,7 +10,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 export const SignInButton = () => {
     const { instance } = useMsal();
 
-    const handleLogin = (loginType) => {
+    const handleLogin = (loginType: any) => {
         if (loginType === "popup") {
             instance.loginPopup(loginRequest).catch(e => {
                 console.log(e);

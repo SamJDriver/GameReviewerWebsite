@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes  } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import Game from './pages/Game/Game';
-import Home from './pages/Home';
+import Home from './pages/Home/Home';
 
 export default function App() {
 

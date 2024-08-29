@@ -4,7 +4,7 @@ import { BASE_URL } from "../../UrlProvider";
 import HorizontalScrollingImageList from "../../components/HorizontalScrollingImageList/HorizontalScrollingImageList";
 import IImageScrollItem from "../../interfaces/IImageScrollItem";
 import './Game.css';
-import { PageLayout } from "../../components/PageLayout";
+import { PageLayout } from "../../components/PageLayout/PageLayout";
 
 interface Company {
   companyId: number,

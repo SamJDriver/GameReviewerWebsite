@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useToken } from '../../utils/useToken';
 import { format } from 'date-fns'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { BASE_URL } from '../../UrlProvider';
 
-const BASE_URL = 'https://localhost:7272/api';
+interface IProps {
+  heading: string
+}
 
-function FriendGameList({ heading }) {
-  // Hook
-  const [selectedPlayRecordId, setSelectedPlayRecordId] = useState(-1);
-  const [data, setData] = useState(null);
+function FriendGameList(props: IProps) {
+  const [data, setData] = useState<any | null>(null);
   const { token } = useToken();
+  const heading = props.heading;
 
   useEffect(() => {
     if (token)
@@ -33,8 +35,8 @@ function FriendGameList({ heading }) {
       {items.length === 0 && <p>No items found.</p>}
 
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
-        {items.map((item) => (
-          <li key={item.playRecordId} className={'game-list--item'} onClick={() => { setSelectedPlayRecordId(item.playRecordId) }}>
+        {items.map((item: any) => (
+          <li key={item.playRecordId} className={'game-list--item'}>
             <div>
               <Link to={'game/' + item.gameId}>
                 <img 

@@ -1,6 +1,15 @@
 import { Link } from 'react-router-dom';
+import IVanillaGame from '../../interfaces/IVanillaGame';
 
-function ListGroup({ items, heading }) {
+interface IProps {
+  items: IVanillaGame[],
+  heading: string
+}
+
+function GameList(props: IProps) {
+  const items = props.items;
+  const heading = props.heading;
+
   return (
     <>
       <div className="list-group-heading game-list--header">{heading}</div>
@@ -8,8 +17,8 @@ function ListGroup({ items, heading }) {
 
       <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
 
-        {items.map((item, index) => (
-          <li key={item.id} className={'game-list--item'}>
+        {items.map((item: any, index: number) => (
+          <li key={index} className={'game-list--item'}>
             <div>
               <Link to={'game/' + item.id}>
                    <img 
@@ -30,4 +39,4 @@ function ListGroup({ items, heading }) {
   );
 }
 
-export default ListGroup;
+export default GameList;

@@ -8,6 +8,7 @@ import { BASE_URL } from "../../UrlProvider";
 import IPaginator from "../../interfaces/IPaginator";
 import IVanillaGame from "../../interfaces/IVanillaGame";
 import IApiResponse from "../../interfaces/IApiResponse";
+import { GameSearch } from "../../components/GameSearch/GameSearch";
 
 const Home = () => {
     const paginatedGamesResponse: IApiResponse<IPaginator<IVanillaGame>> = useApi<IPaginator<IVanillaGame>>(BASE_URL + '/game/0/10');
@@ -25,6 +26,7 @@ const Home = () => {
         <PageLayout>
           <div className="App">
               <AuthenticatedTemplate>
+                <GameSearch />
                 <GameList items={ paginatedGamesResponse.data.items } heading="Popular" />
                 <FriendGameList heading="Recently played by friends" />
               </AuthenticatedTemplate>

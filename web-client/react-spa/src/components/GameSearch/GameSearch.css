@@ -1,0 +1,68 @@
+.search-filter--container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  display: flex;
+  flex-wrap: nowrap;
+  text-align: center;
+}
+
+.search-filter--item-background-color {
+  background-color: rgb(26, 28, 30) !important;
+  color: rgb(159, 151, 138) !important;
+  border-color: rgb(26, 28, 30)  !important;
+}
+
+.search-filter--item-background-color:hover {
+  background-color: rgb(29, 32, 34) !important;
+  color: rgb(68, 172, 226)!important;
+}
+
+.search-filter--item-background-color::placeholder {
+  color: rgb(159, 151, 138) !important;
+}
+
+.search-filter--genre-toggle {
+  border-style: none !important;
+  background-color: transparent !important;
+}
+
+.search-filter--text-box {
+  height: 3.6em !important;
+  overflow: hidden !important;
+}
+
+.stuff {
+  width: 100% !important;
+  display: inline-block !important;
+}
+
+.label {
+  width: 100% !important;
+  display: inline-block !important;
+
+}
+
+.dropdown-menu {
+  background-color: rgb(26, 28, 30)  !important;
+  padding-left: 10px !important;
+}
+
+.dropdown-menu.show {
+  max-height: 35em;
+  overflow-y: scroll !important;
+}
+.search-filter--genre-text-input {
+  overflow: hidden;
+}
+
+.search-filter--genre-item {
+  overflow: hidden;
+  display: inline-block;
+  background-color: rgb(35, 40, 40);
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: auto;
+  padding: 6px;
+  color: rgb(159, 151, 138) !important;
+}

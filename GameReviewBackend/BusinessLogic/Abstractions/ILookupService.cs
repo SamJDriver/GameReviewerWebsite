@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Components.Models;
 
 namespace BusinessLogic.Abstractions
@@ -9,5 +5,7 @@ namespace BusinessLogic.Abstractions
     public interface ILookupService
     {
         public IEnumerable<GenreLookupDto> GetGenreLookups();
+        public IEnumerable<int> GetReleaseYears();
+
     }
 }

@@ -24,5 +24,12 @@ namespace GameReview.Controllers
             var genres = _lookupService.GetGenreLookups();
             return Ok(genres);
         }
+
+        [HttpGet("release-years")]
+        public IActionResult GetReleaseYears()
+        {
+            var releaseYears = _lookupService.GetReleaseYears();
+            return Ok(releaseYears);
+        }
     }
 }

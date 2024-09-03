@@ -28,7 +28,7 @@ const Home = () => {
               <AuthenticatedTemplate>
                 <GameSearch />
                 <GameList items={ paginatedGamesResponse.data.items } heading="Popular" />
-                <FriendGameList heading="Recently played by friends" />
+                <FriendGameList heading="From Friends" />
               </AuthenticatedTemplate>
 
               <UnauthenticatedTemplate>

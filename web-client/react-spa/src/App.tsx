@@ -8,7 +8,7 @@ import { GameSearch } from './components/GameSearch/GameSearch';
 export default function App() {
 
     return (
-        <div style={{ backgroundColor: "#2A3440", height: "100vh" }}>
+        <div className='app-background'>
               <BrowserRouter>
                 <Routes>                
                   <Route index element={<Home/>}></Route>

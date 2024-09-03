@@ -3,6 +3,8 @@ import { useToken } from '../../utils/useToken';
 import { format } from 'date-fns'
 import { Link } from 'react-router-dom';
 import { BASE_URL } from '../../UrlProvider';
+import '../GameList/GameList.css';
+import '../FriendGameList/FriendGameList.css';
 
 interface IProps {
   heading: string
@@ -31,31 +33,36 @@ function FriendGameList(props: IProps) {
   
   return (
     <>
-      <div className="list-group-heading game-list--header">{heading}</div>
-      {items.length === 0 && <p>No items found.</p>}
+      <div className='game-list--container'>
+        <div className="list-group-heading game-list--header">{heading}</div>
+        {items.length === 0 && <p>No items found.</p>}
 
-      <ul className="list-group list-group-horizontal" style={{ "paddingBottom": "50px" }}>
-        {items.map((item: any) => (
-          <li key={item.playRecordId} className={'game-list--item'}>
-            <div>
-              <Link to={'game/' + item.gameId}>
-                <img 
-                   className='game-list--cover'
-                   src={item.coverImageUrl}
-                   alt={item.title}
-                   height='100%'
-                   width='100%'
-                />
-              </Link>
-                            
-              <span className="game-list--main-text"> {item.title} </span>
-              <br/>
-              <p className="game-list--supplemental-text"> {item.reviewerName} • {item.rating}% <br/> {format(item.reviewDate, 'MM-dd-yyyy')} </p>
-
-            </div>
-          </li>
-        ))}
-      </ul>
+        <ul className="game-list--ul">
+          {items.map((item: any) => (
+            <li key={item.playRecordId} className="game-list--li">
+              <div>
+                <Link to={'game/' + item.gameId}>
+                  <img 
+                     className='game-list--image'
+                     src={item.coverImageUrl}
+                     alt={item.title}
+                     height='100%'
+                     width='100%'
+                  />
+                </Link>
+                              
+                  <div className="game-list--main-text-container"> 
+                    <span className='game-list--main-text-span'>
+                      {item.title}
+                    </span>
+                    <br/>
+                    <span className='friend-game-list--supplemental-text'> {item.reviewerName} • {item.rating}% <br/> {format(item.reviewDate, 'MM-dd-yyyy')} </span>
+                  </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 }

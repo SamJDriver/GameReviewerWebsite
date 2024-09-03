@@ -49,7 +49,6 @@ export const GameSearch = () => {
       copy.push(genreName);
     }
     setSelectedGenres(copy);
-    console.log(copy);
   }
 
   

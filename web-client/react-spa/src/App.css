@@ -2,24 +2,22 @@
 
 
 :root {
-  --main-color-background: #2A3440;
+  --main-color-background: rgb(34, 42, 51);
   --main-font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   --main-list-item-width: 12.125em;
   --main-list-item-height: 12.125em;
 }
 
-
+.app-background {
+  height: 100vh;
+  background-color: var(--main-color-background);
+}
 
 .App {
   /* text-align: center; */
   padding: 8px;
   font-family: var(--main-font-family);
   color: white;
-}
-
-.navbarStyle {
-  padding: .5rem 1rem !important;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .list-group-heading {
@@ -30,13 +28,6 @@
   margin-bottom: .5em;
 }
 
-
-.title{
-  text-align: center;
-  padding: 8px;
-  font-family: var(--main-font-family);
-}
-
 .mainContent {
   padding: 8px;
   padding-left: 15em;
@@ -45,80 +36,21 @@
 
 }
 
-.topContainer {
-  display: flex;
-  flex-direction: row;
-}
-
-.btn {
-  font-weight: bolder;
-  background-color: transparent;
-
-}
-
-
-.btn {
-  --bs-btn-font-weight: 600;
-  --bs-btn-color: var(--bs-white);
-  --bs-btn-bg: var(--bd-violet-bg);
-  --bs-btn-border-color: var(--bd-violet-bg);
-  --bs-btn-hover-color: var(--bs-white);
-  --bs-btn-hover-bg: #{shade-color($bd-violet, 10%)};
-  --bs-btn-hover-border-color: #{shade-color($bd-violet, 10%)};
-  --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-  --bs-btn-active-color: var(--bs-btn-hover-color);
-  --bs-btn-active-bg: #{shade-color($bd-violet, 20%)};
-  --bs-btn-active-border-color: #{shade-color($bd-violet, 20%)};
-}
-
-.game-list--item {
-  margin: 5px;
-  border-radius: 5px;
-  /* display: flex; */
-  /* align-items: flex-start; */
-  height: 20.25em;
-  width: 12.125em;
-}
-.game-list--main-text {
-  width: "100%";
-  font-weight: bold;
-  font-size: 1em;
-  display: inline-block;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  font-family:'Gill Sans', 'Gill Sans MT';
-  max-width: 12.125em;
-  min-width: 12.125em;
-}
-
-.game-list--supplemental-text {
-  color:#8181817e;
-  font-size: 0.8em;
-  display: inline-block;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  font-family: Arial, Helvetica, sans-serif;
-  min-width: 12.125em;
-  max-width: 12.125em;
-}
-
-.game-list--header {
-  white-space: nowrap;
-}
-
-.game-list--cover {
-  border-radius: 25px;
-  cursor: pointer;
-}
-
-.centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-ul {
-  list-style: none;
-}
+/* .btn { */
+/*   font-weight: bolder; */
+/*   background-color: transparent; */
+/* } */
+/**/
+/* .btn { */
+/*   --bs-btn-font-weight: 600; */
+/*   --bs-btn-color: var(--bs-white); */
+/*   --bs-btn-bg: var(--bd-violet-bg); */
+/*   --bs-btn-border-color: var(--bd-violet-bg); */
+/*   --bs-btn-hover-color: var(--bs-white); */
+/*   --bs-btn-hover-bg: #{shade-color($bd-violet, 10%)}; */
+/*   --bs-btn-hover-border-color: #{shade-color($bd-violet, 10%)}; */
+/*   --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb); */
+/*   --bs-btn-active-color: var(--bs-btn-hover-color); */
+/*   --bs-btn-active-bg: #{shade-color($bd-violet, 20%)}; */
+/*   --bs-btn-active-border-color: #{shade-color($bd-violet, 20%)}; */
+/* } */

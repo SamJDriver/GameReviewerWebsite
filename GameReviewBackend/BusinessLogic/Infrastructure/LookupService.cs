@@ -22,13 +22,13 @@ namespace BusinessLogic.Infrastructure
             return genreLookups;
         }
 
-        public IEnumerable<int> GetReleaseYears()
+        public DateRangeDto GetReleaseYearsRange()
         {
             var releaseYears = _genericRepository.GetAll<Games>().Select(g => g.ReleaseDate.Year);
             var minReleaseYear = releaseYears.Where(y => y > 1).Min();
             var maxReleaseYear = releaseYears.Max();
 
-            return Enumerable.Range(minReleaseYear, (maxReleaseYear-minReleaseYear)+1).Reverse();
+            return new DateRangeDto(){ StartYear = minReleaseYear, EndYear = maxReleaseYear };
         }
     }
 }

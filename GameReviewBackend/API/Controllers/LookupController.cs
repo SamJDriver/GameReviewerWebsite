@@ -25,10 +25,10 @@ namespace GameReview.Controllers
             return Ok(genres);
         }
 
-        [HttpGet("release-years")]
+        [HttpGet("release-year-range")]
         public IActionResult GetReleaseYears()
         {
-            var releaseYears = _lookupService.GetReleaseYears();
+            var releaseYears = _lookupService.GetReleaseYearsRange();
             return Ok(releaseYears);
         }
     }

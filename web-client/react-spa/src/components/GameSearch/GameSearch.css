@@ -5,6 +5,7 @@
   display: flex;
   flex-wrap: nowrap;
   text-align: center;
+  height: 3.6em;
 }
 
 .search-filter--item-background-color {
@@ -25,22 +26,12 @@
 .search-filter--genre-toggle {
   border-style: none !important;
   background-color: transparent !important;
+  color: rgb(159, 151, 138) !important;
 }
 
 .search-filter--text-box {
   height: 3.6em !important;
   overflow: hidden !important;
-}
-
-.stuff {
-  width: 100% !important;
-  display: inline-block !important;
-}
-
-.label {
-  width: 100% !important;
-  display: inline-block !important;
-
 }
 
 .dropdown-menu {
@@ -65,4 +56,37 @@
   margin-bottom: auto;
   padding: 6px;
   color: rgb(159, 151, 138) !important;
+}
+
+.search-filter--open-date-picker {
+  position: relative;
+  height: 3.6em;
+  display: inline-block;
+}
+
+.search-filter--date-picker {
+  background-color: rgba(26, 28, 30);
+  position: absolute;
+  top: 100%; /* position it below the parent */
+  left: 0; /* center it horizontally */
+  z-index: 2;
+}
+
+.search-filter--date-picker-hide {
+  display: none;
+}
+
+/* Override Calendar Text */
+.rdrDayNumber span { 
+  color: white;
+}
+.rdrMonthPicker select {
+  color: white;
+}
+.rdrYearPicker select {
+  color: white;
+}
+.rdrMonth div {
+  background-color: rgba(26, 28, 30);
+  z-index: 2;
 }

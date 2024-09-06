@@ -90,3 +90,7 @@
   background-color: rgba(26, 28, 30);
   z-index: 2;
 }
+
+[contentEditable=true]:empty:not(:focus):before {
+  content: attr(data-text)
+}

@@ -22,8 +22,8 @@ export const GameSearch = () => {
   const [endReleaseYearDatePickerOpen, setEndReleaseYearDatePickerOpen] = useState<boolean>(false);
 
   const [selectedGenres, setSelectedGenres] = useState<string[] | null>(null);
-  const [selectedMinReleaseDate, setSelectedMinReleaseDate] = useState<Date | null>(null);
-  const [selectedMaxReleaseDate, setSelectedMaxReleaseDate] = useState<Date | null>(null);
+  const [selectedStartReleaseDate, setSelectedStartReleaseDate] = useState<Date | null>(null);
+  const [selectedEndReleaseDate, setSelectedEndReleaseDate] = useState<Date | null>(null);
 
   useEffect(() => {
       fetch(BASE_URL + '/lookup/genres')
@@ -116,13 +116,13 @@ export const GameSearch = () => {
             <div onClick={() => setStartReleaseYearDatePickerOpen(!startReleaseYearDatePickerOpen)} id="openStartReleaseDateCalendar" className="input-group-prepend input-group-text search-filter--item-background-color">
               <BsCalendarEvent id="startCalendarIcon"/>
             </div>
-            <input placeholder="Start Release Date" className="form-control search-filter--item-background-color" aria-label="search start date" />
+            <input placeholder={selectedStartReleaseDate ? selectedStartReleaseDate.toLocaleDateString() : "Start Release Date"} className="form-control search-filter--item-background-color" aria-label="search start date" />
             <div id="startReleaseDateCalendar" className="input-group-text" style={{backgroundColor: "rgb(26, 28, 30)", borderStyle: "none"}}>
               <Calendar
                 minDate={new Date(`${releaseYearRange.startYear}-01-01`)} 
                 maxDate={new Date(`${releaseYearRange.endYear}-12-31`)} 
                 className={startReleaseYearDatePickerOpen ? "search-filter--date-picker" : "search-filter--date-picker-hide"} 
-                onChange={ (event) => console.log(event)} /> 
+                onChange={ (event) => { setSelectedStartReleaseDate(event); setStartReleaseYearDatePickerOpen(false);}} /> 
             </div>
           </div>
 
@@ -130,13 +130,13 @@ export const GameSearch = () => {
             <div onClick={() => setEndReleaseYearDatePickerOpen(!endReleaseYearDatePickerOpen)} id="openEndReleaseDateCalendar" className="input-group-prepend input-group-text search-filter--item-background-color">
               <BsCalendarEvent id="endCalendarIcon"/>
             </div>
-            <input placeholder="End Release Date" className="form-control search-filter--item-background-color" aria-label="search end date" />
+            <input placeholder={selectedEndReleaseDate ? selectedEndReleaseDate.toLocaleDateString() : "End Release Date"} className="form-control search-filter--item-background-color" aria-label="search end date" />
             <div id="endReleaseDateCalendar" className="input-group-text" style={{backgroundColor: "rgb(26, 28, 30)", borderStyle: "none"}}>
               <Calendar
                 minDate={new Date(`${releaseYearRange.startYear}-01-01`)} 
                 maxDate={new Date(`${releaseYearRange.endYear}-12-31`)} 
-                className={endReleaseYearDatePickerOpen ? "search-filter--date-picker" : "search-filter--date-picker-hide"} 
-                onChange={ (event) => console.log(event)} /> 
+                className={endReleaseYearDatePickerOpen ? "search-filter--date-picker" : "search-filter--date-picker-hide"}
+                onChange={ (event) => { setSelectedEndReleaseDate(event); setEndReleaseYearDatePickerOpen(false); }}/> 
             </div>
           </div>
         </div>

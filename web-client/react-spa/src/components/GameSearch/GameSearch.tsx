@@ -56,7 +56,7 @@ export const GameSearch = () => {
   }
 
   document.body.addEventListener('click', function(event: MouseEvent) {
-    if (!(event.target as Element).closest('.search-filter--date-picker')) {
+    if (!(event.target as Element).closest('.game-search--date-picker')) {
       const calendarElement = document.getElementById('startReleaseDateCalendar') as HTMLElement | null;
       const clickedElementId = (event.target as Element).id;
       if (calendarElement && clickedElementId !== 'openStartReleaseDateCalendar' && clickedElementId !== 'startReleaseDateCalendar' && clickedElementId !=='startCalendarIcon') {
@@ -66,7 +66,7 @@ export const GameSearch = () => {
   });
 
   document.body.addEventListener('click', function(event: MouseEvent) {
-    if (!(event.target as Element).closest('.search-filter--date-picker')) {
+    if (!(event.target as Element).closest('.game-search--date-picker')) {
       const calendarElement = document.getElementById('endReleaseDateCalendar') as HTMLElement | null;
       const clickedElementId = (event.target as Element).id;
       if (calendarElement && clickedElementId !== 'openEndReleaseDateCalendar' && clickedElementId !== 'endReleaseDateCalendar' && clickedElementId !=='endCalendarIcon') {
@@ -78,18 +78,18 @@ export const GameSearch = () => {
 
   return (
     <>
-        <div className="search-filter--container">
+        <div className="game-search--container">
           <div className="input-group mx-4" >
-            <div className="input-group-prepend input-group-text search-filter--item-background-color">
+            <div className="input-group-prepend input-group-text game-search--item-background-color">
               <BsSearch/>
             </div>
-            <input className="form-control search-filter--item-background-color" aria-label="game search" />
+            <input className="form-control game-search--item-background-color" aria-label="game search" />
           </div>
 
           <div className="input-group mx-4" >
-            <div className="input-group-text search-filter--item-background-color">
+            <div className="input-group-text game-search--item-background-color">
               <Dropdown>
-                <Dropdown.Toggle variant="dark" className="search-filter--genre-toggle"  id="dropdown-basic"> Genres </Dropdown.Toggle>
+                <Dropdown.Toggle variant="dark" className="game-search--genre-toggle"  id="dropdown-basic"> Genres </Dropdown.Toggle>
                 <Form>
                   <Dropdown.Menu>
                     {
@@ -98,7 +98,7 @@ export const GameSearch = () => {
                           return <Dropdown.Item key={index}> Loading ... </Dropdown.Item>
                         }
                         return (
-                          <Form.Check type='checkbox' key={'genre-check'+index} id={'genre-check-id'+index} className=" search-filter--item-background-color" label={g.name} onClick={() => GenreCheckboxOnClick(g.name)}>
+                          <Form.Check type='checkbox' key={'genre-check'+index} id={'genre-check-id'+index} className=" game-search--item-background-color" label={g.name} onClick={() => GenreCheckboxOnClick(g.name)}>
                           </Form.Check>
                         )
                       })
@@ -107,35 +107,35 @@ export const GameSearch = () => {
                 </Form>
               </Dropdown>
             </div>
-            <div id="genreTextInput" className="search-filter--text-box search-filter--item-background-color form-control">
-              {selectedGenres?.map( (g: string, i: number) => <span className="search-filter--genre-item mx-1" key={i} >{g}</span> )}
+            <div id="genreTextInput" className="game-search--text-box game-search--item-background-color form-control">
+              {selectedGenres?.map( (g: string, i: number) => <span className="game-search--genre-item mx-1" key={i} >{g}</span> )}
             </div>
           </div>
 
           <div className="input-group mx-4" >
-            <div onClick={() => setStartReleaseYearDatePickerOpen(!startReleaseYearDatePickerOpen)} id="openStartReleaseDateCalendar" className="input-group-prepend input-group-text search-filter--item-background-color">
+            <div onClick={() => setStartReleaseYearDatePickerOpen(!startReleaseYearDatePickerOpen)} id="openStartReleaseDateCalendar" className="input-group-prepend input-group-text game-search--item-background-color">
               <BsCalendarEvent id="startCalendarIcon"/>
             </div>
-            <input placeholder={selectedStartReleaseDate ? selectedStartReleaseDate.toLocaleDateString() : "Start Release Date"} className="form-control search-filter--item-background-color" aria-label="search start date" />
+            <input placeholder={selectedStartReleaseDate ? selectedStartReleaseDate.toLocaleDateString() : "Start Release Date"} className="form-control game-search--item-background-color" aria-label="search start date" />
             <div id="startReleaseDateCalendar" className="input-group-text" style={{backgroundColor: "rgb(26, 28, 30)", borderStyle: "none"}}>
               <Calendar
                 minDate={new Date(`${releaseYearRange.startYear}-01-01`)} 
                 maxDate={new Date(`${releaseYearRange.endYear}-12-31`)} 
-                className={startReleaseYearDatePickerOpen ? "search-filter--date-picker" : "search-filter--date-picker-hide"} 
+                className={startReleaseYearDatePickerOpen ? "game-search--date-picker" : "game-search--date-picker-hide"} 
                 onChange={ (event) => { setSelectedStartReleaseDate(event); setStartReleaseYearDatePickerOpen(false);}} /> 
             </div>
           </div>
 
           <div className="input-group mx-4">
-            <div onClick={() => setEndReleaseYearDatePickerOpen(!endReleaseYearDatePickerOpen)} id="openEndReleaseDateCalendar" className="input-group-prepend input-group-text search-filter--item-background-color">
+            <div onClick={() => setEndReleaseYearDatePickerOpen(!endReleaseYearDatePickerOpen)} id="openEndReleaseDateCalendar" className="input-group-prepend input-group-text game-search--item-background-color">
               <BsCalendarEvent id="endCalendarIcon"/>
             </div>
-            <input placeholder={selectedEndReleaseDate ? selectedEndReleaseDate.toLocaleDateString() : "End Release Date"} className="form-control search-filter--item-background-color" aria-label="search end date" />
+            <input placeholder={selectedEndReleaseDate ? selectedEndReleaseDate.toLocaleDateString() : "End Release Date"} className="form-control game-search--item-background-color" aria-label="search end date" />
             <div id="endReleaseDateCalendar" className="input-group-text" style={{backgroundColor: "rgb(26, 28, 30)", borderStyle: "none"}}>
               <Calendar
                 minDate={new Date(`${releaseYearRange.startYear}-01-01`)} 
                 maxDate={new Date(`${releaseYearRange.endYear}-12-31`)} 
-                className={endReleaseYearDatePickerOpen ? "search-filter--date-picker" : "search-filter--date-picker-hide"}
+                className={endReleaseYearDatePickerOpen ? "game-search--date-picker" : "game-search--date-picker-hide"}
                 onChange={ (event) => { setSelectedEndReleaseDate(event); setEndReleaseYearDatePickerOpen(false); }}/> 
             </div>
           </div>

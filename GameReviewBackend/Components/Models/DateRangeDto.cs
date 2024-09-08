@@ -3,7 +3,7 @@ namespace Components.Models;
 
 public class DateRangeDto
 {
-    public int StartYear { get; set; }
-    public int EndYear { get; set; }
+    public int StartYearLimit { get; set; }
+    public int EndYearLimit { get; set; }
 }
 

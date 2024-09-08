@@ -17,12 +17,14 @@ namespace BusinessLogic.Infrastructure
         private readonly IGenericRepository<DockerDbContext> _genericRepository;
         private readonly IGameRepository _gameRepository;
         private readonly GraphServiceClient _graphServiceClient;
+        private readonly ILookupService _lookupService;
 
-        public GameService(IGenericRepository<DockerDbContext> genericRepository, IGameRepository gameRepository, GraphServiceClient graphServiceClient)
+        public GameService(IGenericRepository<DockerDbContext> genericRepository, IGameRepository gameRepository, GraphServiceClient graphServiceClient, ILookupService lookupService)
         {
             _genericRepository = genericRepository;
             _gameRepository = gameRepository;
             _graphServiceClient = graphServiceClient;
+            _lookupService = lookupService;
         }
 
         public async Task<int> CreateGame(GameDto game, string? userId)
@@ -121,20 +123,32 @@ namespace BusinessLogic.Infrastructure
             return gameDto;
         }
 
-        public async Task<PagedResult<GameDto>> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        public async Task<PagedResult<GameDto>> SearchGames(string? searchTerm, IEnumerable<int>? genreIds, DateTime? startReleaseDate, DateTime? endReleaseDate, int pageIndex, int pageSize)
         {
-            var genre = genreId != null ? _genericRepository.GetById<GenresLookup>(genreId.Value) : null;
-            if (genreId != null && genre == null)
+            IEnumerable<GenresLookup?>? genres = genreIds != null ? genreIds.Select(g => _genericRepository.GetById<GenresLookup>(g)) : null;
+
+            if ((genres ?? []).Any(g => g == null) && genreIds != null)
             {
-                throw new DgcException("Genre not found.", DgcExceptionType.ResourceNotFound);
+                throw new DgcException("Invalid genre provided.", DgcExceptionType.ResourceNotFound);
             }
 
-            if (releaseYear != null && releaseYear < Components.Constants.MinimumReleaseYear || releaseYear > Components.Constants.MaximumReleaseYear)
+            DateRangeDto dateRange = _lookupService.GetReleaseYearsRange();
+            if (startReleaseDate != null && (startReleaseDate.Value.Year < dateRange.StartYearLimit || startReleaseDate.Value.Year > dateRange.EndYearLimit))
             {
-                throw new DgcException("Invalid release year provided.", DgcExceptionType.ArgumentOutOfRange);
+                throw new DgcException("Start date is out of valid date range.", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            var query = _gameRepository.SearchGames(searchTerm, genreId, releaseYear);
+            if (endReleaseDate != null && (endReleaseDate.Value.Year < dateRange.StartYearLimit || endReleaseDate.Value.Year > dateRange.EndYearLimit))
+            {
+                throw new DgcException("End date is out of valid date range.", DgcExceptionType.ArgumentOutOfRange);
+            }
+
+            if (startReleaseDate != null && endReleaseDate != null && startReleaseDate > endReleaseDate)
+            {
+                throw new DgcException("Start date is after end date.", DgcExceptionType.ArgumentOutOfRange);
+            }
+
+            var query = _gameRepository.SearchGames(searchTerm, genreIds, startReleaseDate, endReleaseDate);
 
             var games = query
                         .Skip(pageIndex * pageSize)

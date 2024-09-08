@@ -16,7 +16,7 @@ namespace Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<Games> SearchGames(string? searchTerm, int? genreId, int? releaseYear)
+        public IQueryable<Games> SearchGames(string? searchTerm, IEnumerable<int>? genreIds, DateTime? startReleaseDate, DateTime? endReleaseDate)
         {
             if (searchTerm != null)
             {
@@ -34,9 +34,10 @@ namespace Repositories
                     on gameGenresLookupLink.GenreLookupId equals genre.Id
                 where 
                     game.ParentGameId == null  
-                    && (searchTerm != null ? game.Title.ToLower().Contains(searchTerm) : true)
-                    && (genreId != null ? genre.Id == genreId : true)
-                    && (releaseYear != null ? game.ReleaseDate.Year == releaseYear : true)
+                    && (searchTerm == null || game.Title.ToLower().Contains(searchTerm))
+                    && (genreIds == null || genreIds.Any(genreId => genre.Id == genreId))
+                    && (startReleaseDate == null || game.ReleaseDate >= DateOnly.FromDateTime(startReleaseDate.Value))
+                    && (endReleaseDate == null || game.ReleaseDate <= DateOnly.FromDateTime(endReleaseDate.Value))
                 orderby
                     game.ReleaseDate descending
                 select

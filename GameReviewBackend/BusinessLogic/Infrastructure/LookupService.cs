@@ -28,7 +28,7 @@ namespace BusinessLogic.Infrastructure
             var minReleaseYear = releaseYears.Where(y => y > 1).Min();
             var maxReleaseYear = releaseYears.Max();
 
-            return new DateRangeDto(){ StartYear = minReleaseYear, EndYear = maxReleaseYear };
+            return new DateRangeDto(){ StartYearLimit = minReleaseYear, EndYearLimit = maxReleaseYear };
         }
     }
 }

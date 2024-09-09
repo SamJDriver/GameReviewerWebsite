@@ -2,22 +2,25 @@ import { BsSearch } from "react-icons/bs";
 import { BsCalendarEvent } from "react-icons/bs";
 import { IGenre } from "../../interfaces/IGenre";
 import { BASE_URL } from "../../UrlProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import './GameSearch.css';
 import { Calendar } from "react-date-range";
+import useSWR from "swr";
+import { fetcher } from "../../utils/Fetcher";
 
 interface IReleaseYearRange {
-  startYear: string;
-  endYear: string;
+  startYearLimit: string;
+  endYearLimit: string;
 }
 
 export const GameSearch = () => {
-  const [genres, setGenres] = useState<IGenre[]>();
-  const [releaseYearRange, setReleaseYearRange] = useState<IReleaseYearRange | null>(null);
+  const { data: genres, error: genresError, isLoading: genresIsLoading } = useSWR<IGenre[]>(BASE_URL + '/lookup/genres', fetcher);
+  const { data: releaseYearRange, error: releaseYearRangeError, isLoading: releaseYearRangeIsLoading } = useSWR<IReleaseYearRange>(BASE_URL + '/lookup/release-year-range', fetcher);
+
   const [startReleaseYearDatePickerOpen, setStartReleaseYearDatePickerOpen] = useState<boolean>(false);
   const [endReleaseYearDatePickerOpen, setEndReleaseYearDatePickerOpen] = useState<boolean>(false);
 
@@ -25,17 +28,16 @@ export const GameSearch = () => {
   const [selectedStartReleaseDate, setSelectedStartReleaseDate] = useState<Date | null>(null);
   const [selectedEndReleaseDate, setSelectedEndReleaseDate] = useState<Date | null>(null);
 
-  useEffect(() => {
-      fetch(BASE_URL + '/lookup/genres')
-          .then(response => response.json())
-          .then(data => setGenres(data));
-      fetch(BASE_URL + '/lookup/release-year-range')
-          .then(response => response.json())
-          .then(data => setReleaseYearRange(data));
-  }, []);
+  if (genresError || releaseYearRangeError) {
+    return <div>Failed to load + {genresError} {releaseYearRangeError}</div>
+  }
+
+  if (genresIsLoading || releaseYearRangeIsLoading) {
+    return <div>Loading...</div>
+  }
 
   if (!genres || !releaseYearRange) {
-    return <div> Loading...</div>
+    return <div>Loading...</div>
   }
 
   const GenreCheckboxOnClick = (genreName: string) => {
@@ -75,7 +77,6 @@ export const GameSearch = () => {
     }
   });
 
-
   return (
     <>
         <div className="game-search--container">
@@ -93,7 +94,7 @@ export const GameSearch = () => {
                 <Form>
                   <Dropdown.Menu>
                     {
-                      genres.map( (g: IGenre, index: number) => {
+                      genres?.map( (g: IGenre, index: number) => {
                         if (!g) {
                           return <Dropdown.Item key={index}> Loading ... </Dropdown.Item>
                         }
@@ -119,8 +120,8 @@ export const GameSearch = () => {
             <input placeholder={selectedStartReleaseDate ? selectedStartReleaseDate.toLocaleDateString() : "Start Release Date"} className="form-control game-search--item-background-color" aria-label="search start date" />
             <div id="startReleaseDateCalendar" className="input-group-text" style={{backgroundColor: "rgb(26, 28, 30)", borderStyle: "none"}}>
               <Calendar
-                minDate={new Date(`${releaseYearRange.startYear}-01-01`)} 
-                maxDate={new Date(`${releaseYearRange.endYear}-12-31`)} 
+                minDate={new Date(`${releaseYearRange?.startYearLimit}-01-01`)} 
+                maxDate={new Date(`${releaseYearRange?.endYearLimit}-12-31`)} 
                 className={startReleaseYearDatePickerOpen ? "game-search--date-picker" : "game-search--date-picker-hide"} 
                 onChange={ (event) => { setSelectedStartReleaseDate(event); setStartReleaseYearDatePickerOpen(false);}} /> 
             </div>
@@ -133,8 +134,8 @@ export const GameSearch = () => {
             <input placeholder={selectedEndReleaseDate ? selectedEndReleaseDate.toLocaleDateString() : "End Release Date"} className="form-control game-search--item-background-color" aria-label="search end date" />
             <div id="endReleaseDateCalendar" className="input-group-text" style={{backgroundColor: "rgb(26, 28, 30)", borderStyle: "none"}}>
               <Calendar
-                minDate={new Date(`${releaseYearRange.startYear}-01-01`)} 
-                maxDate={new Date(`${releaseYearRange.endYear}-12-31`)} 
+                minDate={new Date(`${releaseYearRange?.startYearLimit}-01-01`)} 
+                maxDate={new Date(`${releaseYearRange?.endYearLimit}-12-31`)} 
                 className={endReleaseYearDatePickerOpen ? "game-search--date-picker" : "game-search--date-picker-hide"}
                 onChange={ (event) => { setSelectedEndReleaseDate(event); setEndReleaseYearDatePickerOpen(false); }}/> 
             </div>

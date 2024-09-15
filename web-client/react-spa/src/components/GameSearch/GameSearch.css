@@ -58,12 +58,6 @@
   color: rgb(159, 151, 138) !important;
 }
 
-.game-search--open-date-picker {
-  position: relative;
-  height: 3.6em;
-  display: inline-block;
-}
-
 .game-search--date-picker {
   background-color: rgba(26, 28, 30);
   position: absolute;

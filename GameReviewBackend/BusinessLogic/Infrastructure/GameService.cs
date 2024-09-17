@@ -123,7 +123,7 @@ namespace BusinessLogic.Infrastructure
             return gameDto;
         }
 
-        public async Task<PagedResult<GameDto>> SearchGames(string? searchTerm, IEnumerable<int>? genreIds, DateTime? startReleaseDate, DateTime? endReleaseDate, int pageIndex, int pageSize)
+        public async Task<PagedResult<Game_Get_VanillaGame_Dto>> SearchGames(string? searchTerm, IEnumerable<int>? genreIds, DateTime? startReleaseDate, DateTime? endReleaseDate, int pageIndex, int pageSize)
         {
             IEnumerable<GenresLookup?>? genres = genreIds != null ? genreIds.Select(g => _genericRepository.GetById<GenresLookup>(g)) : null;
 
@@ -154,9 +154,9 @@ namespace BusinessLogic.Infrastructure
                         .Skip(pageIndex * pageSize)
                         .Take(pageSize)
                         .ToList()
-                        .Adapt<IEnumerable<GameDto>>();
+                        .Adapt<IEnumerable<Game_Get_VanillaGame_Dto>>();
 
-            return new PagedResult<GameDto>()
+            return new PagedResult<Game_Get_VanillaGame_Dto>()
             {
                 Items = games,
                 TotalRowCount = query.Count(),

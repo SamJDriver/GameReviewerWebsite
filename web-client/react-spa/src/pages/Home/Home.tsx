@@ -9,8 +9,15 @@ import IPaginator from "../../interfaces/IPaginator";
 import IVanillaGame from "../../interfaces/IVanillaGame";
 import IApiResponse from "../../interfaces/IApiResponse";
 import { GameSearch } from "../../components/GameSearch/GameSearch";
+import { useState } from "react";
 
 const Home = () => {
+  const [searchResults, setSearchResults] = useState<IPaginator<IVanillaGame> | null>(null);
+
+  const handleSearchResults = (searchResults: IPaginator<IVanillaGame>) => {
+    setSearchResults(searchResults);
+  }
+
     const paginatedGamesResponse: IApiResponse<IPaginator<IVanillaGame>> = useApi<IPaginator<IVanillaGame>>(BASE_URL + '/game/0/10');
 
     if (paginatedGamesResponse.loading || !paginatedGamesResponse.data){
@@ -26,15 +33,24 @@ const Home = () => {
         <PageLayout>
           <div className="App">
               <AuthenticatedTemplate>
-                <GameSearch />
-                <GameList items={ paginatedGamesResponse.data.items } heading="Popular" />
+                <GameSearch onSearchResults={handleSearchResults} />
+                {
+                  searchResults
+                  ? <GameList items={ searchResults.items } heading="Search Results" />
+                  : <GameList items={ paginatedGamesResponse.data.items } heading="Popular" />
+                }
                 <FriendGameList heading="From Friends" />
               </AuthenticatedTemplate>
 
               <UnauthenticatedTemplate>
-                  <Alert>Please sign-in to see your profile information.</Alert>
-                  <GameList items={ paginatedGamesResponse.data.items }  heading="Popular" />
-              </UnauthenticatedTemplate>
+                <GameSearch onSearchResults={handleSearchResults} />
+                <Alert>Please sign-in to see your profile information.</Alert>
+                {
+                  searchResults
+                  ? <GameList items={ searchResults.items } heading="Search Results" />
+                  : <GameList items={ paginatedGamesResponse.data.items } heading="Popular" />
+                }
+                </UnauthenticatedTemplate>
           </div>
         </PageLayout>
       </>

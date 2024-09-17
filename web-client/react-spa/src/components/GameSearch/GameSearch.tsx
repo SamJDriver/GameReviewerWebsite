@@ -11,13 +11,19 @@ import ISearchGame from "../../interfaces/ISearchGame";
 import { CheckboxDropdownList } from "../CheckboxDropdownList/CheckboxDropdownList";
 import IDropdownItem from "../../interfaces/IDropdownItem";
 import { CalenderDatePicker } from "../CalendarDatePicker/CalendarDatePicker";
+import IPaginator from "../../interfaces/IPaginator";
+import IVanillaGame from "../../interfaces/IVanillaGame";
 
 interface IReleaseYearRange {
   startYearLimit: string;
   endYearLimit: string;
 }
 
-export const GameSearch = () => {
+interface IProps {
+  onSearchResults?: (result: IPaginator<IVanillaGame>) => void;
+}
+
+export const GameSearch = (props: IProps) => {
   const { data: genres, error: genresError, isLoading: genresIsLoading } = useSWR<IGenre[]>(BASE_URL + '/lookup/genres', fetcher);
   const { data: releaseYearRange, error: releaseYearRangeError, isLoading: releaseYearRangeIsLoading } = useSWR<IReleaseYearRange>(BASE_URL + '/lookup/release-year-range', fetcher);
   const [searchParameters, setSearchParameters] = useState<ISearchGame>({
@@ -44,10 +50,22 @@ export const GameSearch = () => {
       params.append('searchTerm', latestSearchParameters.current.searchTerm);
     }
 
+    if (latestSearchParameters.current.selectedGenreIds){
+      latestSearchParameters.current.selectedGenreIds.forEach((genreId) => params.append('genreIds', genreId.toString()));
+    }
+
+    if (latestSearchParameters.current.selectedStartReleaseDate){
+      params.append('startReleaseDate', latestSearchParameters.current.selectedStartReleaseDate.toISOString());
+    }
+
+    if (latestSearchParameters.current.selectedEndReleaseDate){
+      params.append('endReleaseDate', latestSearchParameters.current.selectedEndReleaseDate.toISOString());
+    }
+
     const timeoutId = setTimeout(() => {
       fetch(BASE_URL + '/game/search?' + params.toString())
       .then(res => res.json())
-      .then((data) => console.log(data));
+      .then((data) => props.onSearchResults?.(data));
     }, 2000);
 
     return () => {

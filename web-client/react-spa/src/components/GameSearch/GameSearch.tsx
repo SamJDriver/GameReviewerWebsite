@@ -27,15 +27,27 @@ export const GameSearch = () => {
     selectedEndReleaseDate: null
   });
   const latestSearchParameters = useRef(searchParameters);
+  const initialRenderFlag = useRef(true);
 
   useEffect(() => {
     latestSearchParameters.current = searchParameters;
   }, [searchParameters]);
 
 
-  useEffect(() => { 
+  useEffect(() => {
+    if (initialRenderFlag.current) {
+      initialRenderFlag.current = false;
+      return;
+    }
+    const params = new URLSearchParams();
+    if (latestSearchParameters.current.searchTerm){
+      params.append('searchTerm', latestSearchParameters.current.searchTerm);
+    }
+
     const timeoutId = setTimeout(() => {
-      console.log(latestSearchParameters.current);
+      fetch(BASE_URL + '/game/search?' + params.toString())
+      .then(res => res.json())
+      .then((data) => console.log(data));
     }, 2000);
 
     return () => {
@@ -55,8 +67,6 @@ export const GameSearch = () => {
     return <div>Loading...</div>
   }
 
-
-
   return (
     <>
       <div className="game-search--container">
@@ -72,7 +82,7 @@ export const GameSearch = () => {
         </div>
 
         <CheckboxDropdownList
-          onItemSelected={(event) => setSearchParameters({...searchParameters, selectedGenreIds: event.map((item: IDropdownItem) => item.id)})} 
+          onItemSelected={(event) => setSearchParameters({...searchParameters, selectedGenreIds: event?.map((item: IDropdownItem) => item.id) ?? null })} 
           heading="Genres"
           items={genres} />
 

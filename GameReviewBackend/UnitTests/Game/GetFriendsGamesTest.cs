@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Azure.Identity;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Components.Exceptions;
+using BusinessLogic.Abstractions;
 
 
 namespace UnitTests.Game;
@@ -32,6 +33,7 @@ public class GetFriendsGamesTest : BaseTest
         //Arrange
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
         Mock<IGameRepository> mockGameRepository = new();
+        Mock<ILookupService> mockLookupService = new();
 
         var options = new ClientSecretCredentialOptions { AuthorityHost = AzureAuthorityHosts.AzurePublicCloud };
         var clientSecretCredential = new ClientSecretCredential(_configuration["AzureAd:TenantId"], _configuration["AzureAd:ClientId"], _configuration["AzureAd:ClientSecret"], options);
@@ -51,7 +53,7 @@ public class GetFriendsGamesTest : BaseTest
 
         mockGameRepository.Setup(m => m.GetFriendsGames(It.IsAny<string>())).Returns(games.AsAsyncQueryable());
 
-        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient, mockLookupService.Object);
 
         //Act
         PagedResult<Game_GetList_Dto>? retrievedGames = await subjectUnderTest.GetGamesPopularWithFriends(0, pageSize, userId);
@@ -72,9 +74,10 @@ public class GetFriendsGamesTest : BaseTest
         // Arrange
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
         Mock<IGameRepository> mockGameRepository = new();
+        Mock<ILookupService> mockLookupService = new();
         var graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
 
-        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient, mockLookupService.Object);
         
         // Act & Assert
         using (new AssertionScope())

@@ -9,6 +9,7 @@ using Moq;
 using DataAccess.Models.DockerDb;
 using Components.Exceptions;
 using Components.Models;
+using BusinessLogic.Abstractions;
 
 namespace UnitTests.Game;
 
@@ -23,10 +24,11 @@ public class CreateGameTest : BaseTest
 
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
         Mock<IGameRepository> mockGameRepository = new();
+        Mock<ILookupService> mockLookupService = new();
         GraphServiceClient graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
 
         mockGenericRepository.Setup(m => m.InsertRecordAsync(It.IsAny<Games>())).Returns(Task.FromResult(1));
-        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient, mockLookupService.Object);
 
         //Act
         var newId = await subjectUnderTest.CreateGame(gameDto, expecteCreatedBy);
@@ -45,9 +47,10 @@ public class CreateGameTest : BaseTest
         // Arrange
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
         Mock<IGameRepository> mockGameRepository = new();
+        Mock<ILookupService> mockLookupService = new();
         GraphServiceClient graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
 
-        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient, mockLookupService.Object);
         var game = TestObjectFactory.GetMockGameDto();
         game.ReleaseDate = _faker.Date.BetweenDateOnly(new DateOnly(1900, 1, 1), new DateOnly(Components.Constants.MinimumReleaseYear, 1, 1));
 
@@ -64,9 +67,10 @@ public class CreateGameTest : BaseTest
         // Arrange
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
         Mock<IGameRepository> mockGameRepository = new();
+        Mock<ILookupService> mockLookupService = new();
         GraphServiceClient graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
 
-        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient, mockLookupService.Object);
         var game = TestObjectFactory.GetMockGameDto();
 
         // Act & Assert
@@ -83,9 +87,10 @@ public class CreateGameTest : BaseTest
         // Arrange
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
         Mock<IGameRepository> mockGameRepository = new();
+        Mock<ILookupService> mockLookupService = new();
         GraphServiceClient graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
 
-        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient, mockLookupService.Object);
         var game = TestObjectFactory.GetMockGameDto();
         var userId = Guid.NewGuid().ToString();
 

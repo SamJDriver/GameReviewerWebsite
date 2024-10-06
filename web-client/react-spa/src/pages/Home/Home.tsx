@@ -14,7 +14,7 @@ import { useState } from "react";
 const Home = () => {
   const [searchResults, setSearchResults] = useState<IPaginator<IVanillaGame> | null>(null);
 
-  const handleSearchResults = (searchResults: IPaginator<IVanillaGame>) => {
+  const handleSearchResults = (searchResults: IPaginator<IVanillaGame> | null) => {
     setSearchResults(searchResults);
   }
 

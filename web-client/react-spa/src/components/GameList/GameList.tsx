@@ -3,7 +3,7 @@ import IVanillaGame from '../../interfaces/IVanillaGame';
 import './GameList.css';
 
 interface IProps {
-  items: IVanillaGame[],
+  items: IVanillaGame[] | null | undefined,
   heading: string
 }
 
@@ -15,10 +15,10 @@ function GameList(props: IProps) {
     <>
       <div className='game-list--container'>
         <div className="list-group-heading game-list--header">{heading}</div>
-        {items.length === 0 && <p>No items found.</p>}
+        {(!items || items.length) === 0 && <p>No items found.</p>}
 
         <ul className="game-list--ul">
-          {items.map((item: any, index: number) => (
+          {items!.map((item: any, index: number) => (
             <li key={index} className={'game-list--li'}>
               <div>
                 <Link to={'game/' + item.id}>

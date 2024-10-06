@@ -20,7 +20,7 @@ interface IReleaseYearRange {
 }
 
 interface IProps {
-  onSearchResults?: (result: IPaginator<IVanillaGame>) => void;
+  onSearchResults?: (result: IPaginator<IVanillaGame> | null) => void;
 }
 
 export const GameSearch = (props: IProps) => {
@@ -45,6 +45,11 @@ export const GameSearch = (props: IProps) => {
       initialRenderFlag.current = false;
       return;
     }
+
+    if (!searchParameters.searchTerm && !searchParameters.selectedGenreIds && !searchParameters.selectedStartReleaseDate && !searchParameters.selectedEndReleaseDate) {
+      props.onSearchResults?.(null);
+    }
+
     const params = new URLSearchParams();
     if (latestSearchParameters.current.searchTerm){
       params.append('searchTerm', latestSearchParameters.current.searchTerm);
@@ -65,8 +70,8 @@ export const GameSearch = (props: IProps) => {
     const timeoutId = setTimeout(() => {
       fetch(BASE_URL + '/game/search?' + params.toString())
       .then(res => res.json())
-      .then((data) => props.onSearchResults?.(data));
-    }, 2000);
+      .then((data) => { props.onSearchResults?.(data); console.log(data); });
+    }, 1000);
 
     return () => {
       clearTimeout(timeoutId);

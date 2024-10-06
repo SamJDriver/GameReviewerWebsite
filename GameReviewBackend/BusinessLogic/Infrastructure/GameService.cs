@@ -148,12 +148,11 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Start date is after end date.", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            var query = _gameRepository.SearchGames(searchTerm, genreIds, startReleaseDate, endReleaseDate);
+            var query = _gameRepository.SearchGamesSP(searchTerm, genreIds, startReleaseDate, endReleaseDate);
 
             var games = query
                         .Skip(pageIndex * pageSize)
                         .Take(pageSize)
-                        .ToList()
                         .Adapt<IEnumerable<Game_Get_VanillaGame_Dto>>();
 
             return new PagedResult<Game_Get_VanillaGame_Dto>()

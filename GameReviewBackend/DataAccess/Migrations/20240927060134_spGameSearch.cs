@@ -14,7 +14,6 @@ namespace DataAccess.Migrations
           
           var sp = @"
           DROP PROCEDURE IF EXISTS spGameSearch;
-          DELIMITER $$
           CREATE PROCEDURE spGameSearch(
               IN pSearchTerm VARCHAR(255)
               , IN pGenreIds VARCHAR(255)
@@ -70,8 +69,7 @@ namespace DataAccess.Migrations
           	LIMIT pPageSize OFFSET pOffset;
 
               DROP TABLE IF EXISTS Temp;
-          END$$
-          DELIMITER ;
+            END
           ";
         
         migrationBuilder.Sql(sp);

@@ -10,3 +10,15 @@
   margin-top: 5px;
 }
 
+
+.page-layout--nav-link {
+  color: white !important;
+}
+
+.page-layout--nav-link-active {
+  color: #62a0de !important;
+}
+
+ul li a:hover {
+  color: #62a0de !important;
+}

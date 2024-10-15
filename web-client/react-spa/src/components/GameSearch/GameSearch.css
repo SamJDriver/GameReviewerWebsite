@@ -33,6 +33,7 @@
 .game-search--text-box {
   height: 3.6em !important;
   overflow: hidden !important;
+  text-align: left !important;
 }
 
 .dropdown-menu {
@@ -49,8 +50,11 @@
 }
 
 .game-search--genre-item {
+  text-align: left;
   overflow: hidden;
   display: inline-block;
+  font-size: .8em;
+  width: 40%;
   background-color: rgb(35, 40, 40);
   border-radius: 5px;
   margin-top: 5px;

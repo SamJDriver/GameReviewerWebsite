@@ -10,6 +10,7 @@ import IVanillaGame from "../../interfaces/IVanillaGame";
 import IApiResponse from "../../interfaces/IApiResponse";
 import { GameSearch } from "../../components/GameSearch/GameSearch";
 import { useState } from "react";
+import "./Home.css";
 
 const Home = () => {
   const [searchResults, setSearchResults] = useState<IPaginator<IVanillaGame> | null>(null);
@@ -30,8 +31,7 @@ const Home = () => {
 
     return (
       <>
-        <PageLayout>
-          <div className="App">
+          <div className="home--container">
               <AuthenticatedTemplate>
                 <GameSearch onSearchResults={handleSearchResults} />
                 {
@@ -52,7 +52,6 @@ const Home = () => {
                 }
                 </UnauthenticatedTemplate>
           </div>
-        </PageLayout>
       </>
     );
 };

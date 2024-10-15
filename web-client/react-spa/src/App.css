@@ -14,15 +14,13 @@
   background-color: var(--main-color-background);
 }
 
-.App {
-  /* text-align: center; */
-  padding: 8px;
-  font-family: var(--main-font-family);
-  color: white;
+html, body, #app, #app>div {
+  height: 100%;
+  background-color: var(--main-color-background);
 }
 
-.nav-link {
-  color: white !important;
+div {
+  color: var(--main-font-color);
 }
 
 .list-group-heading {

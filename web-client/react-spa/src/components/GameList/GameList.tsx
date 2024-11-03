@@ -20,7 +20,7 @@ function GameList(props: IProps) {
         <ul className="game-list--ul">
           {items!.map((item: any, index: number) => (
             <li key={index} className={'game-list--li'}>
-              <div>
+              <div style={{width: '100%', height: '100%'}}>
                 <Link to={'game/' + item.id}>
                      <img 
                        className='game-list--image'

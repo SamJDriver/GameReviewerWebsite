@@ -1,5 +1,5 @@
 const useBaseUrlResolver = () => {
-    const BASE_URL = 'http://localhost:3000'
+    const BASE_URL = 'https://localhost:7272/api';
     return BASE_URL;
 }
 

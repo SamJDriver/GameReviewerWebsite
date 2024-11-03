@@ -4,6 +4,7 @@ import { BASE_URL } from "../../UrlProvider";
 import HorizontalScrollingImageList from "../../components/HorizontalScrollingImageList/HorizontalScrollingImageList";
 import IImageScrollItem from "../../interfaces/IImageScrollItem";
 import './Game.css';
+import { Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
 
 interface Company {
   companyId: number,
@@ -65,14 +66,22 @@ const Game = () => {
 
   return (
     <>
-      <h1>{game.title}</h1>
+    <div className="game--container">
+      <div style={{display: 'inline-flex'}}>
+        <span style={{fontSize: 'xx-large'}}>{game.title}&nbsp;&nbsp;</span>
+        {/* <div style={{flex: 1, backgroundColor: 'green'}}>test</div> */}
+        <DropdownButton title="Add to My List" variant="secondary" style={{marginTop: '8px'}}>
+          <Dropdown.Item  className="game--list-status-button-text" eventKey="1">Played</Dropdown.Item>
+          <Dropdown.Item  className="game--list-status-button-text" eventKey="2">In Progress</Dropdown.Item>
+          <Dropdown.Item  className="game--list-status-button-text" eventKey="3">Want to Play</Dropdown.Item>
+        </DropdownButton>
+      </div>
+      <hr/>      
       <div className="game--cover-image-and-description-container">
         <HorizontalScrollingImageList initialItemList={gameArtworkItems} /> 
       </div>
-      <div className="game--description-container">
+      <div className="game--text-container">
         <span>{game.description}</span>
-      </div>
-      <div>
         <br/>
         <p><b>Genre(s):&nbsp;</b>{game.genres.map((g: Genre) => g.name).join(', ')}</p>
         <br/>
@@ -80,6 +89,7 @@ const Game = () => {
         <br/>
         <p><b>Companies:&nbsp;</b>{game.companies.map((c: Company) => c.companyName).join(', ')}</p>
       </div>
+    </div>
     </>
   )
 }

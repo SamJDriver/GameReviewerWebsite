@@ -1,12 +1,15 @@
-.game--cover-image-and-description-container {
-  width: 40%;
-  float: left;
-}
-.game--description-text {
-  background-color: red;
-  float: left;
+.game--container {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.game--description-container {
+.game--list-status-button-text:hover {
+  background-color: rgb(29, 32, 34) !important;
+  color: rgb(68, 172, 226)!important;
+}
+
+.game--list-status-button-text {
+  color: rgb(212, 206, 197) !important;
 }
 

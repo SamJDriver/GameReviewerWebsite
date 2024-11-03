@@ -45,8 +45,8 @@ namespace Repositories
                     ))
                     && (startReleaseDate == null || game.ReleaseDate >= DateOnly.FromDateTime(startReleaseDate.Value))
                     && (endReleaseDate == null || game.ReleaseDate <= DateOnly.FromDateTime(endReleaseDate.Value))
-                orderby
-                    game.ReleaseDate descending
+                // orderby
+                //     game.ReleaseDate descending
                 select
                     game;
 

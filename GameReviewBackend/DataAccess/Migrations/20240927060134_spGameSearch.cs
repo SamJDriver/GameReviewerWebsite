@@ -13,6 +13,7 @@ namespace DataAccess.Migrations
         {
           
           var sp = @"
+          DELIMITER $$
           DROP PROCEDURE IF EXISTS spGameSearch;
           CREATE PROCEDURE spGameSearch(
               IN pSearchTerm VARCHAR(255)
@@ -22,11 +23,11 @@ namespace DataAccess.Migrations
               , IN pPageIndex INT
               , IN pPageSize INT
           )
-            BEGIN
+          BEGIN
               DECLARE V_Max INT;
               DECLARE V_Min INT DEFAULT 1;
               DECLARE V_Str VARCHAR(50) DEFAULT '';
-          	DECLARE pOffset INT;
+          	  DECLARE pOffset INT;
 
               DECLARE pString VARCHAR(500);
               SET pString = (CASE WHEN RIGHT(pGenreIds, 1) = ',' THEN pGenreIds ELSE CONCAT(pGenreIds, ',') END);
@@ -56,20 +57,26 @@ namespace DataAccess.Migrations
                 games.parent_game_id
               FROM
                  games 
-          	JOIN
+          	  JOIN
                 games_genres_lookup_link
                 ON games.id = games_genres_lookup_link.game_id
-          	GROUP BY
+              WHERE
+                (pSearchTerm IS NULL OR games.title LIKE CONCAT('%', pSearchTerm, '%'))
+                AND (pStartReleaseDate IS NULL OR games.release_date >= pStartReleaseDate)
+                AND (pEndReleaseDate IS NULL OR games.release_date <= pEndReleaseDate)
+          	  GROUP BY
                 games.id
-          	HAVING
+          	  HAVING
                 COUNT(DISTINCT games_genres_lookup_link.genre_lookup_id) >= (SELECT COUNT(*) FROM Temp)
                 AND COUNT(DISTINCT CASE WHEN games_genres_lookup_link.genre_lookup_id IN (SELECT Item FROM Temp) THEN games_genres_lookup_link.genre_lookup_id END) >= (SELECT COUNT(*) FROM Temp)
-          	ORDER BY
-                games.release_date DESC
-          	LIMIT pPageSize OFFSET pOffset;
+          	  LIMIT 
+                pPageSize 
+              OFFSET
+                pOffset;
 
               DROP TABLE IF EXISTS Temp;
-            END
+            END$$
+            DELIMITER ;
           ";
         
         migrationBuilder.Sql(sp);

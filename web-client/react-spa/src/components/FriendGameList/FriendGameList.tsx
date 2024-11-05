@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { BASE_URL } from '../../UrlProvider';
 import '../GameList/GameList.css';
 import '../FriendGameList/FriendGameList.css';
+import { Spinner } from 'react-bootstrap';
 
 interface IProps {
   heading: string
@@ -26,7 +27,11 @@ function FriendGameList(props: IProps) {
   }, [token]);
 
   if (!data) {
-    return <p>Loading...</p>;
+    return (
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    );
   }
 
   const items = data.items;

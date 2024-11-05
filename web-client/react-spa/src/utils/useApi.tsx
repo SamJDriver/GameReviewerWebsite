@@ -18,3 +18,4 @@ export function useApi<T>(url: string): IApiResponse<T>{
 
   return { data, loading, error };
 };
+

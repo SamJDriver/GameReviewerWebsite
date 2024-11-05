@@ -10,3 +10,10 @@ export interface IPlayRecord {
     CreatedDate: Date;
   }
   
+  export interface IPlayRecord_Create {
+    GameId: number;
+    CompletedFlag: boolean;
+    HoursPlayed: number;
+    Rating: number;
+    PlayDescription: string;
+  }

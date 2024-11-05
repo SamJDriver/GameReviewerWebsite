@@ -5,6 +5,11 @@ import HorizontalScrollingImageList from "../../components/HorizontalScrollingIm
 import IImageScrollItem from "../../interfaces/IImageScrollItem";
 import './Game.css';
 import { Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
+import { fetcher } from "../../utils/Fetcher";
+import useSWR from "swr";
+import { usePostRequest } from "../../utils/usePostRequest";
+import { IPlayRecord_Create } from "../../interfaces/IPlayRecord";
+import { useToken } from "../../utils/useToken";
 
 interface Company {
   companyId: number,
@@ -30,7 +35,7 @@ interface Platform {
   imageFilePath: string
 }
 
-interface Game_Get_ById {
+interface IGame_Get_ById {
   artworkUrls: string[],
   childGameIds: number[],
   companies: Company[],
@@ -46,15 +51,17 @@ interface Game_Get_ById {
 
 const Game = () => {
   const gameId = useParams().gameId;
-  const [game, setGame] = useState<Game_Get_ById>();
-
-  useEffect(() => {
-      fetch(BASE_URL + '/game/' + gameId)
-          .then(response => response.json())
-          .then(data => setGame(data));
-  }, [gameId]);
+  const { data: game, error: gameError, isLoading: gameIsLoading } = useSWR<IGame_Get_ById>(BASE_URL + '/game/' + gameId, fetcher);
+  const { postData, isLoading, error } = usePostRequest();
+  const { token } = useToken();
 
   if (!game) { return <div>Loading...</div> }
+
+
+  const handleSubmit = async (args: IPlayRecord_Create) => {
+    await postData(BASE_URL + '/play-record', args, { 'Authorization': 'Bearer ' + token });
+  };
+
 
   let gameArtworkItems: IImageScrollItem[] = game.artworkUrls.map( (imageUrl: string) => { return { imageSourceUrl: imageUrl, focusedItemFlag: false }});
 
@@ -71,7 +78,7 @@ const Game = () => {
         <span style={{fontSize: 'xx-large'}}>{game.title}&nbsp;&nbsp;</span>
         {/* <div style={{flex: 1, backgroundColor: 'green'}}>test</div> */}
         <DropdownButton title="Add to My List" variant="secondary" style={{marginTop: '8px'}}>
-          <Dropdown.Item  className="game--list-status-button-text" eventKey="1">Played</Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSubmit({GameId: game.id, CompletedFlag: true, HoursPlayed: 4, Rating: 98, PlayDescription: 'test'}) } className="game--list-status-button-text" eventKey="1">Played</Dropdown.Item>
           <Dropdown.Item  className="game--list-status-button-text" eventKey="2">In Progress</Dropdown.Item>
           <Dropdown.Item  className="game--list-status-button-text" eventKey="3">Want to Play</Dropdown.Item>
         </DropdownButton>

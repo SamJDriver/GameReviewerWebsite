@@ -71,7 +71,7 @@ namespace BusinessLogic.Infrastructure
             };
         }
 
-        public async Task<PagedResult<Game_GetList_Dto>?> GetGamesPopularWithFriends(int pageIndex, int pageSize, string? userId)
+        public async Task<PagedResult<Game_PlayRecordList_Dto>?> GetGamesPopularWithFriends(int pageIndex, int pageSize, string? userId)
         {
             if (userId is null)
             {
@@ -83,7 +83,7 @@ namespace BusinessLogic.Infrastructure
                     .Skip(pageIndex * pageIndex)
                     .Take(pageSize)
                     .ToListAsync())
-                    .Adapt<Game_GetList_Dto[]>();
+                    .Adapt<Game_PlayRecordList_Dto[]>();
 
             if (data.Length == 0)
             {
@@ -92,19 +92,22 @@ namespace BusinessLogic.Infrastructure
 
             var requestBody = new GetByIdsPostRequestBody()
             { 
-                Ids = data.Select(d => d.ReviewerId).ToList<string>(),
+                Ids = data.SelectMany(d => d.PlayRecords).Select(p => p.CreatedBy).ToList<string>(),
                 Types = new List<string> { "user" }
             };
             
             var result = (await _graphServiceClient.DirectoryObjects.GetByIds.PostAsGetByIdsPostResponseAsync(requestBody))?.Value;
-            
-            return new PagedResult<Game_GetList_Dto>()
-            {
-                Items = data.Select(d =>  { 
 
-                    d.ReviewerName = (result?.FirstOrDefault(r => r.Id == d.ReviewerId) as Microsoft.Graph.Models.User)?.DisplayName;
-                    return d; 
+            return new PagedResult<Game_PlayRecordList_Dto>()
+            {
+                Items = data.Select(d => {
+                     d.PlayRecords.Select(p => {
+                        p.CreatedByName = (result?.FirstOrDefault(r => r.Id == p.CreatedBy) as Microsoft.Graph.Models.User)?.DisplayName;
+                        return p; 
+                    }); 
+                    return d;
                 }),
+
                 TotalRowCount = query.Count(),
                 PageIndex = pageIndex,
                 PageSize = pageSize,

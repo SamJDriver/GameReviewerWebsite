@@ -35,6 +35,10 @@ function FriendGameList(props: IProps) {
   }
 
   const items = data.items;
+
+  if (!items) {
+    return <p>No items found.</p>;
+  }
   
   return (
     <>
@@ -61,7 +65,6 @@ function FriendGameList(props: IProps) {
                       {item.title}
                     </span>
                     <br/>
-                    <span className='friend-game-list--supplemental-text'> {item.reviewerName} • {item.rating}% <br/> {format(item.reviewDate, 'MM-dd-yyyy')} </span>
                   </div>
               </div>
             </li>

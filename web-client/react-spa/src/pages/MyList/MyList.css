@@ -12,12 +12,15 @@
 .grid-header {
   text-align: center;
   font-size: 1.3em;
+  margin-bottom: .5em;
+  border-bottom: rgb(73, 73, 73) solid 1px;
 }
 
 .grid-row {
   display: grid;
   grid-template-columns: 3fr 1fr 1fr 1fr;
   grid-column: 1/-1;
+  padding: .2em;
 }
 
 .grid-row:hover {

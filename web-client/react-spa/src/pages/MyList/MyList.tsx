@@ -30,9 +30,9 @@ const MyList = () => {
 
             {playRecords.map((playRecord: any, index: number) =>  (
                 <div key={index} className="grid-row">
-                    <div style={{textAlign: 'left', fontSize: '1em'}}>
-                        <img style={{width: '4em', height: 'auto'}} src={playRecord.coverImageUrl} />
-                        <span>{playRecord.gameTitle}</span>
+                    <div style={{textAlign: 'left', fontSize: '1em', overflow: 'hidden'}}>
+                        <img style={{width: '4em', height: 'auto', borderRadius: '5px'}} src={playRecord.coverImageUrl} />
+                        <span style={{marginLeft: '1em'}}>{playRecord.gameTitle}</span>
                     </div>
                     <div className="grid-item">
                         <span>{playRecord.rating}</span>

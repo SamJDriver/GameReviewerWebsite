@@ -1,4 +1,35 @@
-.h1 {
-    color: white;
-    text-align: center;
+.grid-container {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    padding: 10px;
+    background-color: rgb(31, 31, 31);
+    border-radius: 10px;
+}
+
+.grid-header {
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 1fr;
+  grid-column: 1/-1;
+}
+
+.grid-row:hover {
+  background-color: #62a0de !important;
+  cursor: pointer;
+}
+
+.grid-item {
+  font-size: 1em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }

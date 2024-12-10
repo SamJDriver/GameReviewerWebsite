@@ -14,12 +14,13 @@ import { fetcher, fetcherToken } from "../../utils/Fetcher";
 import useSWR from "swr";
 import useBaseUrlResolver from "../../utils/useBaseUrlResolver";
 import { Spinner } from "react-bootstrap";
+import IFriendPlayRecordGame from "../../interfaces/IFriendPlayRecordGame";
 
 const Home = () => {
   const [searchResults, setSearchResults] = useState<IPaginator<IVanillaGame> | null>(null);
   const baseUrl = useBaseUrlResolver();
   const { token } = useToken();
-  const {data: friendGames, error: friendGamesError, isLoading: friendGamesIsLoading } = useSWR([`${baseUrl}/game/friend/0/8`, token], ([url, token]) => fetcherToken(url, token));
+  const {data: friendGames, error: friendGamesError, isLoading: friendGamesIsLoading } = useSWR<IPaginator<IFriendPlayRecordGame>>([`${baseUrl}/game/friend/0/8`, token], ([url, token]) => fetcherToken(url, token));
   const {data: popularGames, error: popularGamesError, isLoading: popularGamesIsLoading } =  useSWR<IPaginator<IVanillaGame>>(BASE_URL + '/game/0/8', fetcher);
 
   if (popularGamesIsLoading){
@@ -27,6 +28,8 @@ const Home = () => {
       <span className="visually-hidden">Loading...</span>
     </Spinner>
   }
+
+  console.log(friendGames);
 
   const handleSearchResults = (searchResults: IPaginator<IVanillaGame> | null) => {
     setSearchResults(searchResults);

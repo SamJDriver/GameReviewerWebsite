@@ -3,16 +3,17 @@ import IVanillaGame from '../../interfaces/IVanillaGame';
 import './GameList.css';
 import { Button } from 'react-bootstrap';
 import { SlArrowLeft, SlArrowRight } from 'react-icons/sl';
+import IFriendPlayRecordGame from '../../interfaces/IFriendPlayRecordGame';
 
 interface IProps {
-  items: IVanillaGame[] | null | undefined,
+  items: IVanillaGame[] | IFriendPlayRecordGame[] | null | undefined,
   heading: string
 }
 
 function GameList(props: IProps) {
   const items = props.items;
   const heading = props.heading;
-
+  
   return (
     <>
       <div className='game-list--container'>
@@ -26,9 +27,9 @@ function GameList(props: IProps) {
             <button className='game-list--page-button'>
               <SlArrowLeft/>
             </button>
-            {items!.map((item: IVanillaGame, index: number) =>  (
+            {items!.map((item: any, index: number) =>  (
               <li className='game-list--grid-item' key={index}>
-                <Link to={'game/' + item.id}>
+                <Link to={'game/' + (item.id ?? item.gameId)}>
                   <img className='game-list--img' src={item.coverImageUrl} />
                 </Link>
               </li>

@@ -5,7 +5,7 @@ export const fetcher = async (url: string, token?: string | undefined | null) =>
     return data;
   };
 
-export const fetcherToken = async (url: string, token?: string | undefined | null) => {
+export const fetcherToken = async (url: string, token?: string | undefined | unknown |null) => {
   if (!token) {
     return null;
   }

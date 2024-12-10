@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  useMsal } from '@azure/msal-react';
+import {  useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { loginRequest } from '../authConfig';
 
 export function useToken() {
@@ -13,10 +13,12 @@ export function useToken() {
           ...loginRequest,
           account: currentAccount,
         };
-
-      instance.acquireTokenSilent(accessTokenRequest).then((response) => {
+        
+        instance.acquireTokenSilent(accessTokenRequest).then((response) => {
           setToken(response.accessToken);
       });
+      
   }, []);
+
   return { token: token };
 }

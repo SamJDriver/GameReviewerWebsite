@@ -70,7 +70,7 @@ export const GameSearch = (props: IProps) => {
     const timeoutId = setTimeout(() => {
       fetch(BASE_URL + '/game/search?' + params.toString())
       .then(res => res.json())
-      .then((data) => { props.onSearchResults?.(data); console.log(data); });
+      .then((data) => { props.onSearchResults?.(data); });
     }, 1000);
 
     return () => {

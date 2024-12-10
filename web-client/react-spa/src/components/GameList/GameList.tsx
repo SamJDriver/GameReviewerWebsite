@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import IVanillaGame from '../../interfaces/IVanillaGame';
 import './GameList.css';
+import { Button } from 'react-bootstrap';
+import { SlArrowLeft, SlArrowRight } from 'react-icons/sl';
 
 interface IProps {
   items: IVanillaGame[] | null | undefined,
@@ -14,30 +16,26 @@ function GameList(props: IProps) {
   return (
     <>
       <div className='game-list--container'>
-        <div className="list-group-heading game-list--header">{heading}</div>
+        <div className="list-group-heading game-list--header">
+          {heading}
+        </div>
+
         {(!items || items.length) === 0 && <p>No items found.</p>}
 
-        <ul className="game-list--ul">
-          {items!.map((item: any, index: number) => (
-            <li key={index} className={'game-list--li'}>
-              <div style={{width: '100%', height: '100%'}}>
+        <ul className="game-list--grid-container">
+            <button className='game-list--page-button'>
+              <SlArrowLeft/>
+            </button>
+            {items!.map((item: IVanillaGame, index: number) =>  (
+              <li className='game-list--grid-item' key={index}>
                 <Link to={'game/' + item.id}>
-                     <img 
-                       className='game-list--image'
-                       src={item.coverImageUrl}
-                       alt={item.title}
-                       height='100%'
-                       width='100%'
-                     />
+                  <img className='game-list--img' src={item.coverImageUrl} />
                 </Link>
-                <div className="game-list--main-text-container"> 
-                  <span className='game-list--main-text-span'>
-                    {item.title}
-                  </span>
-                </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            ))}
+            <button className='game-list--page-button'>
+              <SlArrowRight/>
+            </button>
         </ul>
       </div>
     </>

@@ -1,6 +1,6 @@
 .focused-image-list--container {
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   background-color: rgb(15, 19, 23, 0.5);
 }
 

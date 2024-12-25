@@ -1,16 +1,16 @@
 import { useParams } from "react-router";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BASE_URL } from "../../UrlProvider";
 import HorizontalScrollingImageList from "../../components/HorizontalScrollingImageList/HorizontalScrollingImageList";
 import IImageScrollItem from "../../interfaces/IImageScrollItem";
 import './Game.css';
-import { Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
+import { Button, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
 import { fetcher } from "../../utils/Fetcher";
 import useSWR from "swr";
 import { usePostRequest } from "../../utils/usePostRequest";
 import { IPlayRecord_Create } from "../../interfaces/IPlayRecord";
 import { useToken } from "../../utils/useToken";
-
+import { GenericModal } from "../../components/GenericModal/GenericModal";
 interface Company {
   companyId: number,
   companyName: string,
@@ -54,6 +54,8 @@ const Game = () => {
   const { data: game, error: gameError, isLoading: gameIsLoading } = useSWR<IGame_Get_ById>(BASE_URL + '/game/' + gameId, fetcher);
   const { postData, isLoading, error } = usePostRequest();
   const { token } = useToken();
+  const [showModal, setShowModal] = useState(false);
+
 
   if (!game) { return <div>Loading...</div> }
 
@@ -61,6 +63,15 @@ const Game = () => {
   const handleSubmit = async (args: IPlayRecord_Create) => {
     await postData(BASE_URL + '/play-record', args, { 'Authorization': 'Bearer ' + token });
   };
+
+  const handleOpenPlayRecordModal = () => {
+    setShowModal(true);
+  };
+
+  const handleClosePlayRecordModal = () => {
+    setShowModal(false);
+  };
+
 
 
   let gameArtworkItems: IImageScrollItem[] = game.artworkUrls.map( (imageUrl: string) => { return { imageSourceUrl: imageUrl, focusedItemFlag: false }});
@@ -76,12 +87,19 @@ const Game = () => {
     <div className="game--container">
       <div style={{display: 'inline-flex'}}>
         <span style={{fontSize: 'xx-large'}}>{game.title}&nbsp;&nbsp;</span>
-        {/* <div style={{flex: 1, backgroundColor: 'green'}}>test</div> */}
-        <DropdownButton title="Add to My List" variant="secondary" style={{marginTop: '8px'}}>
+
+        <Button variant="secondary" onClick={handleOpenPlayRecordModal}>Add to My List</Button>
+
+        <GenericModal
+          show={showModal} 
+          onHide={handleClosePlayRecordModal} />
+
+
+        {/* <DropdownButton title="Add to My List" variant="secondary" style={{marginTop: '8px'}}>
           <Dropdown.Item onClick={() => handleSubmit({GameId: game.id, CompletedFlag: true, HoursPlayed: 4, Rating: 98, PlayDescription: 'test'}) } className="game--list-status-button-text" eventKey="1">Played</Dropdown.Item>
           <Dropdown.Item  className="game--list-status-button-text" eventKey="2">In Progress</Dropdown.Item>
           <Dropdown.Item  className="game--list-status-button-text" eventKey="3">Want to Play</Dropdown.Item>
-        </DropdownButton>
+        </DropdownButton> */}
       </div>
       <hr/>      
       <div className="game--cover-image-and-description-container">

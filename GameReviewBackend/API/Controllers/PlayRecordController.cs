@@ -19,13 +19,10 @@ namespace GameReview.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        [RequiredScope("gamereview-user")]
-        public async Task<ActionResult> GetPlayRecords()
+        public async Task<ActionResult> GetPlayRecords([FromQuery]int? gameId, [FromQuery] string? userId)
         {
-            var userId = User.GetObjectId();
-            var playRecords = await _playRecordService.GetSelfPlayRecords(userId);
-            return Ok(playRecords);
+            var playRecords = await _playRecordService.GetPlayRecords(gameId, userId ?? User.GetObjectId());
+            return Ok(playRecords.Any() ? playRecords : null);
         }
 
         [HttpGet("{playRecordId}")]

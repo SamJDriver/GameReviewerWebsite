@@ -20,12 +20,12 @@ public class PlayRecordService : IPlayRecordService
         _graphServiceClient = graphServiceClient;
     }
 
-    public async Task<IEnumerable<PlayRecord_GetSelf_Dto>> GetSelfPlayRecords(string? userId)
+    public async Task<IEnumerable<PlayRecord_GetSelf_Dto>> GetPlayRecords(int? gameId, string? userId)
     {
         if (userId is null)
             throw new DgcException("Can't create play record. User not found.", DgcExceptionType.Unauthorized);
 
-        var selfPlayrecords = _genericRepository.GetMany<PlayRecords>(p => p.CreatedBy == userId)
+        var selfPlayrecords = _genericRepository.GetMany<PlayRecords>(p => p.CreatedBy == userId && (gameId == null || p.GameId == gameId))
         .Select(p => p.Adapt<PlayRecord_GetSelf_Dto>()).ToArray();
         return selfPlayrecords;
     }

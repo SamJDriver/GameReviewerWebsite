@@ -9,8 +9,9 @@ import { fetcher } from "../../utils/Fetcher";
 import useSWR from "swr";
 import { usePostRequest } from "../../utils/usePostRequest";
 import { IPlayRecord, IPlayRecord_Create } from "../../interfaces/IPlayRecord";
-import { useToken } from "../../utils/useToken";
-import { GenericModal } from "../../components/GenericModal/GenericModal";
+import { PlayRecordModal } from "../../components/PlayRecordModal/PlayRecordModal";
+import { useMsal } from "@azure/msal-react";
+
 interface Company {
   companyId: number,
   companyName: string,
@@ -52,9 +53,9 @@ interface IGame_Get_ById {
 const Game = () => {
   const gameId = useParams().gameId;
   const { data: game, error: gameError, isLoading: gameIsLoading } = useSWR<IGame_Get_ById>(BASE_URL + '/game/' + gameId, fetcher);
-  const { data: existingPlayRecord, error: existingPlayRecordError, isLoading: existingPlayRecordIsLoading } = useSWR<IPlayRecord>(BASE_URL + '/play-record/?gameId=' + gameId + '&userId=061c04d1-dd51-438c-8cd1-3d32388158e9', fetcher);
+  const { instance } = useMsal();
+  const { data: existingPlayRecord, error: existingPlayRecordError, isLoading: existingPlayRecordIsLoading } = useSWR<IPlayRecord[]>(BASE_URL + '/play-record/?gameId=' + gameId + '&userId=' + instance.getActiveAccount()?.localAccountId, fetcher);
   const [showModal, setShowModal] = useState(false);
-
 
   if (!game) { return <div>Loading...</div> }
 
@@ -66,9 +67,7 @@ const Game = () => {
     setShowModal(false);
   };
 
-  console.log('existingPlayRecord', existingPlayRecord);
-
-
+  console.log('in gamer', existingPlayRecord);
 
   let gameArtworkItems: IImageScrollItem[] = game.artworkUrls.map( (imageUrl: string) => { return { imageSourceUrl: imageUrl, focusedItemFlag: false }});
 
@@ -85,14 +84,24 @@ const Game = () => {
         <span style={{fontSize: 'xx-large'}}>{game.title}</span>
         
         {existingPlayRecord ?
-          <Button variant="secondary" onClick={handleOpenPlayRecordModal}>Edit Play Record</Button>  
-
+          <>
+            <Button variant="secondary" onClick={handleOpenPlayRecordModal}>
+              Edit Play Record
+            </Button>  
+            <PlayRecordModal
+              gameId={game.id}
+              show={showModal}
+              playRecord={(existingPlayRecord as IPlayRecord[])[0]} 
+              onHide={handleClosePlayRecordModal} />
+          </>
               :
               <>
-              <Button variant="secondary" onClick={handleOpenPlayRecordModal}>Add to My List</Button>
-                  <GenericModal
+              <Button variant="secondary" onClick={handleOpenPlayRecordModal}>
+                Add to My List
+              </Button>
+                  <PlayRecordModal
                     gameId={game.id}
-                    show={showModal} 
+                    show={showModal}
                     onHide={handleClosePlayRecordModal} />
             </>
         }

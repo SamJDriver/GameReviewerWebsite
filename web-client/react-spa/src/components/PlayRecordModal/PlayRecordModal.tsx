@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import './GenericModal.css';
+import './PlayRecordModal.css';
 import { usePostRequest } from '../../utils/usePostRequest';
 import { useToken } from '../../utils/useToken';
 import { BASE_URL } from "../../UrlProvider";
@@ -9,18 +9,19 @@ import { IPlayRecord, IPlayRecord_Create } from '../../interfaces/IPlayRecord';
 import { Dropdown, Form } from 'react-bootstrap';
 import useSWR from 'swr';
 import { fetcher } from '../../utils/Fetcher';
+import { usePutRequest } from '../../utils/usePutRequest';
 
-interface IGenericModalProps {
+interface IPlayRecordModalProps {
     gameId: number;
     show: boolean;
+    playRecord?: IPlayRecord;
     onHide: () => void;
 }
 
-export const GenericModal = (props: IGenericModalProps) => {
-    const { postData, isLoading, error } = usePostRequest();
+export const PlayRecordModal = (props: IPlayRecordModalProps) => {
+    const { postData, isLoading: isPostLoading, error: postError } = usePostRequest();
+    const { putData, isLoading: isPutLoading, error: putError } = usePutRequest();
     const { token } = useToken();
-
-
     const [ playRecord, setPlayRecord ] = useState<IPlayRecord_Create>({
         GameId: props.gameId,
         CompletedFlag: null,
@@ -30,9 +31,28 @@ export const GenericModal = (props: IGenericModalProps) => {
     });
 
     const handleSubmit = async () => {
-
-        await postData(BASE_URL + '/play-record', playRecord, { 'Authorization': 'Bearer ' + token });
+        if (props.playRecord) {
+            await putData(BASE_URL + '/play-record/' + props.playRecord.id, playRecord, { 'Authorization': 'Bearer ' + token });   
+        }
+        else {
+            await postData(BASE_URL + '/play-record' + playRecord, playRecord, { 'Authorization': 'Bearer ' + token });
+        }
     };
+
+    console.log('in modal',props.playRecord);
+
+    useEffect(() => {
+        if (props.playRecord) {
+          setPlayRecord({
+            ...playRecord,
+            GameId: props.playRecord.gameId,
+            CompletedFlag: props.playRecord.completedFlag,
+            HoursPlayed: props.playRecord.hoursPlayed+'',
+            Rating: props.playRecord.rating+'',
+            PlayDescription: props.playRecord.playDescription
+          });
+        }
+      }, [props.playRecord]); // Only run when playRecord prop changes
       
     return (
     <>
@@ -41,25 +61,32 @@ export const GenericModal = (props: IGenericModalProps) => {
           <Modal.Title>Add to My List</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <div style={{display: 'flex', flexDirection: 'column'}}>
+            <div style={{display: 'flex', flexDirection: 'column', gap: '1em'}}>
                 <div>
-                    <Dropdown>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                          Completed?
+                    <Form.Label>Have You completed this game?</Form.Label>
+                    <Dropdown data-bs-theme="dark">
+                        <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                            {playRecord.CompletedFlag === null ? 'Select' : playRecord.CompletedFlag ? 'Yes' : 'No'}
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                          <Dropdown.Item href="#/action-1">Yes</Dropdown.Item>
-                          <Dropdown.Item href="#/action-2"> No</Dropdown.Item>
+                          <Dropdown.Item onClick={() => setPlayRecord({...playRecord, CompletedFlag: true})}>Yes</Dropdown.Item>
+                          <Dropdown.Item onClick={() => setPlayRecord({...playRecord, CompletedFlag: false})}> No</Dropdown.Item>
                         </Dropdown.Menu>                
                     </Dropdown>
+                </div>
+
+                <div>
                     <Form.Label>Hours Played</Form.Label>
                     <Form.Control
                         value={playRecord.HoursPlayed ?? ''}
                         onChange={(e) => { !isNaN(+e.target.value) ? setPlayRecord({...playRecord, HoursPlayed: e.target.value}) : setPlayRecord({...playRecord, HoursPlayed: null}); }}
                         style={{width: '8em', overflow: 'scroll'}}
                     />
-                    
+
+                </div>
+
+                <div>
                     <Form.Label>Score</Form.Label>
                     <Form.Control
                         value={playRecord.Rating ?? ''}
@@ -82,9 +109,8 @@ export const GenericModal = (props: IGenericModalProps) => {
                         }}
                     />
                 </div>
-                <div>
 
-                </div>
+
                 <div>
                     <Form.Label>Description</Form.Label>
                     <Form.Control 
@@ -93,6 +119,7 @@ export const GenericModal = (props: IGenericModalProps) => {
                         value={playRecord.PlayDescription ?? ''}
                         onChange={(e) => setPlayRecord({...playRecord, PlayDescription: e.target.value})} />
                 </div>
+
             </div>
 
         </Modal.Body>
@@ -101,7 +128,7 @@ export const GenericModal = (props: IGenericModalProps) => {
             Cancel
           </Button>
           <Button variant="primary" onClick={() => { handleSubmit(); props.onHide()}}>
-            Submit
+            {props.playRecord ? 'Update' : 'Add'}
           </Button>
         </Modal.Footer>
       </Modal>

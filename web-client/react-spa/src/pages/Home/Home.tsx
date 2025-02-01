@@ -1,11 +1,9 @@
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useIsAuthenticated } from "@azure/msal-react";
-import { useApi } from "../../utils/useApi";
+import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import Alert from "../../components/Alert";
 import GameList from "../../components/GameList/GameList";
 import { BASE_URL } from "../../UrlProvider";
 import IPaginator from "../../interfaces/IPaginator";
 import IVanillaGame from "../../interfaces/IVanillaGame";
-import IApiResponse from "../../interfaces/IApiResponse";
 import { GameSearch } from "../../components/GameSearch/GameSearch";
 import { useState } from "react";
 import "./Home.css";

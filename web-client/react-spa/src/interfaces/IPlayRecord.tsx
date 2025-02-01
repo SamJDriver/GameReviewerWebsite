@@ -1,13 +1,13 @@
 export interface IPlayRecord {
-    Id: number;
-    GameId: number;
-    GameTitle: string;
-    CoverImageUrl: string;
-    CompletedFlag: boolean;
-    HoursPlayed: number;
-    Rating: number;
-    PlayDescription: string;
-    CreatedDate: Date;
+    id: number;
+    gameId: number;
+    gameTitle: string;
+    coverImageUrl: string;
+    completedFlag: boolean;
+    hoursPlayed: number;
+    rating: number;
+    playDescription: string;
+    createdDate: Date;
   }
   
   export interface IPlayRecord_Create {

@@ -8,7 +8,7 @@ import { Button, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
 import { fetcher } from "../../utils/Fetcher";
 import useSWR from "swr";
 import { usePostRequest } from "../../utils/usePostRequest";
-import { IPlayRecord_Create } from "../../interfaces/IPlayRecord";
+import { IPlayRecord, IPlayRecord_Create } from "../../interfaces/IPlayRecord";
 import { useToken } from "../../utils/useToken";
 import { GenericModal } from "../../components/GenericModal/GenericModal";
 interface Company {
@@ -52,17 +52,11 @@ interface IGame_Get_ById {
 const Game = () => {
   const gameId = useParams().gameId;
   const { data: game, error: gameError, isLoading: gameIsLoading } = useSWR<IGame_Get_ById>(BASE_URL + '/game/' + gameId, fetcher);
-  const { postData, isLoading, error } = usePostRequest();
-  const { token } = useToken();
+  const { data: existingPlayRecord, error: existingPlayRecordError, isLoading: existingPlayRecordIsLoading } = useSWR<IPlayRecord>(BASE_URL + '/play-record/?gameId=' + gameId + '&userId=061c04d1-dd51-438c-8cd1-3d32388158e9', fetcher);
   const [showModal, setShowModal] = useState(false);
 
 
   if (!game) { return <div>Loading...</div> }
-
-
-  const handleSubmit = async (args: IPlayRecord_Create) => {
-    await postData(BASE_URL + '/play-record', args, { 'Authorization': 'Bearer ' + token });
-  };
 
   const handleOpenPlayRecordModal = () => {
     setShowModal(true);
@@ -71,6 +65,8 @@ const Game = () => {
   const handleClosePlayRecordModal = () => {
     setShowModal(false);
   };
+
+  console.log('existingPlayRecord', existingPlayRecord);
 
 
 
@@ -86,20 +82,22 @@ const Game = () => {
     <>
     <div className="game--container">
       <div style={{display: 'inline-flex'}}>
-        <span style={{fontSize: 'xx-large'}}>{game.title}&nbsp;&nbsp;</span>
+        <span style={{fontSize: 'xx-large'}}>{game.title}</span>
+        
+        {existingPlayRecord ?
+          <Button variant="secondary" onClick={handleOpenPlayRecordModal}>Edit Play Record</Button>  
 
-        <Button variant="secondary" onClick={handleOpenPlayRecordModal}>Add to My List</Button>
+              :
+              <>
+              <Button variant="secondary" onClick={handleOpenPlayRecordModal}>Add to My List</Button>
+                  <GenericModal
+                    gameId={game.id}
+                    show={showModal} 
+                    onHide={handleClosePlayRecordModal} />
+            </>
+        }
 
-        <GenericModal
-          show={showModal} 
-          onHide={handleClosePlayRecordModal} />
 
-
-        {/* <DropdownButton title="Add to My List" variant="secondary" style={{marginTop: '8px'}}>
-          <Dropdown.Item onClick={() => handleSubmit({GameId: game.id, CompletedFlag: true, HoursPlayed: 4, Rating: 98, PlayDescription: 'test'}) } className="game--list-status-button-text" eventKey="1">Played</Dropdown.Item>
-          <Dropdown.Item  className="game--list-status-button-text" eventKey="2">In Progress</Dropdown.Item>
-          <Dropdown.Item  className="game--list-status-button-text" eventKey="3">Want to Play</Dropdown.Item>
-        </DropdownButton> */}
       </div>
       <hr/>      
       <div className="game--cover-image-and-description-container">

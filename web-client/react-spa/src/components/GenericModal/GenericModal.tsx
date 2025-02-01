@@ -5,27 +5,34 @@ import './GenericModal.css';
 import { usePostRequest } from '../../utils/usePostRequest';
 import { useToken } from '../../utils/useToken';
 import { BASE_URL } from "../../UrlProvider";
-import { IPlayRecord_Create } from '../../interfaces/IPlayRecord';
+import { IPlayRecord, IPlayRecord_Create } from '../../interfaces/IPlayRecord';
 import { Dropdown, Form } from 'react-bootstrap';
+import useSWR from 'swr';
+import { fetcher } from '../../utils/Fetcher';
 
 interface IGenericModalProps {
+    gameId: number;
     show: boolean;
     onHide: () => void;
 }
-
 
 export const GenericModal = (props: IGenericModalProps) => {
     const { postData, isLoading, error } = usePostRequest();
     const { token } = useToken();
 
-    const [ hoursPlayed, setHoursPlayed ] = useState<string | null>(null);
-    const [ rating, setRating ] = useState<string | null>(null);
-    const [ playDescription, setPlayDescription ] = useState<string | null>(null);
 
+    const [ playRecord, setPlayRecord ] = useState<IPlayRecord_Create>({
+        GameId: props.gameId,
+        CompletedFlag: null,
+        HoursPlayed: null,
+        Rating: null,
+        PlayDescription: null
+    });
 
-    const handleSubmit = async (args: IPlayRecord_Create) => {
-        await postData(BASE_URL + '/play-record', args, { 'Authorization': 'Bearer ' + token });
-      };
+    const handleSubmit = async () => {
+
+        await postData(BASE_URL + '/play-record', playRecord, { 'Authorization': 'Bearer ' + token });
+    };
       
     return (
     <>
@@ -48,37 +55,43 @@ export const GenericModal = (props: IGenericModalProps) => {
                     </Dropdown>
                     <Form.Label>Hours Played</Form.Label>
                     <Form.Control
-                        value={hoursPlayed ?? ''}
-                        onChange={(e) => { !isNaN(+e.target.value) ? setHoursPlayed(e.target.value) : setHoursPlayed(null); }}
+                        value={playRecord.HoursPlayed ?? ''}
+                        onChange={(e) => { !isNaN(+e.target.value) ? setPlayRecord({...playRecord, HoursPlayed: e.target.value}) : setPlayRecord({...playRecord, HoursPlayed: null}); }}
                         style={{width: '8em', overflow: 'scroll'}}
                     />
-                </div>
-                <div>
+                    
                     <Form.Label>Score</Form.Label>
                     <Form.Control
-                        value={rating ?? ''}
+                        value={playRecord.Rating ?? ''}
                         onChange={(e) => {
                             const val = +e.target.value
                             if (!isNaN(val)){
                                 if (val > 100){
-                                    setRating("100");
+                                    setPlayRecord({...playRecord, Rating: "100"});
                                 }
                                 else if (val < 0){
-                                    setRating("0");
+                                    setPlayRecord({...playRecord, Rating: "0"});
                                 }
                                 else{
-                                    setRating(val.toString());
+                                    setPlayRecord({...playRecord, Rating: val.toString()});
                                 }
                             }
                             else {
-                                setRating(null);
+                                setPlayRecord({...playRecord, Rating: null});
                             }
                         }}
                     />
                 </div>
                 <div>
+
+                </div>
+                <div>
                     <Form.Label>Description</Form.Label>
-                    <Form.Control as="textarea" rows={3} />
+                    <Form.Control 
+                        as="textarea" 
+                        rows={3} 
+                        value={playRecord.PlayDescription ?? ''}
+                        onChange={(e) => setPlayRecord({...playRecord, PlayDescription: e.target.value})} />
                 </div>
             </div>
 
@@ -87,7 +100,7 @@ export const GenericModal = (props: IGenericModalProps) => {
           <Button variant="secondary" onClick={props.onHide}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={props.onHide}>
+          <Button variant="primary" onClick={() => { handleSubmit(); props.onHide()}}>
             Submit
           </Button>
         </Modal.Footer>

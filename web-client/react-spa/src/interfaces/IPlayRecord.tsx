@@ -12,8 +12,15 @@ export interface IPlayRecord {
   
   export interface IPlayRecord_Create {
     GameId: number;
-    CompletedFlag: boolean;
-    HoursPlayed: number;
-    Rating: number;
-    PlayDescription: string;
+    CompletedFlag: boolean | null;
+    HoursPlayed: string | null;
+    Rating: string | null;
+    PlayDescription: string | null;
+  }
+
+  export interface IPlayRecord_Update {
+    CompletedFlag: boolean | null;
+    HoursPlayed: string | null;
+    Rating: string | null;
+    PlayDescription: string | null;
   }

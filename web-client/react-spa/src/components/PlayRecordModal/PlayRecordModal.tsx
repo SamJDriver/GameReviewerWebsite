@@ -10,6 +10,7 @@ import { Dropdown, Form } from 'react-bootstrap';
 import useSWR from 'swr';
 import { fetcher } from '../../utils/Fetcher';
 import { usePutRequest } from '../../utils/usePutRequest';
+import { useDeleteRequest } from '../../utils/useDeleteRequest';
 
 interface IPlayRecordModalProps {
     gameId: number;
@@ -21,6 +22,7 @@ interface IPlayRecordModalProps {
 export const PlayRecordModal = (props: IPlayRecordModalProps) => {
     const { postData, isLoading: isPostLoading, error: postError } = usePostRequest();
     const { putData, isLoading: isPutLoading, error: putError } = usePutRequest();
+    const { deleteData, isLoading: isDeleteLoading, error: deleteError } = useDeleteRequest();
     const { token } = useToken();
     const [ playRecord, setPlayRecord ] = useState<IPlayRecord_Create>({
         GameId: props.gameId,
@@ -36,6 +38,12 @@ export const PlayRecordModal = (props: IPlayRecordModalProps) => {
         }
         else {
             await postData(BASE_URL + '/play-record' + playRecord, playRecord, { 'Authorization': 'Bearer ' + token });
+        }
+    };
+
+    const handleDelete = async () => {
+        if (props.playRecord) {
+            await await deleteData(BASE_URL + '/play-record/' + props.playRecord.id, { 'Authorization': 'Bearer ' + token });   
         }
     };
 
@@ -127,6 +135,11 @@ export const PlayRecordModal = (props: IPlayRecordModalProps) => {
           <Button variant="secondary" onClick={props.onHide}>
             Cancel
           </Button>
+          {props.playRecord && 
+            <Button variant="danger" onClick={() => { handleDelete(); props.onHide()}}>
+              Delete
+            </Button>
+          }
           <Button variant="primary" onClick={() => { handleSubmit(); props.onHide()}}>
             {props.playRecord ? 'Update' : 'Add'}
           </Button>

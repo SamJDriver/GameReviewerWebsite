@@ -37,7 +37,7 @@ export const PlayRecordModal = (props: IPlayRecordModalProps) => {
             await putData(BASE_URL + '/play-record/' + props.playRecord.id, playRecord, { 'Authorization': 'Bearer ' + token });   
         }
         else {
-            await postData(BASE_URL + '/play-record' + playRecord, playRecord, { 'Authorization': 'Bearer ' + token });
+            await postData(BASE_URL + '/play-record',    playRecord, { 'Authorization': 'Bearer ' + token });
         }
     };
 
@@ -46,8 +46,6 @@ export const PlayRecordModal = (props: IPlayRecordModalProps) => {
             await await deleteData(BASE_URL + '/play-record/' + props.playRecord.id, { 'Authorization': 'Bearer ' + token });   
         }
     };
-
-    console.log('in modal',props.playRecord);
 
     useEffect(() => {
         if (props.playRecord) {
@@ -66,7 +64,17 @@ export const PlayRecordModal = (props: IPlayRecordModalProps) => {
     <>
       <Modal show={props.show} onHide={props.onHide} size='lg'>
         <Modal.Header closeButton>
-          <Modal.Title>Add to My List</Modal.Title>
+          <Modal.Title>
+            
+            Add to My List
+
+            <img
+              style={{width: '4em', height: 'auto', borderRadius: '5px'}}
+              src={props.playRecord?.coverImageUrl}
+              alt={props.playRecord?.gameTitle}
+            />
+
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <div style={{display: 'flex', flexDirection: 'column', gap: '1em'}}>
@@ -95,7 +103,7 @@ export const PlayRecordModal = (props: IPlayRecordModalProps) => {
                 </div>
 
                 <div>
-                    <Form.Label>Score</Form.Label>
+                    <Form.Label>Score (0-100)</Form.Label>
                     <Form.Control
                         value={playRecord.Rating ?? ''}
                         onChange={(e) => {

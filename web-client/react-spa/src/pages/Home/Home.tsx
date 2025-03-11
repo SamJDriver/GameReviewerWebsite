@@ -27,8 +27,6 @@ const Home = () => {
     </Spinner>
   }
 
-  console.log(friendGames);
-
   const handleSearchResults = (searchResults: IPaginator<IVanillaGame> | null) => {
     setSearchResults(searchResults);
   }

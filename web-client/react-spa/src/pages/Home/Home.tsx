@@ -18,8 +18,10 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState<IPaginator<IVanillaGame> | null>(null);
   const baseUrl = useBaseUrlResolver();
   const { token } = useToken();
-  const {data: friendGames, error: friendGamesError, isLoading: friendGamesIsLoading } = useSWR<IPaginator<IFriendPlayRecordGame>>([`${baseUrl}/game/friend/0/8`, token], ([url, token]) => fetcherToken(url, token));
-  const {data: popularGames, error: popularGamesError, isLoading: popularGamesIsLoading } =  useSWR<IPaginator<IVanillaGame>>(BASE_URL + '/game/0/8', fetcher);
+  const [friendPageIndex, setFriendPageIndex] = useState(0);
+  const {data: friendGames, error: friendGamesError, isLoading: friendGamesIsLoading } = useSWR<IPaginator<IFriendPlayRecordGame>>([`${baseUrl}/game/friend/${friendPageIndex}/8`, token], ([url, token]) => fetcherToken(url, token));
+  const [pageIndex, setPageIndex] = useState(0);
+  const {data: popularGames, error: popularGamesError, isLoading: popularGamesIsLoading } =  useSWR<IPaginator<IVanillaGame>>(`${BASE_URL}/game/${pageIndex}/8`, fetcher);
 
   if (popularGamesIsLoading){
     return <Spinner animation="border" role="status">
@@ -37,10 +39,10 @@ const Home = () => {
         <GameSearch onSearchResults={handleSearchResults} />
         {
           searchResults
-          ? <GameList items={ searchResults.items } heading="Search Results" />
+          ? <GameList leftFunction={() => pageIndex > 0 ? setPageIndex(pageIndex - 1) : null} rightFunction={() => searchResults.items.length > 8 ? setPageIndex(pageIndex + 1) : null} items={ searchResults.items } heading="Search Results" />
           : 
             !popularGamesIsLoading 
-            ? <GameList items={ popularGames!.items } heading="Popular" />
+            ? <GameList leftFunction={() => setPageIndex(Math.max(pageIndex - 1, 0))} rightFunction={() => setPageIndex(pageIndex + 1)} items={ popularGames!.items } heading="Popular" />
             : <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
@@ -56,7 +58,7 @@ const Home = () => {
                 {homePageContents()}
                 {
                   friendGames && friendGames.items
-                  ? <GameList items={ friendGames.items } heading="From Friends" />
+                  ? <GameList leftFunction={() => friendPageIndex > 0 ? setFriendPageIndex(friendPageIndex - 1) : null} rightFunction={() => friendGames.items.length > 8 ? setFriendPageIndex(friendPageIndex + 1) : null} items={ friendGames.items } heading="From Friends" />
                   : <Spinner animation="border" role="status">
                       <span className="visually-hidden">Loading...</span>
                     </Spinner>

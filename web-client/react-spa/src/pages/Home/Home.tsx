@@ -1,10 +1,9 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import Alert from "../../components/Alert";
 import GameList from "../../components/GameList/GameList";
-import { BASE_URL } from "../../UrlProvider";
 import IPaginator from "../../interfaces/IPaginator";
 import IVanillaGame from "../../interfaces/IVanillaGame";
-import { GameSearch } from "../../components/GameSearch/GameSearch";
+import { GameSearchBar } from "../../components/GameSearch/GameSearchBar";
 import { useState } from "react";
 import "./Home.css";
 import { useToken } from "../../utils/useToken";
@@ -21,7 +20,8 @@ const Home = () => {
   const [friendPageIndex, setFriendPageIndex] = useState(0);
   const {data: friendGames, error: friendGamesError, isLoading: friendGamesIsLoading } = useSWR<IPaginator<IFriendPlayRecordGame>>([`${baseUrl}/game/friend/${friendPageIndex}/8`, token], ([url, token]) => fetcherToken(url, token));
   const [pageIndex, setPageIndex] = useState(0);
-  const {data: popularGames, error: popularGamesError, isLoading: popularGamesIsLoading } =  useSWR<IPaginator<IVanillaGame>>(`${BASE_URL}/game/${pageIndex}/8`, fetcher);
+  const {data: popularGames, error: popularGamesError, isLoading: popularGamesIsLoading } =  useSWR<IPaginator<IVanillaGame>>(`${baseUrl}/game/${pageIndex}/8`, fetcher);
+  const [searchPageIndex, setSearchPageIndex] = useState(0);
 
   if (popularGamesIsLoading){
     return <Spinner animation="border" role="status">
@@ -36,13 +36,13 @@ const Home = () => {
   const homePageContents = () => {
     return (
       <>
-        <GameSearch onSearchResults={handleSearchResults} />
+        <GameSearchBar pageIndex={searchPageIndex} onSearchResults={handleSearchResults} />
         {
-          searchResults
-          ? <GameList leftFunction={() => pageIndex > 0 ? setPageIndex(pageIndex - 1) : null} rightFunction={() => searchResults.items.length > 8 ? setPageIndex(pageIndex + 1) : null} items={ searchResults.items } heading="Search Results" />
+          searchResults && searchResults.items && searchResults.items.length > 0
+          ? <GameList leftFunction={() => searchPageIndex > 0 ? setSearchPageIndex(searchPageIndex - 1) : null} rightFunction={() => searchResults.items.length >= 8 && setSearchPageIndex(searchPageIndex + 1)} items={ searchResults.items } heading="Search Results" />
           : 
             !popularGamesIsLoading 
-            ? <GameList leftFunction={() => setPageIndex(Math.max(pageIndex - 1, 0))} rightFunction={() => setPageIndex(pageIndex + 1)} items={ popularGames!.items } heading="Popular" />
+            ? <GameList leftFunction={() => pageIndex > 0 ? setPageIndex(pageIndex - 1) : null} rightFunction={() => popularGames!.items.length <= 8 ? setPageIndex(pageIndex + 1) : 1} items={ popularGames!.items } heading="Popular" />
             : <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>

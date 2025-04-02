@@ -1,5 +1,6 @@
 export default interface IVanillaGame {
   coverImageUrl: string,
   id: number,
-  title: string
+  title: string,
+  releaseDate: Date
 }

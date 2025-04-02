@@ -8,8 +8,8 @@ import IFriendPlayRecordGame from '../../interfaces/IFriendPlayRecordGame';
 interface IProps {
   items: IVanillaGame[] | IFriendPlayRecordGame[] | null | undefined,
   heading: string,
-  leftFunction: () => void,
-  rightFunction: () => void
+  leftFunction?: () => void,
+  rightFunction?: () => void
 }
 
 function GameList(props: IProps) {

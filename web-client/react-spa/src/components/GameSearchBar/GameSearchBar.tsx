@@ -21,6 +21,7 @@ interface IReleaseYearRange {
 
 interface IProps {
   onSearchResults?: (result: IPaginator<IVanillaGame> | null) => void;
+  onIsCleanChange?: (isCleanFlag: boolean) => void;
   pageIndex?: number;
   pageSize?: number;
 }
@@ -28,6 +29,7 @@ interface IProps {
 export const GameSearchBar = (props: IProps) => {
   const [pageIndex, setPageIndex] = useState(props.pageIndex || 0);
   const [pageSize, setPageSize] = useState(props.pageSize || 8);
+  const [isCleanFlag, setIsCleanFlag] = useState(true);
 
   const { data: genres, error: genresError, isLoading: genresIsLoading } = useSWR<IGenre[]>(BASE_URL + '/lookup/genres', fetcher);
   const { data: releaseYearRange, error: releaseYearRangeError, isLoading: releaseYearRangeIsLoading } = useSWR<IReleaseYearRange>(BASE_URL + '/lookup/release-year-range', fetcher);
@@ -57,6 +59,13 @@ export const GameSearchBar = (props: IProps) => {
 
     if (!searchParameters.searchTerm && !searchParameters.selectedGenreIds && !searchParameters.selectedStartReleaseDate && !searchParameters.selectedEndReleaseDate) {
       props.onSearchResults?.(null);
+      setIsCleanFlag(true);
+      props.onIsCleanChange?.(true);
+      return;
+    }
+    else {
+      setIsCleanFlag(false);
+      props.onIsCleanChange?.(false);
     }
 
     const params = new URLSearchParams();

@@ -3,7 +3,7 @@ import Alert from "../../components/Alert";
 import GameList from "../../components/GameList/GameList";
 import IPaginator from "../../interfaces/IPaginator";
 import IVanillaGame from "../../interfaces/IVanillaGame";
-import { GameSearchBar } from "../../components/GameSearch/GameSearchBar";
+import { GameSearchBar } from "../../components/GameSearchBar/GameSearchBar";
 import { useState } from "react";
 import "./Home.css";
 import { useToken } from "../../utils/useToken";
@@ -41,7 +41,7 @@ const Home = () => {
           searchResults && searchResults.items && searchResults.items.length > 0
           ? <GameList leftFunction={() => searchPageIndex > 0 ? setSearchPageIndex(searchPageIndex - 1) : null} rightFunction={() => searchResults.items.length >= 8 && setSearchPageIndex(searchPageIndex + 1)} items={ searchResults.items } heading="Search Results" />
           : 
-            !popularGamesIsLoading 
+            (!popularGamesIsLoading && popularGames?.items)
             ? <GameList leftFunction={() => pageIndex > 0 ? setPageIndex(pageIndex - 1) : null} rightFunction={() => popularGames!.items.length <= 8 ? setPageIndex(pageIndex + 1) : 1} items={ popularGames!.items } heading="Popular" />
             : <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>

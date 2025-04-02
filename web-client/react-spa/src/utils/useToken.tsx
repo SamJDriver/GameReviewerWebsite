@@ -28,9 +28,10 @@ export function useToken() {
           })
           .catch(function (error) {
             //Acquire token silent failure, and send an interactive request
-            console.log(error);
+            // console.log(error);
             if (error instanceof InteractionRequiredAuthError) {
-              instance.acquireTokenRedirect(accessTokenRequest);
+              instance.logoutRedirect();
+              // instance.acquireTokenRedirect(accessTokenRequest);
             }
           });
   }, []);

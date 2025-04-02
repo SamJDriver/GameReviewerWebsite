@@ -11,5 +11,7 @@ public class Game_Get_VanillaGame_Dto
 
     [StringLength(255)]
     public string? CoverImageUrl { get; set; }
+
+    public DateOnly ReleaseDate { get; set; }
 }
 

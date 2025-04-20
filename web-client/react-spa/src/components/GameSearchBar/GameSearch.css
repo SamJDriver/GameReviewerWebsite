@@ -1,0 +1,95 @@
+.game-search--container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  text-align: center;
+  height: 3.6em;
+  margin-bottom: 3em;
+}
+
+.game-search--item-background-color {
+  background-color: rgb(26, 28, 30) !important;
+  color: rgb(159, 151, 138) !important;
+  border-color: rgb(26, 28, 30)  !important;
+}
+
+.game-search--item-background-color:hover {
+  background-color: rgb(29, 32, 34) !important;
+  color: rgb(68, 172, 226)!important;
+}
+
+.game-search--item-background-color::placeholder {
+  color: rgb(159, 151, 138) !important;
+}
+
+.game-search--genre-toggle {
+  border-style: none !important;
+  background-color: transparent !important;
+  color: rgb(159, 151, 138) !important;
+}
+
+.game-search--text-box {
+  height: 3.6em !important;
+  overflow: hidden !important;
+  text-align: left !important;
+}
+
+.dropdown-menu {
+  background-color: rgb(26, 28, 30)  !important;
+  padding-left: 10px !important;
+}
+
+.dropdown-menu.show {
+  max-height: 35em;
+  overflow-y: scroll !important;
+}
+.game-search--genre-text-input {
+  overflow: hidden;
+}
+
+.game-search--genre-item {
+  text-align: left;
+  overflow: hidden;
+  display: inline-block;
+  font-size: .8em;
+  width: 40%;
+  background-color: rgb(35, 40, 40);
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: auto;
+  padding: 6px;
+  color: rgb(159, 151, 138) !important;
+}
+
+.game-search--date-picker {
+  background-color: rgba(26, 28, 30);
+  position: absolute;
+  top: 100%; /* position it below the parent */
+  left: 0; /* center it horizontally */
+  z-index: 2;
+}
+
+.game-search--date-picker-hide {
+  display: none;
+}
+
+/* Override Calendar Text */
+.rdrDayNumber span { 
+  color: white;
+}
+.rdrMonthPicker select {
+  color: white;
+}
+.rdrYearPicker select {
+  color: white;
+}
+.rdrMonth div {
+  background-color: rgba(26, 28, 30);
+  z-index: 2;
+}
+
+[contentEditable=true]:empty:not(:focus):before {
+  content: attr(data-text)
+}

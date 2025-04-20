@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 
 import { PublicClientApplication, EventType } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
@@ -15,7 +16,6 @@ export const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize().then(() => {
     // Default to using the first account if no account is active on page load
     if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
-        console.log('set active acc ', msalInstance.getAllAccounts()[0]);
 
       // Account selection logic is app dependent. Adjust as needed for different use cases.
       msalInstance.setActiveAccount(msalInstance.getAllAccounts()[0]);
@@ -43,11 +43,11 @@ msalInstance.initialize().then(() => {
  * We recommend wrapping most or all of your components in the MsalProvider component. It's best to render the MsalProvider as close to the root as possible.
  */
     root.render(
-        <React.StrictMode>
-            <MsalProvider instance={msalInstance}>
-                <App />
-            </MsalProvider>
-        </React.StrictMode>
+      <MsalProvider instance={msalInstance}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </MsalProvider>
     );
   });
   

@@ -1,0 +1,33 @@
+.game-list--grid-container {
+  width: 75%;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  list-style: none;
+  gap:  1em;
+}
+
+.game-list--grid-item {
+  display: grid;
+  border-radius: 4px;
+  width: 9em;
+  height: auto;
+  padding-bottom: 0.5em;
+}
+
+.game-list--img {
+  width: 9em;
+  height: auto;
+  border-radius: 8px;
+}
+
+.game-list--page-button {
+  color: white;
+  background-color: transparent;
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+
+.game-list--page-button:hover {
+  color: rgb(68, 172, 226)!important;
+}

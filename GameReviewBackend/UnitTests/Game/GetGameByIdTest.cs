@@ -7,6 +7,7 @@ using FluentAssertions.Execution;
 using FluentAssertions;
 using Moq;
 using DataAccess.Models.DockerDb;
+using BusinessLogic.Abstractions;
 
 namespace UnitTests.Game;
 
@@ -18,11 +19,12 @@ public class GetGameByIdTest : BaseTest
         //Arrange
         var gameEntity = TestObjectFactory.GetMockGameEntity();
         Mock<IGenericRepository<DockerDbContext>> mockGenericRepository = new();
+        Mock<ILookupService> mockLookupService = new();
         Mock<IGameRepository> mockGameRepository = new();
         GraphServiceClient graphServiceClient = new GraphServiceClient(new AnonymousAuthenticationProvider());
 
         mockGenericRepository.Setup(m => m.GetById<Games>(It.IsAny<int>())).Returns(gameEntity);
-        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient);
+        var subjectUnderTest = new GameService(mockGenericRepository.Object, mockGameRepository.Object, graphServiceClient, mockLookupService.Object);
 
         //Act
         var retrievedGame = subjectUnderTest.GetGameById(gameEntity.Id);

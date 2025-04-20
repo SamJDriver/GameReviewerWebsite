@@ -55,17 +55,10 @@ namespace GameReview.Controllers
         }
 
         [HttpGet("search/{pageIndex}/{pageSize}")]
-        public async Task<IActionResult> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        public async Task<IActionResult> SearchGames(string? searchTerm = null, [FromQuery] int[]? genreIds = null, DateTime? startReleaseDate = null, DateTime? endReleaseDate = null, int? pageIndex = 0, int? pageSize = 8)
         {
-            var games = await _gameService.SearchGames(searchTerm, genreId, releaseYear, pageIndex, pageSize);
+            var games = await _gameService.SearchGames(searchTerm, genreIds, startReleaseDate, endReleaseDate, pageIndex!.Value, pageSize!.Value);
             return Ok(games);
-        }
-
-        [HttpGet("genres")]
-        public IActionResult GetGenres()
-        {
-            var genres = _lookupService.GetGenreLookups();
-            return Ok(genres);
         }
     }
 }

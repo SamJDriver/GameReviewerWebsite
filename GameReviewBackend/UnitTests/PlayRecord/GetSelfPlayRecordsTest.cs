@@ -40,7 +40,7 @@ namespace UnitTests.PlayRecord
             var subjectUnderTest = new PlayRecordService(mockGenericRepository.Object, graphServiceClient);
 
             //Act
-            var retrievedRecords = await subjectUnderTest.GetSelfPlayRecords(userId);
+            var retrievedRecords = await subjectUnderTest.GetPlayRecords(null, userId);
 
             //Assert
             using (new AssertionScope())
@@ -62,7 +62,7 @@ namespace UnitTests.PlayRecord
             //Act & Assert
             using (new AssertionScope())
             {
-                DgcException exception = await Assert.ThrowsAsync<DgcException>(() => subjectUnderTest.GetSelfPlayRecords((string)null));
+                DgcException exception = await Assert.ThrowsAsync<DgcException>(() => subjectUnderTest.GetPlayRecords(null, (string)null));
                 exception.Message.Should().Be("Can't create play record. User not found.");
             }
 

@@ -9,6 +9,7 @@ namespace Repositories;
 
 public interface IGameRepository
 {
-        IQueryable<Games> SearchGames(string? searchTerm, int? genreId, int? releaseYear);
+        IQueryable<Games> SearchGames(string? searchTerm, IEnumerable<int>? genreIds, DateTime? startReleaseDate, DateTime? endReleaseDate);
+        IQueryable<Games> SearchGamesSP(string? searchTerm, IEnumerable<int>? genreIds, DateTime? startReleaseDate, DateTime? endReleaseDate, int? pageIndex = 0, int? pageSize = 50);
         IQueryable<Games> GetFriendsGames(string userId);
 }

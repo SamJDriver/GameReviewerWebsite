@@ -272,8 +272,8 @@ namespace DataAccess.Migrations
                         {
                             Id = 1,
                             Code = "DLC",
-                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
-                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7790),
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 11, 8, 0, 43, 54, 219, DateTimeKind.Local).AddTicks(3120),
                             Description = "Downloadable Content",
                             Name = "DLC"
                         },
@@ -281,8 +281,8 @@ namespace DataAccess.Migrations
                         {
                             Id = 2,
                             Code = "EXPANS",
-                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
-                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7840),
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 11, 8, 0, 43, 54, 219, DateTimeKind.Local).AddTicks(3150),
                             Description = "Expansion",
                             Name = "Expansion"
                         });
@@ -669,6 +669,10 @@ namespace DataAccess.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("created_date");
 
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("end_date");
+
                     b.Property<int>("GameId")
                         .HasColumnType("int(11)")
                         .HasColumnName("game_id");
@@ -677,6 +681,10 @@ namespace DataAccess.Migrations
                         .HasColumnType("int(11)")
                         .HasColumnName("hours_played");
 
+                    b.Property<DateTime?>("LastUpdatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("last_updated_date");
+
                     b.Property<string>("PlayDescription")
                         .HasColumnType("mediumtext")
                         .HasColumnName("play_description");
@@ -684,6 +692,10 @@ namespace DataAccess.Migrations
                     b.Property<int?>("Rating")
                         .HasColumnType("int(11)")
                         .HasColumnName("rating");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("start_date");
 
                     b.HasKey("Id");
 
@@ -782,8 +794,8 @@ namespace DataAccess.Migrations
                         {
                             Id = 1,
                             Code = "FRIEND",
-                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
-                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7910),
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 11, 8, 0, 43, 54, 219, DateTimeKind.Local).AddTicks(3220),
                             Description = "One directional friend link",
                             Name = "Friend"
                         },
@@ -791,8 +803,8 @@ namespace DataAccess.Migrations
                         {
                             Id = 2,
                             Code = "IGNORE",
-                            CreatedBy = "181972b7-1d32-4b26-bd1f-0bfc7b9d9f9f",
-                            CreatedDate = new DateTime(2024, 7, 25, 18, 25, 20, 210, DateTimeKind.Local).AddTicks(7920),
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 11, 8, 0, 43, 54, 219, DateTimeKind.Local).AddTicks(3230),
                             Description = "One directional ignore.",
                             Name = "Ignore"
                         });

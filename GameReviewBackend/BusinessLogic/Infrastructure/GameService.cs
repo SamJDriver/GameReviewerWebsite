@@ -17,12 +17,14 @@ namespace BusinessLogic.Infrastructure
         private readonly IGenericRepository<DockerDbContext> _genericRepository;
         private readonly IGameRepository _gameRepository;
         private readonly GraphServiceClient _graphServiceClient;
+        private readonly ILookupService _lookupService;
 
-        public GameService(IGenericRepository<DockerDbContext> genericRepository, IGameRepository gameRepository, GraphServiceClient graphServiceClient)
+        public GameService(IGenericRepository<DockerDbContext> genericRepository, IGameRepository gameRepository, GraphServiceClient graphServiceClient, ILookupService lookupService)
         {
             _genericRepository = genericRepository;
             _gameRepository = gameRepository;
             _graphServiceClient = graphServiceClient;
+            _lookupService = lookupService;
         }
 
         public async Task<int> CreateGame(GameDto game, string? userId)
@@ -49,30 +51,27 @@ namespace BusinessLogic.Infrastructure
 
             return gameEntity.Id;
         }
-        public async Task<PagedResult<GameDto>?> GetAllGames(int pageIndex, int pageSize)
+        public async Task<PagedResult<Game_Get_VanillaGame_Dto>?> GetAllGames(int pageIndex, int pageSize)
         {
             var query = _genericRepository.GetAll<Games>();
 
             var data =
                     (await query
-                    // .OrderBy(g => g.Title)
-                    // .Where(g => g.Cover.Count > 0)
-                    // .Where(g => g.Title.Contains("Halo"))
-                    .Skip(pageIndex * pageIndex)
+                   .Skip(pageIndex * pageIndex)
                     .Take(pageSize)
                     .ToListAsync())
-                    .Adapt<IEnumerable<GameDto>>();
+                    .Adapt<IEnumerable<Game_Get_VanillaGame_Dto>>();
 
-            return new PagedResult<GameDto>()
+            return new PagedResult<Game_Get_VanillaGame_Dto>()
             {
-                Data = data,
+                Items = data,
                 TotalRowCount = query.Count(),
                 PageIndex = pageIndex,
                 PageSize = pageSize,
             };
         }
 
-        public async Task<PagedResult<Game_GetList_Dto>?> GetGamesPopularWithFriends(int pageIndex, int pageSize, string? userId)
+        public async Task<PagedResult<Game_PlayRecordList_Dto>?> GetGamesPopularWithFriends(int pageIndex, int pageSize, string? userId)
         {
             if (userId is null)
             {
@@ -84,7 +83,7 @@ namespace BusinessLogic.Infrastructure
                     .Skip(pageIndex * pageIndex)
                     .Take(pageSize)
                     .ToListAsync())
-                    .Adapt<Game_GetList_Dto[]>();
+                    .Adapt<Game_PlayRecordList_Dto[]>();
 
             if (data.Length == 0)
             {
@@ -93,26 +92,29 @@ namespace BusinessLogic.Infrastructure
 
             var requestBody = new GetByIdsPostRequestBody()
             { 
-                Ids = data.Select(d => d.ReviewerId).ToList<string>(),
+                Ids = data.SelectMany(d => d.PlayRecords).Select(p => p.CreatedBy).ToList<string>(),
                 Types = new List<string> { "user" }
             };
             
             var result = (await _graphServiceClient.DirectoryObjects.GetByIds.PostAsGetByIdsPostResponseAsync(requestBody))?.Value;
-            
-            return new PagedResult<Game_GetList_Dto>()
-            {
-                Data = data.Select(d =>  { 
 
-                    d.ReviewerName = (result?.FirstOrDefault(r => r.Id == d.ReviewerId) as Microsoft.Graph.Models.User)?.DisplayName;
-                    return d; 
+            return new PagedResult<Game_PlayRecordList_Dto>()
+            {
+                Items = data.Select(d => {
+                     d.PlayRecords.Select(p => {
+                        p.CreatedByName = (result?.FirstOrDefault(r => r.Id == p.CreatedBy) as Microsoft.Graph.Models.User)?.DisplayName;
+                        return p; 
+                    }); 
+                    return d;
                 }),
+
                 TotalRowCount = query.Count(),
                 PageIndex = pageIndex,
                 PageSize = pageSize,
             };
         }
 
-        public GameDto GetGameById(int gameId)
+        public Game_Get_ById_Dto GetGameById(int gameId)
         {
             var game = _genericRepository.GetById<Games>(gameId);
             if (game == null)
@@ -120,34 +122,45 @@ namespace BusinessLogic.Infrastructure
                 throw new DgcException("Can't retrieve game. Id not found.", DgcExceptionType.ResourceNotFound);
             }
 
-            var gameDto = game.Adapt<GameDto>();
+            var gameDto = game.Adapt<Game_Get_ById_Dto>();
             return gameDto;
         }
 
-        public async Task<PagedResult<GameDto>> SearchGames(string? searchTerm, int? genreId, int? releaseYear, int pageIndex, int pageSize)
+        public async Task<PagedResult<Game_Get_VanillaGame_Dto>> SearchGames(string? searchTerm, IEnumerable<int>? genreIds, DateTime? startReleaseDate, DateTime? endReleaseDate, int pageIndex, int pageSize)
         {
-            var genre = genreId != null ? _genericRepository.GetById<GenresLookup>(genreId.Value) : null;
-            if (genreId != null && genre == null)
+            IEnumerable<GenresLookup?>? genres = genreIds != null ? genreIds.Select(g => _genericRepository.GetById<GenresLookup>(g)) : null;
+
+            if ((genres ?? []).Any(g => g == null) && genreIds != null)
             {
-                throw new DgcException("Genre not found.", DgcExceptionType.ResourceNotFound);
+                throw new DgcException("Invalid genre provided.", DgcExceptionType.ResourceNotFound);
             }
 
-            if (releaseYear != null && releaseYear < Components.Constants.MinimumReleaseYear || releaseYear > Components.Constants.MaximumReleaseYear)
+            DateRangeDto dateRange = _lookupService.GetReleaseYearsRange();
+            if (startReleaseDate != null && (startReleaseDate.Value.Year < dateRange.StartYearLimit || startReleaseDate.Value.Year > dateRange.EndYearLimit))
             {
-                throw new DgcException("Invalid release year provided.", DgcExceptionType.ArgumentOutOfRange);
+                throw new DgcException("Start date is out of valid date range.", DgcExceptionType.ArgumentOutOfRange);
             }
 
-            var query = _gameRepository.SearchGames(searchTerm, genreId, releaseYear);
+            if (endReleaseDate != null && (endReleaseDate.Value.Year < dateRange.StartYearLimit || endReleaseDate.Value.Year > dateRange.EndYearLimit))
+            {
+                throw new DgcException("End date is out of valid date range.", DgcExceptionType.ArgumentOutOfRange);
+            }
+
+            if (startReleaseDate != null && endReleaseDate != null && startReleaseDate > endReleaseDate)
+            {
+                throw new DgcException("Start date is after end date.", DgcExceptionType.ArgumentOutOfRange);
+            }
+
+            var query = await _gameRepository.SearchGamesSP(searchTerm, genreIds, startReleaseDate, endReleaseDate).ToListAsync();
 
             var games = query
                         .Skip(pageIndex * pageSize)
                         .Take(pageSize)
-                        .ToList()
-                        .Adapt<IEnumerable<GameDto>>();
+                        .Adapt<IEnumerable<Game_Get_VanillaGame_Dto>>();
 
-            return new PagedResult<GameDto>()
+            return new PagedResult<Game_Get_VanillaGame_Dto>()
             {
-                Data = games,
+                Items = games,
                 TotalRowCount = query.Count(),
                 PageIndex = pageIndex,
                 PageSize = pageSize,

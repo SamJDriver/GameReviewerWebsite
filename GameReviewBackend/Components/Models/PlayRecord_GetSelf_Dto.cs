@@ -9,9 +9,12 @@ namespace Components.Models
         public string GameTitle { get; set; } = default!;
         public string? CoverImageUrl { get; set; }
         public bool? CompletedFlag { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public int? HoursPlayed { get; set; }
         public int? Rating { get; set; }
         public string? PlayDescription { get; set; }
         public DateTime CreatedDate { get; set; } = default;
+        public DateTime? LastUpdatedDate { get; set; }
     }
 }

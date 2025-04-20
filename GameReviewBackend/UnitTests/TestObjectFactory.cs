@@ -188,18 +188,18 @@ namespace UnitTests
             return userRelationshipType;
         }
 
-        internal static Game_GetList_Dto GetMockGameGetListDto()
+        internal static Game_PlayRecordList_Dto GetMockGameGetListDto()
         {
-            Game_GetList_Dto game = new()
+            Game_PlayRecordList_Dto game = new()
             {
                 GameId = _faker.Random.Number(1, 500000),
                 PlayRecordId = _faker.Random.Number(1, 500000),
                 Title = _faker.Random.String(0, 255),
                 CoverImageUrl = _faker.Random.String(0, 255),
-                Rating = _faker.Random.Number(1, 100),
-                ReviewerName = _faker.Random.String(0, 255),
-                ReviewerId = Guid.NewGuid().ToString(),
-                ReviewDate = _faker.Date.Between(new DateTime(Components.Constants.MinimumReleaseYear, 1, 1), DateTime.Now)
+                // Rating = _faker.Random.Number(1, 100),
+                // ReviewerName = _faker.Random.String(0, 255),
+                // ReviewerId = Guid.NewGuid().ToString(),
+                // ReviewDate = _faker.Date.Between(new DateTime(Components.Constants.MinimumReleaseYear, 1, 1), DateTime.Now)
             };
             return game;
         }

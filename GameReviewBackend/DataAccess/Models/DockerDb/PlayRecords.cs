@@ -30,11 +30,18 @@ namespace DataAccess.Models.DockerDb
         public int? Rating { get; set; }
         [Column("play_description", TypeName = "mediumtext")]
         public string? PlayDescription { get; set; }
+        [Column("start_date", TypeName = "datetime")]
+        public DateTime? StartDate { get; set; }
+
+        [Column("end_date", TypeName = "datetime")]
+        public DateTime? EndDate { get; set; }
         [Column("created_by")]
         [StringLength(36)]
         public string CreatedBy { get; set; } = null!;
         [Column("created_date", TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
+        [Column("last_updated_date", TypeName = "datetime")]
+        public DateTime? LastUpdatedDate { get; set; }
 
         [ForeignKey(nameof(GameId))]
         [InverseProperty(nameof(Games.PlayRecords))]
